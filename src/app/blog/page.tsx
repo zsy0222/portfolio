@@ -31,7 +31,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
             </>
           )}
         </h1>
-        <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[520px]">
+        <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[680px] whitespace-nowrap">
           Research logs, course notes, and reflections from the intersection of engineering and business.
         </p>
       </section>

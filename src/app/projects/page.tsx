@@ -23,7 +23,7 @@ export default function ProjectsPage() {
           {projects.map((project, index) => (
             <div
               key={project.id}
-              className={index % 2 === 0 ? "border-r border-line" : ""}
+              className={index % 2 === 0 && index < projects.length - 1 ? "border-r border-line" : ""}
             >
               <ProjectCard project={project} />
             </div>

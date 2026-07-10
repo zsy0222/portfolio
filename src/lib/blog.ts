@@ -16,7 +16,6 @@ export interface BlogPost {
 
 export const categories = [
   { slug: "research", label: "Research" },
-  { slug: "course-notes", label: "Course Notes" },
   { slug: "cross-disciplinary", label: "Cross-disciplinary" },
   { slug: "projects", label: "Projects" },
   { slug: "career-future", label: "Career & Future" },

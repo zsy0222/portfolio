@@ -70,6 +70,11 @@ export default function WikiPage() {
             Ask the knowledge base &rarr;
           </Link>
         </p>
+        {!authed && (
+          <p className="text-[18px] text-muted mt-4">
+            Password required to unlock content.
+          </p>
+        )}
       </section>
 
       {!authed && (
@@ -113,7 +118,7 @@ export default function WikiPage() {
                           : "text-muted cursor-default"
                       }`}
                     >
-                      {authed ? `${item}.md` : `${item}.md 🔒`}
+                      {authed ? `${item}.md` : `${item}.md`}
                     </span>
                   </div>
                 ))}
