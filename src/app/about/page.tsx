@@ -48,12 +48,6 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <span className="text-[20px] font-normal text-body">
-              #gpa-4.57
-            </span>
-            <span className="text-[20px] font-normal text-body">
-              #rank-1/42
-            </span>
-            <span className="text-[20px] font-normal text-body">
               #9-courses-90+
             </span>
           </div>
@@ -94,12 +88,12 @@ export default function AboutPage() {
         </div>
         <div className="flex flex-col gap-6">
           {[
-            "Hengyang Logistics Scholarship (2026)",
-            "Outstanding Student, NJU Freshman College (2026)",
-            "Military Training Advanced Individual (2025)",
-            "Top 10 Team — Business Case Analysis Competition (2025)",
-            "Backbone Star — Career Development Association (2025)",
-            "Excellent Volunteer — Nanxing Dream Plan (2026)",
+            "Hengyang Logistics Scholarship (2026.06)",
+            "Outstanding Student, NJU Freshman College (2026.05)",
+            "Military Training Advanced Individual (2025.11)",
+            "Top 10 Team — Business Case Analysis Competition (2025.12)",
+            "Backbone Star — Career Development Association (2025.12)",
+            "Excellent Volunteer — Nanxing Dream Plan (2026.03)",
           ].map((award) => (
             <div key={award} className="flex items-start gap-3">
               <span className="text-accent mt-1.5 text-[20px]">★</span>
