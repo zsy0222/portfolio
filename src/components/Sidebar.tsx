@@ -11,10 +11,9 @@ const navItems = [
 ];
 
 const socialLinks = [
-  { href: "https://github.com", label: "GitHub" },
-  { href: "mailto:hello@example.com", label: "Email" },
-  { href: "https://twitter.com", label: "Twitter" },
-  { href: "https://linkedin.com", label: "LinkedIn" },
+  { href: "https://github.com/zsy0222", label: "GitHub" },
+  { href: "mailto:3578379159@qq.com", label: "Email" },
+  { href: "#", label: "WeChat: chenmuqingtongyan" },
 ];
 
 export default function Sidebar() {
@@ -22,14 +21,14 @@ export default function Sidebar() {
 
   return (
     <aside className="w-[22%] min-w-[220px] shrink-0 sticky top-0 h-screen border-r border-line flex flex-col px-10 py-15">
-      <div className="text-base font-semibold tracking-[0.18em] text-ink mb-1.5">
-        PORTFOLIO
+      <div className="text-[22px] font-semibold tracking-[0.18em] text-ink mb-1.5">
+        SIYUAN ZHENG
       </div>
-      <div className="text-sm font-medium text-body mb-9">
-        Designer &amp; Developer
+      <div className="text-[20px] font-medium text-body mb-9">
+        SE &amp; Business Administration, NJU
       </div>
 
-      <div className="flex items-center gap-2 text-sm font-medium text-lead mb-9">
+      <div className="flex items-center gap-2 text-[20px] font-medium text-lead mb-9">
         <span className="w-[7px] h-[7px] rounded-full bg-accent shrink-0" />
         Available for work
       </div>
@@ -41,7 +40,7 @@ export default function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={`text-base py-1.5 transition-colors hover:text-accent ${
+            className={`text-[22px] py-1.5 transition-colors hover:text-accent ${
               pathname === item.href
                 ? "text-ink font-semibold"
                 : "text-body font-normal"
@@ -54,19 +53,19 @@ export default function Sidebar() {
 
       <div className="mt-10">
         <div className="mb-7">
-          <div className="text-xs font-medium tracking-[0.14em] uppercase text-muted mb-2">
+          <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
             Currently
           </div>
-          <div className="text-sm font-medium text-lead">
-            Building AI-assisted creative tools
+          <div className="text-[20px] font-medium text-lead">
+            Exploring quantitative analysis &amp; AI product management
           </div>
         </div>
         <div className="mb-7">
-          <div className="text-xs font-medium tracking-[0.14em] uppercase text-muted mb-2">
+          <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
             Based in
           </div>
-          <div className="text-sm font-medium text-lead">
-            Shanghai, CN
+          <div className="text-[20px] font-medium text-lead">
+            Wenzhou, CN
           </div>
         </div>
         <div className="h-px bg-line mb-7" />
@@ -75,13 +74,13 @@ export default function Sidebar() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm text-muted hover:text-accent transition-colors"
+              className="text-[20px] text-muted hover:text-accent transition-colors"
             >
               {link.label}
             </Link>
           ))}
         </div>
-        <div className="text-sm text-muted">&copy; 2026</div>
+        <div className="text-[20px] text-muted">&copy; 2026</div>
       </div>
     </aside>
   );

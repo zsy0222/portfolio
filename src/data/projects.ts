@@ -9,31 +9,18 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: "aurora-notes",
-    title: "Aurora Notes",
+    id: "campus-recycling-tracker",
+    title: "Campus Recycling Tracker",
     description:
-      "A minimalist note app with local-first sync and keyboard-driven navigation.",
-    tags: ["#react", "#local-first", "#design"],
+      "AI-powered recycling tracking system with visual recognition, batch management, and anti-cheating mechanisms for campus sustainability.",
+    tags: ["#python", "#fastapi", "#ai", "#html"],
+    repoUrl: "https://github.com/zsy0222/LC_project",
   },
   {
-    id: "trace",
-    title: "Trace",
+    id: "hybrid-slicing",
+    title: "Hybrid Slicing for Fault Localization",
     description:
-      "Interactive timeline visualizer for research projects, built on a custom graph engine.",
-    tags: ["#typescript", "#dataviz", "#canvas"],
-  },
-  {
-    id: "loom",
-    title: "Loom",
-    description:
-      "An AI-assisted writing companion that turns rough notes into structured drafts.",
-    tags: ["#llm", "#nextjs", "#ux"],
-  },
-  {
-    id: "quiet-hours",
-    title: "Quiet Hours",
-    description:
-      "A focus timer that respects your rhythm — ambient soundscapes and gentle nudges.",
-    tags: ["#pwa", "#audio", "#minimal"],
+      "A two-phase hybrid slice framework using assertions as decision points for software fault localization — combining dynamic backward tracing with static forward path validation.",
+    tags: ["#research", "#fault-localization", "#program-slicing"],
   },
 ];
