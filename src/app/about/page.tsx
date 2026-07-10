@@ -36,20 +36,47 @@ export default function AboutPage() {
 
       <section className="px-15 py-18 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
+          Education
+        </div>
+        <div className="mb-6">
+          <h3 className="text-[30px] font-semibold text-ink mb-2.5">
+            Nanjing University
+          </h3>
+          <p className="text-[22px] font-medium text-lead leading-[1.6] mb-4">
+            Dual degree in Software Engineering &amp; Business Administration
+            (Business Innovation Class), Xingzhi College
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <span className="text-[20px] font-normal text-body">
+              #gpa-4.57
+            </span>
+            <span className="text-[20px] font-normal text-body">
+              #rank-1/42
+            </span>
+            <span className="text-[20px] font-normal text-body">
+              #9-courses-90+
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-15 py-18 border-t border-line">
+        <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
           Skills
         </div>
         <div className="flex flex-wrap gap-3.5">
           {[
+            "#java",
+            "#c",
             "#python",
-            "#fastapi",
-            "#ai",
+            "#full-stack",
+            "#git",
+            "#tree-sitter",
+            "#program-slicing",
+            "#llm-api",
+            "#business-analysis",
             "#quantitative",
             "#product-management",
-            "#algorithm",
-            "#html",
-            "#css",
-            "#javascript",
-            "#git",
           ].map((tag) => (
             <span
               key={tag}
@@ -63,23 +90,32 @@ export default function AboutPage() {
 
       <section className="px-15 py-18 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
-          Timeline
+          Awards
         </div>
-        <Timeline />
+        <div className="flex flex-col gap-6">
+          {[
+            "Hengyang Logistics Scholarship (2026)",
+            "Outstanding Student, NJU Freshman College (2026)",
+            "Military Training Advanced Individual (2025)",
+            "Top 10 Team — Business Case Analysis Competition (2025)",
+            "Backbone Star — Career Development Association (2025)",
+            "Excellent Volunteer — Nanxing Dream Plan (2026)",
+          ].map((award) => (
+            <div key={award} className="flex items-start gap-3">
+              <span className="text-accent mt-1.5 text-[20px]">★</span>
+              <span className="text-[22px] font-medium text-lead leading-[1.6]">
+                {award}
+              </span>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="px-15 py-18 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
-          Education
+          Timeline
         </div>
-        <div>
-          <h3 className="text-[30px] font-semibold text-ink mb-2.5">
-            Nanjing University
-          </h3>
-          <p className="text-[22px] font-medium text-lead leading-[1.6]">
-            Dual degree in Software Engineering &amp; Business Administration
-          </p>
-        </div>
+        <Timeline />
       </section>
 
       <Footer />
