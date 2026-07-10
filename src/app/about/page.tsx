@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import Timeline from "@/components/Timeline";
 
 export default function AboutPage() {
   return (
@@ -62,9 +63,16 @@ export default function AboutPage() {
 
       <section className="px-15 py-18 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
+          Timeline
+        </div>
+        <Timeline />
+      </section>
+
+      <section className="px-15 py-18 border-t border-line">
+        <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
           Education
         </div>
-        <div className="mb-6">
+        <div>
           <h3 className="text-[30px] font-semibold text-ink mb-2.5">
             Nanjing University
           </h3>

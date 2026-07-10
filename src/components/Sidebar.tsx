@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -10,19 +11,57 @@ const navItems = [
   { href: "/contact", label: "Contact" },
 ];
 
-const socialLinks = [
+const linkItems = [
   { href: "https://github.com/zsy0222", label: "GitHub" },
   { href: "mailto:3578379159@qq.com", label: "Email" },
-  { href: "#", label: "WeChat: chenmuqingtongyan" },
 ];
+
+const wechatId = "chenmuqingtongyan";
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [dark, setDark] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("theme");
+    if (stored === "dark") {
+      setDark(true);
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
+  const toggleDark = () => {
+    const next = !dark;
+    setDark(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
+
+  const copyWechat = () => {
+    navigator.clipboard.writeText(wechatId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <aside className="w-[22%] min-w-[220px] shrink-0 sticky top-0 h-screen border-r border-line flex flex-col px-10 py-15">
-      <div className="text-[22px] font-semibold tracking-[0.18em] text-ink mb-1.5">
-        SIYUAN ZHENG
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="text-[22px] font-semibold tracking-[0.18em] text-ink">
+          SIYUAN ZHENG
+        </div>
+        <button
+          onClick={toggleDark}
+          className="text-[20px] text-muted hover:text-accent transition-colors cursor-pointer"
+          title="Toggle dark mode"
+        >
+          {dark ? "☀" : "☾"}
+        </button>
       </div>
       <div className="text-[20px] font-medium text-body mb-9">
         SE &amp; Business Administration, NJU
@@ -70,7 +109,7 @@ export default function Sidebar() {
         </div>
         <div className="h-px bg-line mb-7" />
         <div className="flex flex-wrap gap-x-4 gap-y-2.5 mb-4">
-          {socialLinks.map((link) => (
+          {linkItems.map((link) => (
             <Link
               key={link.label}
               href={link.href}
@@ -79,6 +118,13 @@ export default function Sidebar() {
               {link.label}
             </Link>
           ))}
+          <button
+            onClick={copyWechat}
+            className="text-[20px] text-muted hover:text-accent transition-colors cursor-pointer"
+            title="Click to copy WeChat ID"
+          >
+            {copied ? "Copied!" : "WeChat"}
+          </button>
         </div>
         <div className="text-[20px] text-muted">&copy; 2026</div>
       </div>
