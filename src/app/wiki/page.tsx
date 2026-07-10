@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 
 const WIKI_PASSWORD = "nju2026";
@@ -64,7 +65,10 @@ export default function WikiPage() {
           Knowledge <span className="text-accent font-semibold">base</span>.
         </h1>
         <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[520px]">
-          Personal notes, snippets, references, and decisions.
+          Personal notes, snippets, references, and decisions.{" "}
+          <Link href="/wiki/ask" className="text-accent hover:underline">
+            Ask the knowledge base &rarr;
+          </Link>
         </p>
       </section>
 
