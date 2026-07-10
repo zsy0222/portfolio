@@ -5,6 +5,8 @@ import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { getAllPosts, getPostFilePath, categories } from "@/lib/blog";
+import GiscusComments from "@/components/GiscusComments";
+import type { Metadata } from "next";
 
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -12,6 +14,24 @@ export async function generateStaticParams() {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getAllPosts().find((p) => p.slug === slug);
+  if (!post) return {};
+
+  return {
+    title: `${post.title} — Siyuan Zheng`,
+    description: post.summary,
+    openGraph: {
+      title: post.title,
+      description: post.summary,
+      type: "article",
+      publishedTime: post.date,
+      url: `https://chenmuqingtongyan.vercel.app/blog/${post.slug}`,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
@@ -83,26 +103,11 @@ export default async function BlogPostPage({ params }: PageProps) {
         </Link>
       </article>
 
-      <section className="px-15 py-14 border-t border-line">
+      <section className="px-15 py-14 border-t border-line max-w-[800px]">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Comments
         </div>
-        <script
-          src="https://giscus.app/client.js"
-          data-repo="zsy0222/portfolio"
-          data-repo-id=""
-          data-category="General"
-          data-category-id=""
-          data-mapping="pathname"
-          data-strict="0"
-          data-reactions-enabled="1"
-          data-emit-metadata="0"
-          data-input-position="top"
-          data-theme="light"
-          data-lang="zh-CN"
-          crossOrigin="anonymous"
-          async
-        />
+        <GiscusComments />
       </section>
     </>
   );

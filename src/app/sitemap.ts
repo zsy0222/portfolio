@@ -9,7 +9,8 @@ export default function sitemap() {
     { url: `${SITE_URL}/projects`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/wiki`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/rss`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}/guestbook`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.5 },
   ];
 
   const blogPosts = getAllPosts().map((post) => ({

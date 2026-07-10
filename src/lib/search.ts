@@ -1,7 +1,5 @@
 "use client";
 
-import { pipeline } from "@huggingface/transformers";
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -18,11 +16,11 @@ interface EmbeddingEntry {
   embedding: number[];
 }
 
-type Extractor = Awaited<ReturnType<typeof pipeline>>;
-
 interface EmbeddingOutput {
   data: Float32Array;
 }
+
+type Extractor = (text: string, opts: { pooling: "mean"; normalize: boolean }) => Promise<EmbeddingOutput>;
 
 let cachedDocs: EmbeddingEntry[] | null = null;
 let extractorPromise: Promise<Extractor> | null = null;
@@ -37,7 +35,11 @@ async function loadDocs(): Promise<EmbeddingEntry[]> {
 
 async function getExtractor(): Promise<Extractor> {
   if (!extractorPromise) {
-    extractorPromise = pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2") as Promise<Extractor>;
+    extractorPromise = (async () => {
+      const { pipeline } = await import("@huggingface/transformers");
+      const extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+      return extractor as unknown as Extractor;
+    })();
   }
   return extractorPromise;
 }
@@ -63,7 +65,7 @@ export async function search(
 ): Promise<SearchResult[]> {
   const [docs, extractor] = await Promise.all([loadDocs(), getExtractor()]);
 
-  const output = (await (extractor as unknown as (text: string, opts: { pooling: "mean"; normalize: boolean }) => Promise<EmbeddingOutput>)(query, { pooling: "mean", normalize: true })) as EmbeddingOutput;
+  const output = await extractor(query, { pooling: "mean", normalize: true });
   const queryEmbedding = Array.from(output.data);
 
   const filtered = filter === "all" ? docs : docs.filter((d) => d.type === filter);
