@@ -23,15 +23,15 @@ export default function GiscusComments() {
   return (
     <Giscus
       repo="zsy0222/portfolio"
-      repoId=""
-      category="General"
-      categoryId=""
+      repoId="R_kgDOTUEY-w"
+      category="Announcements"
+      categoryId="DIC_kwDOTUEY-84DA5Fz"
       mapping="pathname"
-      strict="0"
+      strict="1"
       reactionsEnabled="1"
       emitMetadata="0"
-      inputPosition="top"
-      theme={isDark ? "dark" : "light"}
+      inputPosition="bottom"
+      theme={isDark ? "/giscus-dark.css" : "/giscus-light.css"}
       lang="zh-CN"
       loading="lazy"
     />
