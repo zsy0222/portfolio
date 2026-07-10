@@ -7,11 +7,10 @@ export default function Hero() {
     <section className="px-15 pt-25 pb-20">
       <div className="flex items-center gap-15">
         <div className="flex-1">
-          <h1 className="text-[56px] font-light text-ink leading-[1.2] tracking-[-0.01em] mb-7 min-h-[135px] whitespace-pre-line">
+          <h1 className="text-[44px] font-light text-ink leading-[1.25] tracking-[-0.01em] mb-7 min-h-[115px] whitespace-nowrap">
             <TypingText
               segments={[
-                { text: "Building at the\n" },
-                { text: "intersection of " },
+                { text: "Building at the intersection of\n" },
                 { text: "AI", accent: true },
                 { text: ", " },
                 { text: "quantitative", accent: true },
