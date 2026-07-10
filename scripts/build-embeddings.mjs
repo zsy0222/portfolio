@@ -27,7 +27,7 @@ const wikiItems = [
 
 async function readMdxFiles() {
   const files = [];
-  const categories = ["research", "course-notes", "cross-disciplinary", "projects", "career-future", "casual"];
+  const categories = ["research", "cross-disciplinary", "projects", "career-future", "casual"];
 
   for (const cat of categories) {
     const catDir = join(contentDir, cat);
@@ -67,9 +67,13 @@ async function main() {
   const results = [];
   for (const doc of allDocs) {
     const output = await extractor(doc.text, { pooling: "mean", normalize: true });
+    const snippet = doc.text.slice(0, 200).replace(/\n+/g, " ").trim();
+    const type = doc.id.startsWith("blog/") ? "blog" : "wiki";
     results.push({
       id: doc.id,
       title: doc.title,
+      type,
+      snippet,
       embedding: Array.from(output.data),
     });
   }

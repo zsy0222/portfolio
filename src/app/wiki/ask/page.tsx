@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { search, type SearchResult } from "@/lib/search";
+import { search, type SearchResult, type SearchFilter } from "@/lib/search";
 import Footer from "@/components/Footer";
 
 const WIKI_PASSWORD = "nju2026";
@@ -18,6 +18,7 @@ export default function WikiAskPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [modelLoading, setModelLoading] = useState(false);
+  const [filter, setFilter] = useState<SearchFilter>("all");
 
   const handleUnlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ export default function WikiAskPage() {
     setModelLoading(true);
 
     try {
-      const res = await search(query.trim(), 5);
+      const res = await search(query.trim(), 10, filter);
       setResults(res);
       setSearched(true);
     } catch (err) {
@@ -45,6 +46,21 @@ export default function WikiAskPage() {
     } finally {
       setLoading(false);
       setModelLoading(false);
+    }
+  };
+
+  const handleFilterChange = async (newFilter: SearchFilter) => {
+    setFilter(newFilter);
+    if (searched && query.trim()) {
+      setLoading(true);
+      try {
+        const res = await search(query.trim(), 10, newFilter);
+        setResults(res);
+      } catch (err) {
+        console.error("Search error:", err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -129,8 +145,27 @@ export default function WikiAskPage() {
 
       {searched && !loading && (
         <section className="px-15 py-14 border-t border-line">
-          <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-8">
-            {results.length} Result{results.length !== 1 ? "s" : ""}
+          <div className="flex items-center justify-between mb-8">
+            <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted">
+              {results.length} Result{results.length !== 1 ? "s" : ""}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                {(["all", "blog", "wiki"] as SearchFilter[]).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => handleFilterChange(f)}
+                    className={`text-[16px] pb-0.5 border-b-2 transition-colors capitalize ${
+                      filter === f
+                        ? "font-semibold text-ink border-accent"
+                        : "font-normal text-body border-transparent hover:text-accent"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           {results.length === 0 ? (
             <p className="text-[20px] text-muted">No matches found.</p>
@@ -141,7 +176,7 @@ export default function WikiAskPage() {
                   key={r.id}
                   className={`py-6 ${idx < results.length - 1 ? "border-b border-line" : ""}`}
                 >
-                  <div className="flex items-baseline justify-between gap-4">
+                  <div className="flex items-baseline justify-between gap-4 mb-1">
                     {r.id.startsWith("blog/") ? (
                       <Link
                         href={`/blog/${r.id.split("/").slice(2).join("/")}`}
@@ -158,7 +193,15 @@ export default function WikiAskPage() {
                       {(r.score * 100).toFixed(1)}%
                     </span>
                   </div>
-                  <div className="text-[16px] text-muted mt-1">{r.id}</div>
+                  <p className="text-[16px] text-body leading-[1.5] mb-1 max-w-[700px]">
+                    {r.snippet}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[14px] text-muted uppercase tracking-[0.1em]">
+                      {r.type}
+                    </span>
+                    <span className="text-[14px] text-muted/60">{r.id}</span>
+                  </div>
                 </div>
               ))}
             </div>

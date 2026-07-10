@@ -102,8 +102,9 @@ export default function WikiPage() {
         <div className="flex flex-col gap-12">
           {wikiSections.map((section) => (
             <div key={section.path}>
-              <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
+              <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
                 {section.name}
+                <span className="text-[16px] text-muted/60">{section.items.length}</span>
               </div>
               <div className="flex flex-col">
                 {section.items.map((item, idx) => (

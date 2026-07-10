@@ -39,27 +39,32 @@ export default async function BlogPage({ searchParams }: PageProps) {
       <div className="px-15 pb-8 flex flex-wrap gap-6 border-b border-line">
         <Link
           href="/blog"
-          className={`text-[20px] pb-1 border-b-2 transition-colors ${
+          className={`text-[20px] pb-1 border-b-2 transition-colors flex items-center gap-2 ${
             !category
               ? "font-semibold text-ink border-accent"
               : "font-normal text-body border-transparent hover:text-accent"
           }`}
         >
           All
+          <span className="text-[16px] text-muted">{allPosts.length}</span>
         </Link>
-        {categories.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={`/blog?category=${cat.slug}`}
-            className={`text-[20px] pb-1 border-b-2 transition-colors ${
-              category === cat.slug
-                ? "font-semibold text-ink border-accent"
-                : "font-normal text-body border-transparent hover:text-accent"
-            }`}
-          >
-            {cat.label}
-          </Link>
-        ))}
+        {categories.map((cat) => {
+          const count = allPosts.filter((p) => p.category === cat.slug).length;
+          return (
+            <Link
+              key={cat.slug}
+              href={`/blog?category=${cat.slug}`}
+              className={`text-[20px] pb-1 border-b-2 transition-colors flex items-center gap-2 ${
+                category === cat.slug
+                  ? "font-semibold text-ink border-accent"
+                  : "font-normal text-body border-transparent hover:text-accent"
+              }`}
+            >
+              {cat.label}
+              <span className="text-[16px] text-muted">{count}</span>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="px-15">

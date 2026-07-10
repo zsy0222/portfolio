@@ -5,12 +5,16 @@ import { pipeline } from "@huggingface/transformers";
 export interface SearchResult {
   id: string;
   title: string;
+  type: "blog" | "wiki";
+  snippet: string;
   score: number;
 }
 
 interface EmbeddingEntry {
   id: string;
   title: string;
+  type: "blog" | "wiki";
+  snippet: string;
   embedding: number[];
 }
 
@@ -50,15 +54,25 @@ function cosineSimilarity(a: number[], b: number[]): number {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-export async function search(query: string, topK = 5): Promise<SearchResult[]> {
+export type SearchFilter = "all" | "blog" | "wiki";
+
+export async function search(
+  query: string,
+  topK = 10,
+  filter: SearchFilter = "all"
+): Promise<SearchResult[]> {
   const [docs, extractor] = await Promise.all([loadDocs(), getExtractor()]);
 
   const output = (await (extractor as unknown as (text: string, opts: { pooling: "mean"; normalize: boolean }) => Promise<EmbeddingOutput>)(query, { pooling: "mean", normalize: true })) as EmbeddingOutput;
   const queryEmbedding = Array.from(output.data);
 
-  const scored = docs.map((doc) => ({
+  const filtered = filter === "all" ? docs : docs.filter((d) => d.type === filter);
+
+  const scored = filtered.map((doc) => ({
     id: doc.id,
     title: doc.title,
+    type: doc.type,
+    snippet: doc.snippet,
     score: cosineSimilarity(queryEmbedding, doc.embedding),
   }));
 
