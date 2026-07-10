@@ -5,12 +5,28 @@ import Link from "next/link";
 import { search, type SearchResult } from "@/lib/search";
 import Footer from "@/components/Footer";
 
+const WIKI_PASSWORD = "nju2026";
+
 export default function WikiAskPage() {
+  const [authed, setAuthed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("wiki-auth") === "true";
+  });
+  const [input, setInput] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [modelLoading, setModelLoading] = useState(false);
+
+  const handleUnlock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input === WIKI_PASSWORD) {
+      setAuthed(true);
+      sessionStorage.setItem("wiki-auth", "true");
+      setInput("");
+    }
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +47,45 @@ export default function WikiAskPage() {
       setModelLoading(false);
     }
   };
+
+  if (!authed) {
+    return (
+      <>
+        <section className="px-15 pt-25 pb-16">
+          <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
+            Wiki / Ask
+          </div>
+          <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5" style={{ textWrap: "balance" }}>
+            Ask the <span className="text-accent font-semibold">knowledge base</span>.
+          </h1>
+          <p className="text-[18px] text-muted mt-4">
+            Password required to unlock content.
+          </p>
+        </section>
+
+        <section className="px-15 pb-6">
+          <form onSubmit={handleUnlock} className="inline-flex items-center gap-3">
+            <input
+              type="password"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Password to unlock"
+              autoComplete="off"
+              className="bg-card border border-line rounded-lg px-3 py-1.5 text-[16px] text-ink focus:outline-none focus:border-accent transition-colors w-[200px]"
+            />
+            <button
+              type="submit"
+              className="text-[16px] font-medium text-muted hover:text-accent transition-colors"
+            >
+              Unlock →
+            </button>
+          </form>
+        </section>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
