@@ -32,12 +32,9 @@ export default function Hero() {
             >
               View Work <span>&rarr;</span>
             </Link>
-            <Link
-              href="/resume.pdf"
-              className="inline-flex items-center gap-2 text-[22px] font-medium text-muted hover:text-accent transition-colors"
-            >
+            <span className="inline-flex items-center gap-2 text-[22px] font-medium text-muted cursor-not-allowed opacity-50">
               Resume <span>&darr;</span>
-            </Link>
+            </span>
           </div>
         </div>
         <div className="w-[140px] h-[140px] rounded-full bg-card border border-line shrink-0 flex items-center justify-center overflow-hidden">
