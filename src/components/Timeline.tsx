@@ -27,7 +27,7 @@ export default function Timeline() {
                 {exp.title}
               </h3>
             )}
-            <p className="text-[20px] font-medium text-lead leading-[1.6] max-w-[560px] mb-4">
+            <p className="text-[20px] font-medium text-lead leading-[1.6] max-w-[800px] mb-4">
               {exp.description}
             </p>
             {exp.tags && (
