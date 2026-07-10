@@ -7,8 +7,7 @@ const KEYWORDS = [
   "fault localization",
   "LLM for code",
 ];
-const CATEGORIES = ["cs.SE", "cs.AI", "cs.PL"];
-const MAX_RESULTS = 20;
+const MAX_RESULTS = 5;
 const DAYS_BACK = 7;
 
 function formatDate(d) {

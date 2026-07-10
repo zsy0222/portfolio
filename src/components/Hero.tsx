@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import TypingText from "@/components/TypingText";
 
 export default function Hero() {
@@ -6,7 +7,7 @@ export default function Hero() {
     <section className="px-15 pt-25 pb-20">
       <div className="flex items-center gap-15">
         <div className="flex-1">
-          <h1 className="text-[64px] font-light text-ink leading-[1.15] tracking-[-0.01em] mb-7 whitespace-pre-line">
+          <h1 className="text-[56px] font-light text-ink leading-[1.2] tracking-[-0.01em] mb-7 min-h-[135px] whitespace-pre-line">
             <TypingText
               segments={[
                 { text: "Building at the\n" },
@@ -37,8 +38,8 @@ export default function Hero() {
             </span>
           </div>
         </div>
-        <div className="w-[140px] h-[140px] rounded-full bg-card border border-line shrink-0 flex items-center justify-center overflow-hidden">
-          <img
+        <div className="w-[140px] h-[140px] rounded-full bg-card border border-line shrink-0 flex items-center justify-center overflow-hidden relative">
+          <Image
             src="/images/1fb9c4aafdb8974d3eda5d2c039aec06.jpg"
             alt="Siyuan Zheng"
             width={140}

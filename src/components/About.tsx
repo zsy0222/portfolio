@@ -5,7 +5,7 @@ export default function About() {
         About
       </div>
       <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[620px] mb-6">
-        I'm a student pursuing dual degrees in{" "}
+        I&apos;m a student pursuing dual degrees in{" "}
         <span className="text-accent font-medium">software engineering</span>{" "}
         and{" "}
         <span className="text-accent font-medium">business administration</span>{" "}

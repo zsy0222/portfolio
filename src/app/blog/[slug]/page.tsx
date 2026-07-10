@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
@@ -21,7 +20,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   if (!filePath) notFound();
 
   const raw = fs.readFileSync(filePath, "utf-8");
-  const { content, data } = matter(raw);
+  const { content } = matter(raw);
   const post = getAllPosts().find((p) => p.slug === slug);
   if (!post) notFound();
 

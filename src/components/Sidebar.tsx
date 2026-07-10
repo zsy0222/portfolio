@@ -22,28 +22,16 @@ const wechatId = "chenmuqingtongyan";
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [dark, setDark] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [dark, setDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("theme") === "dark";
+  });
 
   useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "dark") {
-      setDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleDark = () => {
-    const next = !dark;
-    setDark(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
 
   const copyWechat = () => {
     navigator.clipboard.writeText(wechatId);
@@ -58,7 +46,7 @@ export default function Sidebar() {
           SIYUAN ZHENG
         </div>
         <button
-          onClick={toggleDark}
+          onClick={() => setDark(!dark)}
           className="text-[20px] text-muted hover:text-accent transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-accent rounded"
           aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           title="Toggle dark mode"

@@ -9,19 +9,14 @@ interface TypingTextProps {
 
 export default function TypingText({ segments, speed = 60 }: TypingTextProps) {
   const fullText = segments.map((s) => s.text).join("");
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+  const prefersReduced =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [displayed, setDisplayed] = useState(prefersReduced ? fullText : "");
+  const [done, setDone] = useState(prefersReduced);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) {
-      setDisplayed(fullText);
-      setDone(true);
-      return;
-    }
+    if (prefersReduced) return;
 
     let i = 0;
     const timer = setInterval(() => {
@@ -34,7 +29,7 @@ export default function TypingText({ segments, speed = 60 }: TypingTextProps) {
       }
     }, speed);
     return () => clearInterval(timer);
-  }, [fullText, speed]);
+  }, [fullText, speed, prefersReduced]);
 
   const renderText = () => {
     let remaining = displayed;
