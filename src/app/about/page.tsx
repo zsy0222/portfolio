@@ -44,12 +44,9 @@ export default function AboutPage() {
           </h3>
           <p className="text-[22px] font-medium text-lead leading-[1.6] mb-4">
             Dual degree in Software Engineering &amp; Business Administration
-            (Business Innovation Class), Xingzhi College
+            (Business Innovation Class), Business School
           </p>
           <div className="flex flex-wrap gap-3">
-            <span className="text-[20px] font-normal text-body">
-              #9-courses-90+
-            </span>
           </div>
         </div>
       </section>

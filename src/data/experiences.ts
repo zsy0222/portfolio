@@ -11,7 +11,7 @@ export const experiences: Experience[] = [
     date: "2025.09",
     title: "Enrolled at Nanjing University",
     description:
-      "Started dual degree in Software Engineering (Business Innovation Class) at Xingzhi College.",
+      "Started dual degree in Software Engineering (Business Innovation Class) at Business School.",
     tags: ["#nj", "#software-engineering", "#business"],
   },
   {
@@ -54,7 +54,7 @@ export const experiences: Experience[] = [
     date: "2026.05 - 06",
     title: "Scholarships & Honors",
     description:
-      "Awarded Outstanding Student of NJU Freshman College and the Hengyang Logistics Scholarship at Xingzhi College.",
+      "Awarded Outstanding Student of NJU Freshman College and the Hengyang Logistics Scholarship at Business School.",
     tags: ["#outstanding-student", "#hengyang-scholarship"],
   },
   {
