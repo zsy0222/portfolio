@@ -41,7 +41,12 @@ export default function TypingText({ segments, speed = 60 }: TypingTextProps) {
           key={idx}
           className={seg.accent ? "text-accent font-semibold" : ""}
         >
-          {part}
+          {part.split("\n").map((line, i, arr) => (
+            <span key={i}>
+              {line}
+              {i < arr.length - 1 && <br />}
+            </span>
+          ))}
         </span>
       );
     });
