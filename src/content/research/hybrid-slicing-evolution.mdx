@@ -1,0 +1,31 @@
+---
+title: "Hybrid Slicing: From PDG to Chop"
+date: "2026-07-10"
+category: "research"
+tags: ["program-slicing", "fault-localization"]
+summary: "从传统 PDG 后向切片到 Chop 双向切片的思路演进，以及断言作为决策点如何改变切片精度。"
+draft: false
+---
+
+## 传统 PDG 后向切片的问题
+
+Program slicing 由 Weiser 在 1984 年提出，至今仍是故障定位最强大的技术之一。但传统的 PDG 后向切片在实际中往往产生过大的切片——包含 80% 的程序语句，几乎无法用于调试。
+
+> 关键洞察：并非所有影响输出的语句都同等相关。有些路径可以被证明是正确的，我们只需要识别出哪些是。
+
+## Chop 切片：双向过滤
+
+Chop 切片将切片约束在两个点之间——source 和 sink。通过从 source 正向遍历和从 sink 逆向遍历的交集，得到只包含相关路径上语句的更紧凑切片。
+
+```python
+def chop(graph, source, sink):
+    forward = reachable_forward(graph, source)
+    backward = reachable_backward(graph, sink)
+    return forward & backward
+```
+
+## 断言作为决策点
+
+我们框架的创新点：用运行时断言作为 ground truth。断言 `PASS` 意味着代码在此点正确——可以剪枝该路径。断言 `FAIL` 意味着出了问题——保留该路径。
+
+这将切片从静态分析问题转变为一个**可验证的、证据驱动**的过程。

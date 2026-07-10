@@ -58,3 +58,29 @@ Design principles:
 - Images go in `public/images/`
 - Keep the purple minimalist design system consistent
 - One change at a time — explain plan before writing code
+
+## Blog System
+- Blog posts are MDX files in `src/content/{category}/`
+- Categories: `research`, `course-notes`, `cross-disciplinary`, `projects`, `career-future`, `casual`
+- Frontmatter (required): `title`, `date`, `category`, `summary`
+- Frontmatter (optional): `tags` (array), `draft` (boolean, default false)
+- Draft posts (draft: true) do not appear in list or RSS
+- File naming: kebab-case, e.g. `hybrid-slicing-evolution.mdx`
+- Post parsing logic in `src/lib/blog.ts`
+- Blog list page: `src/app/blog/page.tsx`
+- Blog detail page: `src/app/blog/[slug]/page.tsx`
+- Comments: Giscus (GitHub Discussions)
+- Code highlighting: Shiki (via rehype-pretty-code)
+- When adding a new post: create MDX file in correct category dir, run `npm run build` to verify
+
+## RSS Feed
+- Generated at build time as static `feed.xml`
+- Route: `src/app/feed.xml/route.ts`
+- Single language (Chinese)
+- Each item contains: title, link, summary (NOT full text), pubDate, category
+- Sitemap auto-generated at `src/app/sitemap.ts`
+
+## Wiki (placeholder)
+- Wiki page: `src/app/wiki/page.tsx`
+- Currently a placeholder, will be built in step #9
+- Wiki content will go in `src/content/wiki/`
