@@ -57,7 +57,8 @@ export default function Sidebar() {
         </div>
         <button
           onClick={toggleDark}
-          className="text-[20px] text-muted hover:text-accent transition-colors cursor-pointer"
+          className="text-[20px] text-muted hover:text-accent transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-accent rounded"
+          aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           title="Toggle dark mode"
         >
           {dark ? "☀" : "☾"}

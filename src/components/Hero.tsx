@@ -41,6 +41,8 @@ export default function Hero() {
           <img
             src="/images/1fb9c4aafdb8974d3eda5d2c039aec06.jpg"
             alt="Siyuan Zheng"
+            width={140}
+            height={140}
             className="w-full h-full object-cover"
           />
         </div>

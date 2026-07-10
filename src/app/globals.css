@@ -38,3 +38,7 @@ body {
   font-family: "DM Sans", -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+h1, h2, h3 {
+  text-wrap: balance;
+}

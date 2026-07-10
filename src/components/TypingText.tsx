@@ -13,6 +13,16 @@ export default function TypingText({ segments, speed = 60 }: TypingTextProps) {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setDisplayed(fullText);
+      setDone(true);
+      return;
+    }
+
     let i = 0;
     const timer = setInterval(() => {
       if (i < fullText.length) {
