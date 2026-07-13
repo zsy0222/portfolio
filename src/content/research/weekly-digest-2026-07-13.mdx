@@ -1,0 +1,233 @@
+---
+title: "Weekly Paper Digest: 2026-07-06 ~ 2026-07-13"
+date: "2026-07-13"
+category: "research"
+tags: ["weekly-digest", "arxiv"]
+summary: "本周 ArXiv 论文摘要 — program slicing, fault localization, LLM for code."
+draft: false
+---
+
+## program slicing
+
+### Kleene Algebra with Transitive Commutativity Conditions
+
+**Authors:** Han Xu, Chenyu Zhou, Zachary Kincaid, David Walker
+
+**Published:** 2026-07-10T17:33:24Z
+
+**Link:** http://arxiv.org/abs/2607.09635v1
+
+**Abstract:**
+
+Kleene algebra (KA) provides a foundational algebraic framework for reasoning about program structure and control flow. To capture equivalences arising from reordering or independence of actions, Kozen [1996] purposed that KA can be extended with commutativity conditions, that is, equations of the form { ab = ba | (a,b) \in C }, where C is a binary relation on constant symbols. This paper studies the following question: for which relations C is the equational theory of KA+C decidable?
+  Early related work [Bertoni et al. 1982; Ibarra 1978] showed that regular languages modulo commutativity conditions C are decidable if and only if C is transitive. For Kleene algebra KA and commutativity conditions C, however, the situation is substantially more difficult. Only very recently, Kuznetsov [2023] showed that the equational theory of Kleene algebra KA+C is undecidable under certain specific commutativity conditions, settling the first nontrivial cases more than 25 years after the corresponding problem for KA* +C was resolved by Kozen [1996]. Nevertheless, the decidability problem of KA+C remained open.
+  In this work, we resolve this question completely by showing that the equational theory of KA+C is decidable if and only if C is transitive. Moreover, we strengthen the result in both directions. On the negative side, we show that when C is not transitive, the universality problem for KA+C is already undecidable. On the positive side, we show that for transitive C, the equational theories of KA* +C and KA+C coincide.
+
+---
+
+### Quantum Orchestras: a Concrete Semantics for Recursive Hybrid Programs
+
+**Authors:** Alex Rice, Dominik Leichtle, Kim Worrall, Robert I. Booth
+
+**Published:** 2026-07-10T16:59:26Z
+
+**Link:** http://arxiv.org/abs/2607.09605v1
+
+**Abstract:**
+
+Many production quantum programming languages represent hybrid quantum computations by extending a classical base language with a quantum effect, where qubits are addressed by reference, and quantum operations are understood to mutate some external quantum state. However, the semantics of this view of quantum computation remains underdeveloped, especially when the language allows mid-circuit measurements and non-termination.
+  In this work, we provide a general method for building denotational semantics for such languages, by defining the quantum orchestra monad, which precisely captures this style of quantum effect. The monad has a concrete presentation, being based on the formalism of quantum instruments, a common tool in quantum information theory for capturing the action of a quantum process along with its classical outcomes. It acts on the category DCPO, and so enables the interpretation of divergent hybrid programs.
+  The quantum orchestra monad serves as a natural extension of both the classical state monad and the probabilistic powerdomain monad. We investigate some of the subtleties present when trying to naïvely extend these definitions to the quantum non-commutative case.
+
+---
+
+### Shared Selective Persistent Memory for Agentic LLM Systems
+
+**Authors:** Sanjana Pedada, Aditya Dhavala, Neelraj Patil
+
+**Published:** 2026-07-10T15:07:00Z
+
+**Link:** http://arxiv.org/abs/2607.09493v1
+
+**Abstract:**
+
+Agentic LLM systems that generate code through multi-turn tool use face a fundamental context problem: each session starts from zero, discarding the configuration choices, domain constraints, data schemas, and tool-use patterns that made previous sessions productive. Naively persisting entire conversation histories is token-inefficient and counterproductive: irrelevant context degrades generation quality. We introduce shared selective persistent memory, an architecture that identifies and retains four categories of reusable context (task specifications, data schemas, tool configurations, and output constraints) while discarding session-specific reasoning traces. Crucially, this memory is shared: workspaces encapsulating selective memory can be transferred across users with role-based access control, enabling collaborative reuse without redundant specification. We implement it in a deployed collaborative workspace platform where LLM agents produce, edit, and maintain git-versioned artifacts (dashboards, reports, and data-driven documents) from heterogeneous sources (CSV, SQL, REST APIs, and MCP servers). A complementary zero-token data refresh mechanism decouples generated programs from runtime data, enabling artifact reuse without re-invocation. Across three enterprise scenarios, shared selective persistent memory achieves 96% task completion (vs. 79% without memory and 71% with full history). Zero-token refresh eliminates LLM re-invocation for recurring updates (14x task-time reduction), while summary-driven generation cuts per-invocation token cost by 97x versus raw data injection. A replication on four public datasets confirms generalizability, with zero-token refresh succeeding in 12/12 trials. Notably, naive full-history persistence actively degrades completion by biasing the agent with stale traces, while selective memory outperforms both extremes.
+
+---
+
+### STEEL: Sparsity-Aware Fused Attention for Energy-Efficient Long-Sequence Inference on AMD's XDNA NPU
+
+**Authors:** Victor J. B. Jung, Gagandeep Singh, Joseph Melber, Kristof Denolf, Francesco Conti, Luca Benini
+
+**Published:** 2026-07-10T13:09:47Z
+
+**Link:** http://arxiv.org/abs/2607.09385v1
+
+**Abstract:**
+
+The growing adoption of large language model-based agents within operating system workflows has increased the importance of energy-efficient inference on laptop-class systems-on-chip (SoCs). While cloud offloading remains common, it introduces reliability and privacy concerns that are particularly problematic for agentic workloads. Recent laptop SoCs, therefore, incorporate neural processing engines (NPUs) optimized for energy efficiency; however, effectively mapping attention mechanisms onto NPUs remains challenging due to architectural diversity and explicit data-movement programming models. In this work, we present STEEL, the first open-source implementation of FlashAttention targeting XDNA-like NPUs. STEEL introduces a dataflow formulation of prefill attention, enabling efficient exploitation of spatial parallelism and on-chip memory. Furthermore, STEEL addresses the load imbalance induced by the causal mask by leveraging a sparsity-aware pipeline placement onto the NPU array, reducing synchronization overhead and improving utilization. We evaluate STEEL on the AMD Ryzen AI 9 HX 370 SoC and compare its performance against optimized CPU and GPU implementations. Experimental results show that STEEL reduces energy consumption by an average of 9.17x and 1.75x relative to CPU and GPU baselines, respectively. On XDNA 1, STEEL achieves an average 9.6x latency reduction over the prior state of the art, and delivers a 22.8x speedup on average compared to a layer-by-layer attention implementation on XDNA 2.
+
+---
+
+### System Capybara: Tracking Capabilities for Separation and Freshness (Extended Version)
+
+**Authors:** Yichen Xu, Oliver Bračevac, Cao Nguyen Pham, Yaoyu Zhao, Martin Odersky
+
+**Published:** 2026-07-10T13:06:50Z
+
+**Link:** http://arxiv.org/abs/2607.09383v1
+
+**Abstract:**
+
+Substructural type systems give strong static control over aliasing. Examples include uniqueness, separation, and borrowing. How can such control be brought to established languages whose programming models rely on higher-order abstraction, unrestricted aliasing, and pervasive sharing? We study this problem in the context of Scala. We show how to retrofit these guarantees selectively instead of globally: ordinary code keeps Scala's usual aliasing discipline, while stronger guarantees can be enforced where they matter.
+  Our starting point is Scala's capture checking, whose treatment of capabilities is inspired by the object-capability tradition: capabilities are ordinary values, and capture sets record, in a value's type, which capabilities the value may use. We develop System Capybara, which adds a selective alias-control layer to this mechanism. By tracking separation, consumption, freshness, and read-only access for capabilities, Capybara recovers key reasoning principles from substructural and ownership-based disciplines without global invariants.
+  We give a type-preserving translation from the surface calculus Capybara to CoreCapybara, a core calculus extending System Capless, the earlier foundation for capture checking. The translation uses quantifiers for capture polymorphism and freshness, and constraint-indexed modal types for separation. We prove a semantic soundness result for the core calculus in Lean 4 and derive type safety, memory safety (no use-after-free or double-free), immutability of read-only computations, and data-race freedom for well-typed programs.
+  Finally, we implement Scala 3's new separation checker, which brings higher-order separation reasoning about effects, capabilities, and resources to ordinary Scala, including fearless concurrency.
+
+---
+
+## fault localization
+
+### ConceptSMILE: Auditing the Trustworthiness of Concept-Based Explainable AI
+
+**Authors:** Mohadeseh Mollapour, Koorosh Aslansefat, Zeinab Dehghani, Bhupesh Kumar Mishra, Tejal Shah, Zhibao Mian
+
+**Published:** 2026-07-10T17:47:38Z
+
+**Link:** http://arxiv.org/abs/2607.09649v1
+
+**Abstract:**
+
+Concept-based explainable artificial intelligence (AI) can make model reasoning more human-understandable, but concept-level outputs are not automatically trustworthy. We introduce ConceptSMILE, a model-agnostic perturbation-based auditing framework for evaluating the reliability of concept-based explanations. Rather than replacing SMILE, ConceptSMILE extends its perturbation-based logic from feature- or region-level attribution to the auditing of human-understandable concept explanations. The framework perturbs input regions, measures concept-response shifts, applies locality weighting, and fits an XGBoost surrogate to approximate local concept behaviour. Reliability is assessed through attribution accuracy, surrogate fidelity, faithfulness, stability, and consistency. We evaluate ConceptSMILE on retinal fundus images by comparing MedSAM-derived visual concepts with VLM-based semantic concepts. Results show that reliability varies across concepts and pathways: MedSAM achieves stronger spatial attribution and the highest surrogate fidelity ($R^2 = 0.8503$, $R_w^2 = 0.8465$), while the VLM pathway shows stronger vessel faithfulness and stronger stability under selected artefact conditions. ConceptSMILE provides an independent audit layer for evaluating the trustworthiness of concept-based XAI.
+
+---
+
+### Writing Bug Reports for Software Repair Agents: What Information Matters Most?
+
+**Authors:** Vincenzo Luigi Bruno, Alessandro Giagnorio, Daniele Bifolco, Leon Wienges, Massimiliano Di Penta, Gabriele Bavota
+
+**Published:** 2026-07-10T16:00:57Z
+
+**Link:** http://arxiv.org/abs/2607.09553v1
+
+**Abstract:**
+
+Software development is increasingly moving toward agentic-first workflows. This includes AI agents responsible for generating initial fixes for submitted issue reports. In this setting, issue reports are no longer merely documentation for human maintainers; they become the primary task specification for the agent. However, little is known about how such reports should be written to maximize the agent's chances of producing a correct fix. We study what makes a bug report agent-ready. Starting from the SWE-bench Verified benchmark (i.e., a collection of 500 real repository issues with human-written gold patches and test suites for evaluating generated fixes) we manually classify each issue by change type (e.g., bug fix vs refactoring) and annotate each sentence with its information type, such as observed behavior, expected behavior, reproduction steps, localization cues, and suggested fixes. We focus on the 441 issues representing bug reports, and we run on them mini-swe-agent using three LLM backbones (i.e., GPT-5-mini, MiniMax M2.5, and Gemini 3 Flash). We then fit a binomial regression model to estimate the incremental association between each information type and agent success, controlling for confounding factors. Our results suggest that agentic-first reports benefit most from information that narrows the agent's search and repair space. Localization cues, such as references to affected code areas, are positively associated with successful repairs, while suggested fixes, expressed either in code or natural language, show some of the strongest positive associations with pass probability. An ablation study removing selected information types confirms that agents benefit less from information traditionally useful to humans, such as reproduction steps, and more from sentences that expose a repair direction, either through bug localization or a suggested fix.
+
+---
+
+### What VGGT Knows About Overlap: Probing Geometric Foundation Models for Co-Visibility
+
+**Authors:** Filippo Ziliotto, Luciano Serafini, Lamberto Ballan, Tommaso Campari
+
+**Published:** 2026-07-10T15:17:02Z
+
+**Link:** http://arxiv.org/abs/2607.09503v1
+
+**Abstract:**
+
+A fundamental challenge in 3D reconstruction and robotic localization is co-visibility: determining which image pairs share overlapping visible surfaces, particularly in scenarios with minimal overlap. We demonstrate that VGGT implicitly encodes co-visibility as an emergent behavior: without any supervision for this task, its internal representations exhibit a clear hierarchical structure mirroring that of large language models, i.e. early layers build a 3D-aware scene representation, while late layers act as dedicated co-visibility reasoners. In particular, we identify layer L17 as a negative anchor that consistently routes non-co-visible pairs for this backbone, regardless of the evaluation setting, providing task-grounded evidence of layer specialization in a geometry-grounded foundation model. Building on this, we introduce Co-VGGT, which freezes VGGT and trains only a lightweight layer-wise mixture-of-experts head (less than 7.5M parameters) to classify co-visibility from RGB alone, treating each layer as a specialized expert whose geometric abstraction is adaptively weighted per input pair. On the Co-VisiON benchmark, Co-VGGT surpasses the human annotation baseline and improves over prior work by more than 25% pairwise and 10% multiview. Pairwise predictions are well-calibrated (ECE=0.030), enabling direct use as edge weights in visibility graphs for downstream SfM and SLAM pipelines without post-hoc correction. Code and data are available.
+
+---
+
+### Decoupling Language Guidance from Backbones for Text-Guided Medical Segmentation
+
+**Authors:** Yungeng Liu, Xuanzi Fang, Haijin Zeng, Qi Dai, Yongyong Chen
+
+**Published:** 2026-07-10T14:57:36Z
+
+**Link:** http://arxiv.org/abs/2607.09481v1
+
+**Abstract:**
+
+Text-guided medical image segmentation leverages clinical semantics to improve lesion delineation, yet many existing models bind cross-modal fusion, supervision, and decoder design into a task-specific architecture. Such tight coupling makes it difficult to reuse language guidance modules across heterogeneous vision and text backbones, and often requires redesigning the network when the encoder pair changes. This paper presents BTHA, a backbone-transferable hierarchical adapter framework for text-guided medical image segmentation. BTHA is built around a stable feature-level interface: given multi-scale visual features and a text representation, it injects semantic guidance through shape-preserving adapters while maintaining the decoder-side tensor contract. To make this interface effective, we introduce a Hierarchical Coarse-to-Fine Supervision Strategy that decomposes learning into global image-text alignment, multi-scale auxiliary localization, and boundary-aware final mask refinement. We further design a Scale-Adaptive Gated Semantic Guidance (SAGSG) adapter, where resolution-specific gates adaptively control textual injection and channel recalibration suppresses redundant cross-modal responses. Evaluations across diverse vision and text backbones show that the same adapter and supervision design remains effective across convolutional and transformer-based visual encoders as well as different language encoders. Experiments on four public datasets further demonstrate that BTHA improves strong text-guided baselines with modest computational overhead.
+
+---
+
+### How Does Bayesian Causal Discovery Fail? Characterising Structural Consequences in Linear Gaussian Networks under Latent Confounding
+
+**Authors:** Debargha Ghosh, Silja Renooij, Anna Kononova
+
+**Published:** 2026-07-10T14:17:35Z
+
+**Link:** http://arxiv.org/abs/2607.09449v1
+
+**Abstract:**
+
+Bayesian causal discovery is widely used for its ability to quantify epistemic uncertainty over directed acyclic graphs (DAGs) through posterior inference. However, its behaviour under latent confounding remains poorly understood, as existing work typically notes that confounding breaks identifiability without characterising how the posterior distribution over DAGs responds. In this work, we analyse posterior behaviour under latent confounding in linear Gaussian causal models, focusing on additive latent confounding between exactly two observed variables. We derive a critical correlation threshold above which the score function favours graphs with a spurious edge between the confounded variables, and show that this threshold decreases with sample size -- more data lowers the correlation required for the spurious edge to be favoured. Beyond this threshold, we characterize two distinct posterior failure regimes determined by the local structure around the confounded variables. Our findings are supported by exact posterior computations on multiple graph structures, demonstrating both the predicted failure regimes.
+
+---
+
+## LLM for code
+
+### VEXAIoT: Autonomous IoT Vulnerability EXploitation using AI Agents
+
+**Authors:** Katherine Swinea, Kshitiz Aryal, Lopamudra Praharaj, Maanak Gupta
+
+**Published:** 2026-07-10T17:52:29Z
+
+**Link:** http://arxiv.org/abs/2607.09653v1
+
+**Abstract:**
+
+Internet of Things (IoT) systems are inherently vulnerable due to constrained hardware, outdated firmware, and insecure default configurations, creating a need for scalable and adaptive security testing approaches. While recent adoptions of Large Language Model (LLM) agents have demonstrated promise in penetration testing and Capture-the-Flag (CTF) environments, their application to IoT specific vulnerabilities remains unexplored. This paper presents an autonomous multi-agent framework, referred to as Vulnerability EXploitation using AI Agents (VEXAIoT), for vulnerability discovery and exploitation in IoT environments using LLM-based reasoning and offensive security tools. The framework combines a vulnerability detection agent and an attack execution agent to perform reconnaissance, plan attack sequences, and execute exploits against vulnerable IoT services. The system is evaluated in IoTGoat and Metasploitable environments across ten attack scenarios mapped to OWASP IoT vulnerabilities. Experimental results show attack success rate of up to 100% with low token overhead and average execution times under two minutes for most attacks. Across 260 attack executions, VEXAIoT achieves a 95.0% overall success rate, including 94.5% success in IoTGoat and 96.7% success in Metasploitable2. These results demonstrate the potential for LLM-driven agents to automate IoT vulnerability assessment and offensive security workflows in controlled environments
+
+---
+
+### Lean-QIT: Towards a Formal Infrastructure for Quantum Information Theory
+
+**Authors:** Chengkai Zhu, Ziao Tang, Guocheng Zhen, Yimeng Cao, Yusheng Zhao, Ranyiliu Chen, Xuanqiang Zhao, Lei Zhang, Xin Wang
+
+**Published:** 2026-07-10T17:28:26Z
+
+**Link:** http://arxiv.org/abs/2607.09632v1
+
+**Abstract:**
+
+Quantum information theory (QIT) characterizes the capabilities and fundamental limits of quantum information processing, underpinning quantum communication, computation, and error correction. Formalizing its coding theorems requires connecting finite-block protocols, analytic inequalities, and asymptotic limits within a unified machine-checked framework. Existing developments, however, lack a reusable operational layer that defines codes, error criteria, achievable rates, and capacities independently of their information-theoretic characterizations. In this work, we present LeanQIT, a Lean 4 library for finite-dimensional QIT. It provides composable, kernel-checked interfaces for quantum states and channels, source and channel codes, finite-block performance criteria, hypothesis testing, one-shot quantities, and asymptotic rate constructions. Using this infrastructure, we formalize Schumacher's quantum source-coding theorem, the Holevo--Schumacher--Westmoreland classical-capacity theorem, and the entanglement-assisted classical-capacity theorem together with its strong converse. By separating operational definitions from analytic characterizations and exposing reusable achievability, converse, and asymptotic components, Lean-QIT provides a machine-readable foundation for formal QIT and a compositional knowledge substrate for emerging AI-assisted formalization, automated proof search, and agentic reasoning in quantum information and computation.
+
+---
+
+### 4DR360: State Reasoning for Joint 3D Detection and Occupancy Prediction in 4D Radar-Camera Full-Scene Perception
+
+**Authors:** Xiaokai Bai, Lianqing Zheng, Runwei Guan, Songkai Wang, Siyuan Cao, Hui-liang Shen
+
+**Published:** 2026-07-10T17:26:19Z
+
+**Link:** http://arxiv.org/abs/2607.09629v1
+
+**Abstract:**
+
+Reliable autonomous driving requires full-scene perception that couples foreground objects with dense semantic layout. Recently, 4D millimeter-wave radar has emerged as a robust and affordable sensor, yet its sparse returns make radar-camera fusion necessary for comprehensive scene understanding. Existing radar-camera methods mainly optimize detection, while dual-task systems usually decode boxes and occupancy with limited interaction. To address this gap and advance radar-based multi-task learning, we propose \method, a 4D radar-camera framework for 360$^\circ$ full-scene perception, which models semantic occupancy as a persistent scene state rather than a terminal output. \method{} follows a cross-modal state reasoning paradigm, where the occupancy state is modeled and propagated through stages for coarse-to-fine feature aggregation. Specifically, State-guided BEV Enhancement (SBE) strengthens intra-frame BEV representation, while Doppler-guided Temporal Fusion (DTF) preserves state evidence over longer temporal horizons. Beyond the model, we further extend ManTruckScenes with satellite-map-based generated occupancy labels and pair it with OmniHD-Scenes in a unified cross-dataset detection-and-occupancy protocol. The resulting experiments cover accuracy, robustness, ablation, and efficiency under one radar-camera multi-task evaluation framework. Code and labels will be released upon acceptance.
+
+---
+
+### Agora: Enhancing LLM Agent Reasoning Via Auction-Based Task Allocation
+
+**Authors:** Kaiji Zhou, Ales Leonardis, Yue Feng
+
+**Published:** 2026-07-10T16:54:52Z
+
+**Link:** http://arxiv.org/abs/2607.09600v1
+
+**Abstract:**
+
+Enhancing the reasoning capabilities of large language model (LLM) agents requires effective orchestration of diverse expert models and tools. However, existing frameworks typically call APIs based on coarse-grained matching between tasks and the functions of expert models or tools, while overlooking critical factors such as performance variability and cost efficiency among functionally similar alternatives. To address this, we propose Agora, a framework that introduces an incentive-compatible auction mechanism for dynamically allocating tasks to expert models and tools. By treating reasoning steps as tradeable items, Agora enables agents to bid based on their rectified competence-ensuring that critical logic is routed to the most capable solver rather than the most overconfident one. Evaluations across five benchmarks show that Agora improves over matched single-model, routing, and cascade baselines under comparable candidate pools, while exposing a controllable cost-quality trade-off through a single auction parameter.
+
+---
+
+### TrustX Agent Risk Classification Framework (ARC): Risk-Tiering Internally Created Agentic AI Systems
+
+**Authors:** Hannah M. Liu, Rhea Saxena, Shiv Asthana
+
+**Published:** 2026-07-10T16:36:44Z
+
+**Link:** http://arxiv.org/abs/2607.09586v1
+
+**Abstract:**
+
+The proliferation of agentic AI systems across enterprise and public-sector contexts has outpaced the capacity of general-purpose AI risk frameworks to classify and govern them. In this paper, we introduce the TrustX Agent Risk Classification Framework, a structured, repeatable instrument that can be applied to seven types of agentic AI systems and is grounded in foundational pre-existing AI governance frameworks. At the core of the framework is a twelve-dimension scoring rubric that robustly quantifies the risk. This rubric is combined with other components, such as the GPA + IAT classification model and the five-level autonomy framework derived from existing literature. These inputs produce a three-tier governance output with mapped control recommendations. A specialised Coding Assistant extension is also included to account for nuances specific to this type of agentic AI system. We then use an illustrative example to show our framework in practice. ARC is intended for AI governance practitioners, risk officers, developers, and regulators, and it will regularly undergo iteration as we continue to expand it and make it more robust. The community can access the interactive framework here: https://arc.responsible.ai/
+
+---
+
+
