@@ -1,0 +1,8 @@
+﻿[
+  {"section":"Frontend","path":"frontend","items":[{"slug":"next-notes","title":"Next.js Notes","text":"Next.js App Router notes"}]},
+  {"section":"AI Agent","path":"ai-agent","items":[{"slug":"agents-md-spec","title":"AGENTS.md Spec","text":"AGENTS.md spec"}]},
+  {"section":"Paper","path":"paper","items":[{"slug":"ai-product-papers","title":"AI Product Papers","text":"AI product papers"}]},
+  {"section":"Project Record","path":"project-record","items":[{"slug":"portfolio-build-log","title":"Portfolio Build Log","text":"Build log"}]},
+  {"section":"Career","path":"career","items":[{"slug":"resume-template","title":"Resume Template","text":"Resume template"}]},
+  {"section":"Misc","path":"misc","items":[{"slug":"npm-npx-diff","title":"npm vs npx","text":"npm vs npx"}]}
+]
