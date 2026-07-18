@@ -35,6 +35,7 @@ const techStack = [
   { label: "Font", value: "DM Sans" },
   { label: "MDX", value: "next-mdx-remote + Shiki" },
   { label: "RAG Model", value: "all-MiniLM-L6-v2 (ONNX)" },
+  { label: "DB", value: "Turso (LibSQL)" },
   { label: "Analytics", value: "Vercel Analytics" },
   { label: "Deploy", value: "Vercel" },
   { label: "CI/CD", value: "GitHub Actions" },

@@ -1,8 +1,14 @@
+import { db } from "@/db/config";
+import { projects as projectsTable } from "@/db/schema";
 import ProjectCard from "@/components/ProjectCard";
 import Footer from "@/components/Footer";
-import { projects } from "@/data/projects";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await db
+    .select()
+    .from(projectsTable)
+    .orderBy(projectsTable.sortOrder);
+
   return (
     <>
       <section className="px-15 pt-25 pb-20">
@@ -25,7 +31,16 @@ export default function ProjectsPage() {
               key={project.id}
               className={index % 2 === 0 && index < projects.length - 1 ? "border-r border-line" : ""}
             >
-              <ProjectCard project={project} />
+              <ProjectCard
+                project={{
+                  id: project.slug,
+                  title: project.title,
+                  description: project.description,
+                  tags: project.tags as string[],
+                  liveUrl: project.liveUrl ?? undefined,
+                  repoUrl: project.repoUrl ?? undefined,
+                }}
+              />
             </div>
           ))}
         </div>

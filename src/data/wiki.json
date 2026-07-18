@@ -1,4 +1,4 @@
-﻿[
+[
   {"section":"Frontend","path":"frontend","items":[{"slug":"next-notes","title":"Next.js Notes","text":"Next.js App Router notes"}]},
   {"section":"AI Agent","path":"ai-agent","items":[{"slug":"agents-md-spec","title":"AGENTS.md Spec","text":"AGENTS.md spec"}]},
   {"section":"Paper","path":"paper","items":[{"slug":"ai-product-papers","title":"AI Product Papers","text":"AI product papers"}]},
