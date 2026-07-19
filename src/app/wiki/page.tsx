@@ -271,15 +271,18 @@ export default function WikiPage() {
                             key={item.slug}
                             className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}
                           >
-                            <span
-                              className={`text-[22px] font-medium transition-colors ${
-                                authed
-                                  ? "text-lead hover:text-accent cursor-pointer"
-                                  : "text-muted cursor-default"
-                              }`}
-                            >
-                              {authed ? item.title : `${item.slug}.md`}
-                            </span>
+                            {authed ? (
+                              <Link
+                                href={`/wiki/${item.slug}`}
+                                className="text-[22px] font-medium text-lead hover:text-accent transition-colors"
+                              >
+                                {item.title}
+                              </Link>
+                            ) : (
+                              <span className="text-[22px] font-medium text-muted cursor-default">
+                                {item.slug}.md
+                              </span>
+                            )}
                           </div>
                         ))
                       ) : (
