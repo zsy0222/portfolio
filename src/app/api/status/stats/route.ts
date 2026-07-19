@@ -2,7 +2,9 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 
 async function tursoQuery(sql: string, params: unknown[] = []) {
-  const res = await fetch(`${process.env.TURSO_DB_URL}/v2/pipeline`, {
+  // Normalize URL: strip trailing /v2/pipeline if present, then append it once
+  const base = (process.env.TURSO_DB_URL || "").replace(/\/v2\/pipeline\/?$/, "");
+  const res = await fetch(`${base}/v2/pipeline`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.TURSO_AUTH_TOKEN}`,
