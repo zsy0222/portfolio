@@ -75,7 +75,7 @@ export default function WikiDetailPage() {
     );
   }
 
-  if (!page || page.error) {
+  if (!page || (page as Record<string, unknown>).error) {
     return (
       <>
         <section className="px-15 pt-25 pb-16">
