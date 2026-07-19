@@ -254,44 +254,58 @@ export default function WikiPage() {
           {sections.length === 0 ? (
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
-            sections
-              .filter((s) => s.slug !== "nju-guides")
-              .map((section) => {
-                const sectionPages = pagesBySection[section.id] || [];
+            (() => {
+                // Group Calculus I sections under a parent header
+                const filtered = sections.filter((s) => s.slug !== "nju-guides");
+                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-1-"));
+                const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-1-"));
+
+                const renderSection = (section: WikiSection) => {
+                  const sectionPages = pagesBySection[section.id] || [];
+                  return (
+                    <div key={section.slug}>
+                      <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
+                        {section.name}
+                        <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        {sectionPages.length > 0 ? (
+                          sectionPages.map((item, idx) => (
+                            <div key={item.slug} className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}>
+                              {authed ? (
+                                <Link href={`/wiki/${item.slug}`} className="text-[22px] font-medium text-lead hover:text-accent transition-colors">
+                                  {item.title}
+                                </Link>
+                              ) : (
+                                <span className="text-[22px] font-medium text-muted cursor-default">{item.slug}.md</span>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <span className="text-[20px] text-muted/50 italic">No pages yet</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                };
+
                 return (
-                  <div key={section.slug}>
-                    <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
-                      {section.name}
-                      <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
-                    </div>
-                    <div className="flex flex-col">
-                      {sectionPages.length > 0 ? (
-                        sectionPages.map((item, idx) => (
-                          <div
-                            key={item.slug}
-                            className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}
-                          >
-                            {authed ? (
-                              <Link
-                                href={`/wiki/${item.slug}`}
-                                className="text-[22px] font-medium text-lead hover:text-accent transition-colors"
-                              >
-                                {item.title}
-                              </Link>
-                            ) : (
-                              <span className="text-[22px] font-medium text-muted cursor-default">
-                                {item.slug}.md
-                              </span>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <span className="text-[20px] text-muted/50 italic">No pages yet</span>
-                      )}
-                    </div>
-                  </div>
+                  <>
+                    {/* Calculus I parent group */}
+                    {calcSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Calculus I</div>
+                        <div className="text-[18px] text-muted mb-8">微积分一层次 · 学科指导</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-10">
+                          {calcSections.map(renderSection)}
+                        </div>
+                      </div>
+                    )}
+                    {/* Other sections */}
+                    {otherSections.map(renderSection)}
+                  </>
                 );
-              })
+              })()
           )}
         </div>
       </section>
