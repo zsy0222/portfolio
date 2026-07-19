@@ -20,6 +20,11 @@ interface WikiSection {
   pageCount: number;
 }
 
+interface WikiReadme {
+  title: string;
+  content: string;
+}
+
 const FALLBACK_PASSWORD = "nju2026";
 
 const FALLBACK_SECTIONS: WikiSection[] = [
@@ -59,13 +64,76 @@ async function verifyPassword(password: string): Promise<boolean> {
       const data = await res.json();
       return data.ok;
     }
-  } catch {
-    // API unreachable, fall through to hardcoded check
-  }
-  // Fallback: hardcoded password (works even if Turso/Vercel env vars not set)
+  } catch { /* fall through */ }
   return password === FALLBACK_PASSWORD;
 }
 
+// ── Simple markdown to JSX converter ──────────────────────────────────
+function renderMarkdown(md: string): React.ReactNode[] {
+  const lines = md.split("\n");
+  const nodes: React.ReactNode[] = [];
+  let i = 0;
+  let key = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Empty line → skip
+    if (!line.trim()) {
+      i++;
+      continue;
+    }
+
+    // Heading ##
+    if (line.startsWith("## ")) {
+      nodes.push(
+        <h2 key={key++} className="text-[28px] font-semibold text-ink mt-10 mb-3">
+          {line.slice(3)}
+        </h2>
+      );
+      i++;
+      continue;
+    }
+
+    // Sub-heading ### or （一） style
+    if (line.startsWith("### ") || /^（[一二三四五六七]）/.test(line.trim())) {
+      nodes.push(
+        <h3 key={key++} className="text-[22px] font-semibold text-ink mt-8 mb-2">
+          {line.startsWith("### ") ? line.slice(4) : line.trim()}
+        </h3>
+      );
+      i++;
+      continue;
+    }
+
+    // Collect paragraph: consecutive non-empty, non-heading lines
+    let para = "";
+    while (i < lines.length && lines[i].trim() && !lines[i].startsWith("## ") && !lines[i].startsWith("### ")) {
+      para += (para ? " " : "") + lines[i].trim();
+      i++;
+    }
+    if (!para) { i++; continue; }
+
+    // Render inline bold: **text**
+    const parts = para.split(/(\*\*[^*]+\*\*)/g);
+    const children = parts.map((part, pi) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={pi} className="font-semibold text-ink">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+
+    nodes.push(
+      <p key={key++} className="text-[18px] font-medium text-lead leading-[1.8] mb-4">
+        {children}
+      </p>
+    );
+  }
+
+  return nodes;
+}
+
+// ── Component ──────────────────────────────────────────────────────────
 export default function WikiPage() {
   const [authed, setAuthed] = useState(() => {
     if (typeof window === "undefined") return false;
@@ -75,6 +143,7 @@ export default function WikiPage() {
   const [error, setError] = useState(false);
   const [sections, setSections] = useState<WikiSection[]>([]);
   const [pages, setPages] = useState<WikiPageItem[]>([]);
+  const [readme, setReadme] = useState<WikiReadme | null>(null);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -85,10 +154,16 @@ export default function WikiPage() {
       .then((r) => r.json())
       .then((data) => setPages(data.length ? data : FALLBACK_PAGES))
       .catch(() => setPages(FALLBACK_PAGES));
+    // Fetch README page specifically
+    fetch("/api/wiki/pages/freshman-experience-summary")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setReadme(data); })
+      .catch(() => {});
   }, []);
 
   const pagesBySection: Record<number, WikiPageItem[]> = {};
   for (const p of pages) {
+    if (p.sectionSlug === "nju-guides") continue; // skip README section, shown above
     if (!pagesBySection[p.sectionId]) pagesBySection[p.sectionId] = [];
     pagesBySection[p.sectionId].push(p);
   }
@@ -112,6 +187,7 @@ export default function WikiPage() {
 
   return (
     <>
+      {/* ── Header ── */}
       <section className="px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Wiki
@@ -132,6 +208,7 @@ export default function WikiPage() {
         )}
       </section>
 
+      {/* ── Password gate ── */}
       {!authed && (
         <section className="px-15 pb-6">
           <form onSubmit={handleUnlock} className="inline-flex items-center gap-3">
@@ -156,44 +233,62 @@ export default function WikiPage() {
         </section>
       )}
 
+      {/* ── README: Featured article ── */}
+      {readme && (
+        <section className="px-15 py-14 border-t border-line">
+          <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
+            README
+          </div>
+          <h2 className="text-[36px] font-light text-ink mb-10">
+            {readme.title}
+          </h2>
+          <div className="max-w-[760px]">
+            {renderMarkdown(readme.content)}
+          </div>
+        </section>
+      )}
+
+      {/* ── Sections & pages ── */}
       <section className="px-15 py-14 border-t border-line">
         <div className="flex flex-col gap-12">
           {sections.length === 0 ? (
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
-            sections.map((section) => {
-              const sectionPages = pagesBySection[section.id] || [];
-              return (
-                <div key={section.slug}>
-                  <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
-                    {section.name}
-                    <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    {sectionPages.length > 0 ? (
-                      sectionPages.map((item, idx) => (
-                        <div
-                          key={item.slug}
-                          className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}
-                        >
-                          <span
-                            className={`text-[22px] font-medium transition-colors ${
-                              authed
-                                ? "text-lead hover:text-accent cursor-pointer"
-                                : "text-muted cursor-default"
-                            }`}
+            sections
+              .filter((s) => s.slug !== "nju-guides")
+              .map((section) => {
+                const sectionPages = pagesBySection[section.id] || [];
+                return (
+                  <div key={section.slug}>
+                    <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
+                      {section.name}
+                      <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      {sectionPages.length > 0 ? (
+                        sectionPages.map((item, idx) => (
+                          <div
+                            key={item.slug}
+                            className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}
                           >
-                            {authed ? item.title : `${item.slug}.md`}
-                          </span>
-                        </div>
-                      ))
-                    ) : (
-                      <span className="text-[20px] text-muted/50 italic">No pages yet</span>
-                    )}
+                            <span
+                              className={`text-[22px] font-medium transition-colors ${
+                                authed
+                                  ? "text-lead hover:text-accent cursor-pointer"
+                                  : "text-muted cursor-default"
+                              }`}
+                            >
+                              {authed ? item.title : `${item.slug}.md`}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <span className="text-[20px] text-muted/50 italic">No pages yet</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })
           )}
         </div>
       </section>
