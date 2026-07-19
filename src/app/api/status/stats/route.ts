@@ -1,34 +1,45 @@
 export const runtime = "nodejs";
-import { createClient } from "@libsql/client";
 import { NextResponse } from "next/server";
+
+async function tursoQuery(sql: string, params: unknown[] = []) {
+  const res = await fetch(`${process.env.TURSO_DB_URL}/v2/pipeline`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.TURSO_AUTH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      requests: [
+        { type: "execute", stmt: params.length ? { sql, args: params.map((p) => ({ type: typeof p === "number" ? "integer" : "text", value: String(p) })) } : { sql } },
+        { type: "close" },
+      ],
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Turso ${res.status}: ${text}`);
+  }
+  return res.json();
+}
 
 export async function GET() {
   if (!process.env.TURSO_DB_URL || !process.env.TURSO_AUTH_TOKEN) {
-    return NextResponse.json({ error: "Env vars not set", dbUrl: !!process.env.TURSO_DB_URL, authToken: !!process.env.TURSO_AUTH_TOKEN });
+    return NextResponse.json({ error: "Env vars missing" }, { status: 500 });
   }
 
   try {
-    const client = createClient({
-      url: process.env.TURSO_DB_URL,
-      authToken: process.env.TURSO_AUTH_TOKEN,
-    });
-
     // Test 1: raw SELECT
-    const r1 = await client.execute("SELECT 1 as test");
+    const r1 = await tursoQuery("SELECT 1 as test");
     // Test 2: list tables
-    const r2 = await client.execute("SELECT name FROM sqlite_master WHERE type='table'");
+    const r2 = await tursoQuery("SELECT name FROM sqlite_master WHERE type='table'");
 
     return NextResponse.json({
-      test: r1.rows,
-      tables: r2.rows.map((r) => (r as unknown as { name: string }).name),
-      dbUrl: process.env.TURSO_DB_URL.replace(/token.*/, "..."),
+      testRows: r1.results[0]?.response?.result?.rows,
+      tableRows: r2.results[0]?.response?.result?.rows,
+      raw: JSON.stringify(r2).substring(0, 500),
     });
   } catch (e: unknown) {
     const err = e as Error;
-    return NextResponse.json({
-      error: err.message,
-      code: (err as { code?: string }).code,
-      cause: (err as { cause?: { message?: string; status?: number } }).cause?.message,
-    }, { status: 500 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
