@@ -12,7 +12,11 @@ export async function GET(
 
   try {
     const r = await tursoQuery(
-      `SELECT wp.*, ws.name as section_name, ws.slug as section_slug
+      `SELECT wp.id, wp.slug, wp.title, wp.content,
+              wp.section_id as sectionId, wp.tags,
+              wp.is_draft as isDraft, wp.view_count as viewCount,
+              wp.created_at as createdAt, wp.updated_at as updatedAt,
+              ws.name as sectionName, ws.slug as sectionSlug
        FROM wiki_pages wp
        LEFT JOIN wiki_sections ws ON wp.section_id = ws.id
        WHERE wp.slug = ? AND wp.is_draft = 0

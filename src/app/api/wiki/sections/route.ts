@@ -6,7 +6,7 @@ export async function GET() {
   if (!hasDb()) return NextResponse.json([]);
 
   try {
-    const sections = await tursoQuery("SELECT * FROM wiki_sections ORDER BY sort_order");
+    const sections = await tursoQuery("SELECT id, slug, name, sort_order as sortOrder, created_at as createdAt, updated_at as updatedAt FROM wiki_sections ORDER BY sort_order");
     const secs = allRows(sections);
 
     // Count pages per section
