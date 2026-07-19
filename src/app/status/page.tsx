@@ -1,9 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 
-const STATUS_PASSWORD = "nju2026";
+interface Stats {
+  wikiSections: number;
+  wikiPages: number;
+  blogPosts: number;
+  projects: number;
+}
+
+async function verifyPassword(password: string): Promise<boolean> {
+  const res = await fetch("/api/auth/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json();
+  return data.ok;
+}
 
 const siteRoutes = [
   { path: "/", type: "Static", desc: "Homepage" },
@@ -17,15 +32,6 @@ const siteRoutes = [
   { path: "/contact", type: "Static", desc: "Contact info" },
   { path: "/feed.xml", type: "Dynamic", desc: "RSS 2.0 feed" },
   { path: "/sitemap.xml", type: "Dynamic", desc: "Sitemap" },
-];
-
-const contentStats = [
-  { label: "Blog Posts", count: 4 },
-  { label: "Wiki Items", count: 14 },
-  { label: "Projects", count: 3 },
-  { label: "Blog Categories", count: 5 },
-  { label: "Wiki Sections", count: 6 },
-  { label: "Embedded Docs", count: 18 },
 ];
 
 const techStack = [
@@ -47,13 +53,25 @@ export default function StatusPage() {
     return sessionStorage.getItem("wiki-auth") === "true";
   });
   const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [stats, setStats] = useState<Stats | null>(null);
 
-  const handleUnlock = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch("/api/status/stats")
+      .then((r) => r.json())
+      .then(setStats);
+  }, []);
+
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (input === STATUS_PASSWORD) {
+    setError(false);
+    const ok = await verifyPassword(input);
+    if (ok) {
       setAuthed(true);
       sessionStorage.setItem("wiki-auth", "true");
       setInput("");
+    } else {
+      setError(true);
     }
   };
 
@@ -88,6 +106,9 @@ export default function StatusPage() {
               Unlock →
             </button>
           </form>
+          {error && (
+            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
+          )}
         </section>
         <Footer />
       </>
@@ -145,16 +166,23 @@ export default function StatusPage() {
           Content Stats
         </div>
         <div className="grid grid-cols-3 gap-6">
-          {contentStats.map((stat) => (
-            <div key={stat.label} className="border border-line rounded-lg p-6 bg-card">
+          {stats ? [
+            { label: "Wiki Sections", count: stats.wikiSections },
+            { label: "Wiki Pages", count: stats.wikiPages },
+            { label: "Blog Posts", count: stats.blogPosts },
+            { label: "Projects", count: stats.projects },
+          ].map((s) => (
+            <div key={s.label} className="border border-line rounded-lg p-6 bg-card">
               <div className="text-[40px] font-light text-accent mb-1">
-                {stat.count}
+                {s.count}
               </div>
               <div className="text-[18px] font-medium text-lead">
-                {stat.label}
+                {s.label}
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="text-[20px] text-muted col-span-3">Loading stats...</div>
+          )}
         </div>
       </section>
 

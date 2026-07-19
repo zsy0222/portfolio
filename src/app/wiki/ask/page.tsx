@@ -5,7 +5,15 @@ import Link from "next/link";
 import { search, type SearchResult, type SearchFilter } from "@/lib/search";
 import Footer from "@/components/Footer";
 
-const WIKI_PASSWORD = "nju2026";
+async function verifyPassword(password: string): Promise<boolean> {
+  const res = await fetch("/api/auth/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json();
+  return data.ok;
+}
 
 export default function WikiAskPage() {
   const [authed, setAuthed] = useState(() => {
@@ -13,6 +21,7 @@ export default function WikiAskPage() {
     return sessionStorage.getItem("wiki-auth") === "true";
   });
   const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -20,12 +29,16 @@ export default function WikiAskPage() {
   const [modelLoading, setModelLoading] = useState(false);
   const [filter, setFilter] = useState<SearchFilter>("all");
 
-  const handleUnlock = (e: React.FormEvent) => {
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (input === WIKI_PASSWORD) {
+    setError(false);
+    const ok = await verifyPassword(input);
+    if (ok) {
       setAuthed(true);
       sessionStorage.setItem("wiki-auth", "true");
       setInput("");
+    } else {
+      setError(true);
     }
   };
 
@@ -96,6 +109,9 @@ export default function WikiAskPage() {
               Unlock →
             </button>
           </form>
+          {error && (
+            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
+          )}
         </section>
 
         <Footer />

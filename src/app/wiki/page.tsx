@@ -1,43 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 
-const WIKI_PASSWORD = "nju2026";
+interface WikiPageItem {
+  id: number;
+  slug: string;
+  title: string;
+  sectionId: number;
+  sectionName: string;
+  sectionSlug: string;
+}
 
-const wikiSections = [
-  {
-    name: "Frontend",
-    path: "frontend",
-    items: ["next-notes", "vercel-deploy", "css-template"],
-  },
-  {
-    name: "AI Agent",
-    path: "ai-agent",
-    items: ["agents-md-spec", "rag-practice", "multi-agent-design"],
-  },
-  {
-    name: "Paper",
-    path: "paper",
-    items: ["ai-product-papers", "quantitative-analysis-notes"],
-  },
-  {
-    name: "Project Record",
-    path: "project-record",
-    items: ["portfolio-build-log", "git-operation-standard"],
-  },
-  {
-    name: "Career",
-    path: "career",
-    items: ["resume-template", "job-match-logic"],
-  },
-  {
-    name: "Misc",
-    path: "misc",
-    items: ["npm-npx-diff", "cloudbase-free-rule"],
-  },
-];
+interface WikiSection {
+  id: number;
+  slug: string;
+  name: string;
+  pageCount: number;
+}
+
+async function verifyPassword(password: string): Promise<boolean> {
+  const res = await fetch("/api/auth/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password }),
+  });
+  const data = await res.json();
+  return data.ok;
+}
 
 export default function WikiPage() {
   const [authed, setAuthed] = useState(() => {
@@ -45,13 +36,35 @@ export default function WikiPage() {
     return sessionStorage.getItem("wiki-auth") === "true";
   });
   const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [sections, setSections] = useState<WikiSection[]>([]);
+  const [pages, setPages] = useState<WikiPageItem[]>([]);
 
-  const handleUnlock = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch("/api/wiki/sections")
+      .then((r) => r.json())
+      .then(setSections);
+    fetch("/api/wiki/pages")
+      .then((r) => r.json())
+      .then(setPages);
+  }, []);
+
+  const pagesBySection: Record<number, WikiPageItem[]> = {};
+  for (const p of pages) {
+    if (!pagesBySection[p.sectionId]) pagesBySection[p.sectionId] = [];
+    pagesBySection[p.sectionId].push(p);
+  }
+
+  const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (input === WIKI_PASSWORD) {
+    setError(false);
+    const ok = await verifyPassword(input);
+    if (ok) {
       setAuthed(true);
       sessionStorage.setItem("wiki-auth", "true");
       setInput("");
+    } else {
+      setError(true);
     }
   };
 
@@ -95,37 +108,51 @@ export default function WikiPage() {
               Unlock →
             </button>
           </form>
+          {error && (
+            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
+          )}
         </section>
       )}
 
       <section className="px-15 py-14 border-t border-line">
         <div className="flex flex-col gap-12">
-          {wikiSections.map((section) => (
-            <div key={section.path}>
-              <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
-                {section.name}
-                <span className="text-[16px] text-muted/60">{section.items.length}</span>
-              </div>
-              <div className="flex flex-col">
-                {section.items.map((item, idx) => (
-                  <div
-                    key={item}
-                    className={`py-6 ${idx < section.items.length - 1 ? "border-b border-line" : ""}`}
-                  >
-                    <span
-                      className={`text-[22px] font-medium transition-colors ${
-                        authed
-                          ? "text-lead hover:text-accent cursor-pointer"
-                          : "text-muted cursor-default"
-                      }`}
-                    >
-                      {authed ? `${item}.md` : `${item}.md`}
-                    </span>
+          {sections.length === 0 ? (
+            <div className="text-[20px] text-muted">Loading...</div>
+          ) : (
+            sections.map((section) => {
+              const sectionPages = pagesBySection[section.id] || [];
+              return (
+                <div key={section.slug}>
+                  <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
+                    {section.name}
+                    <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                  <div className="flex flex-col">
+                    {sectionPages.length > 0 ? (
+                      sectionPages.map((item, idx) => (
+                        <div
+                          key={item.slug}
+                          className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}
+                        >
+                          <span
+                            className={`text-[22px] font-medium transition-colors ${
+                              authed
+                                ? "text-lead hover:text-accent cursor-pointer"
+                                : "text-muted cursor-default"
+                            }`}
+                          >
+                            {authed ? item.title : `${item.slug}.md`}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <span className="text-[20px] text-muted/50 italic">No pages yet</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </section>
 
