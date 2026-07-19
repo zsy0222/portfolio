@@ -20,7 +20,7 @@ export async function GET() {
 
     return NextResponse.json({
       test: r1.rows,
-      tables: r2.rows.map((r: { name: string }) => r.name),
+      tables: r2.rows.map((r) => (r as unknown as { name: string }).name),
       dbUrl: process.env.TURSO_DB_URL.replace(/token.*/, "..."),
     });
   } catch (e: unknown) {
