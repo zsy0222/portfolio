@@ -22,6 +22,32 @@ interface WikiSection {
 
 const FALLBACK_PASSWORD = "nju2026";
 
+const FALLBACK_SECTIONS: WikiSection[] = [
+  { id: 1, slug: "frontend", name: "Frontend", pageCount: 3 },
+  { id: 2, slug: "ai-agent", name: "AI Agent", pageCount: 3 },
+  { id: 3, slug: "paper", name: "Paper", pageCount: 2 },
+  { id: 4, slug: "project-record", name: "Project Record", pageCount: 2 },
+  { id: 5, slug: "career", name: "Career", pageCount: 2 },
+  { id: 6, slug: "misc", name: "Misc", pageCount: 2 },
+];
+
+const FALLBACK_PAGES: WikiPageItem[] = [
+  { id: 1, slug: "next-notes", title: "Next.js Notes", sectionId: 1, sectionName: "Frontend", sectionSlug: "frontend" },
+  { id: 2, slug: "vercel-deploy", title: "Vercel Deploy", sectionId: 1, sectionName: "Frontend", sectionSlug: "frontend" },
+  { id: 3, slug: "css-template", title: "CSS Template", sectionId: 1, sectionName: "Frontend", sectionSlug: "frontend" },
+  { id: 4, slug: "agents-md-spec", title: "AGENTS.md Spec", sectionId: 2, sectionName: "AI Agent", sectionSlug: "ai-agent" },
+  { id: 5, slug: "rag-practice", title: "RAG Practice", sectionId: 2, sectionName: "AI Agent", sectionSlug: "ai-agent" },
+  { id: 6, slug: "multi-agent-design", title: "Multi-Agent Design", sectionId: 2, sectionName: "AI Agent", sectionSlug: "ai-agent" },
+  { id: 7, slug: "ai-product-papers", title: "AI Product Papers", sectionId: 3, sectionName: "Paper", sectionSlug: "paper" },
+  { id: 8, slug: "quantitative-analysis-notes", title: "Quantitative Analysis Notes", sectionId: 3, sectionName: "Paper", sectionSlug: "paper" },
+  { id: 9, slug: "portfolio-build-log", title: "Portfolio Build Log", sectionId: 4, sectionName: "Project Record", sectionSlug: "project-record" },
+  { id: 10, slug: "git-operation-standard", title: "Git Operation Standard", sectionId: 4, sectionName: "Project Record", sectionSlug: "project-record" },
+  { id: 11, slug: "resume-template", title: "Resume Template", sectionId: 5, sectionName: "Career", sectionSlug: "career" },
+  { id: 12, slug: "job-match-logic", title: "Job Match Logic", sectionId: 5, sectionName: "Career", sectionSlug: "career" },
+  { id: 13, slug: "npm-npx-diff", title: "npm vs npx", sectionId: 6, sectionName: "Misc", sectionSlug: "misc" },
+  { id: 14, slug: "cloudbase-free-rule", title: "Cloudbase Free Rule", sectionId: 6, sectionName: "Misc", sectionSlug: "misc" },
+];
+
 async function verifyPassword(password: string): Promise<boolean> {
   try {
     const res = await fetch("/api/auth/verify", {
@@ -53,10 +79,12 @@ export default function WikiPage() {
   useEffect(() => {
     fetch("/api/wiki/sections")
       .then((r) => r.json())
-      .then(setSections);
+      .then((data) => setSections(data.length ? data : FALLBACK_SECTIONS))
+      .catch(() => setSections(FALLBACK_SECTIONS));
     fetch("/api/wiki/pages")
       .then((r) => r.json())
-      .then(setPages);
+      .then((data) => setPages(data.length ? data : FALLBACK_PAGES))
+      .catch(() => setPages(FALLBACK_PAGES));
   }, []);
 
   const pagesBySection: Record<number, WikiPageItem[]> = {};
