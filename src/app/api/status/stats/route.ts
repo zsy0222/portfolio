@@ -4,6 +4,10 @@ import { eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  if (!process.env.TURSO_DB_URL) {
+    return NextResponse.json({ wikiSections: 0, wikiPages: 0, blogPosts: 0, projects: 0 });
+  }
+
   const [sectionCount, pageCount, blogCount, projectCount] = await Promise.all([
     db.select({ count: sql<number>`count(*)` }).from(wikiSections),
     db.select({ count: sql<number>`count(*)` }).from(wikiPages).where(eq(wikiPages.isDraft, false)),

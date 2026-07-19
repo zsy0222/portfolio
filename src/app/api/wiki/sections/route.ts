@@ -4,9 +4,10 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  if (!process.env.TURSO_DB_URL) return NextResponse.json([]);
+
   const sections = await db.select().from(wikiSections).orderBy(wikiSections.sortOrder);
 
-  // Count pages per section
   const result = await Promise.all(
     sections.map(async (s) => {
       const pages = await db

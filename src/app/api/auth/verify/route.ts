@@ -4,6 +4,10 @@ import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  if (!process.env.TURSO_DB_URL) {
+    return NextResponse.json({ ok: false }, { status: 503 });
+  }
+
   const { password } = await request.json();
 
   const result = await db

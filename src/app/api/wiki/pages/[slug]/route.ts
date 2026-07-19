@@ -7,6 +7,8 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  if (!process.env.TURSO_DB_URL) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
   const { slug } = await params;
 
   const results = await db

@@ -4,6 +4,8 @@ import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+  if (!process.env.TURSO_DB_URL) return NextResponse.json([]);
+
   const { searchParams } = new URL(request.url);
   const section = searchParams.get("section");
 
