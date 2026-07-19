@@ -1,51 +1,27 @@
 export const runtime = "nodejs";
+import { hasDb, tursoQuery, firstValue } from "@/lib/turso";
 import { NextResponse } from "next/server";
 
-async function tursoQuery(sql: string, params: unknown[] = []) {
-  // Normalize URL: strip trailing /v2/pipeline if present, then append it once
-  const base = (process.env.TURSO_DB_URL || "").replace(/\/v2\/pipeline\/?$/, "");
-  const res = await fetch(`${base}/v2/pipeline`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.TURSO_AUTH_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      requests: [
-        { type: "execute", stmt: params.length ? { sql, args: params.map((p) => ({ type: typeof p === "number" ? "integer" : "text", value: String(p) })) } : { sql } },
-        { type: "close" },
-      ],
-    }),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Turso ${res.status}: ${text}`);
-  }
-  return res.json();
-}
-
 export async function GET() {
-  if (!process.env.TURSO_DB_URL || !process.env.TURSO_AUTH_TOKEN) {
+  if (!hasDb()) {
     return NextResponse.json({ wikiSections: 0, wikiPages: 0, blogPosts: 0, projects: 0 });
   }
 
   try {
-    const r1 = await tursoQuery("SELECT count(*) as c FROM wiki_sections");
-    const r2 = await tursoQuery("SELECT count(*) as c FROM wiki_pages WHERE is_draft = 0");
-    const r3 = await tursoQuery("SELECT count(*) as c FROM blog_posts WHERE is_draft = 0");
-    const r4 = await tursoQuery("SELECT count(*) as c FROM projects");
-
-    const get = (r: { results?: Array<{ response?: { result?: { rows?: Array<Array<number>> } } }> }) =>
-      r.results?.[0]?.response?.result?.rows?.[0]?.[0] ?? 0;
+    const [r1, r2, r3, r4] = await Promise.all([
+      tursoQuery("SELECT count(*) as c FROM wiki_sections"),
+      tursoQuery("SELECT count(*) as c FROM wiki_pages WHERE is_draft = 0"),
+      tursoQuery("SELECT count(*) as c FROM blog_posts WHERE is_draft = 0"),
+      tursoQuery("SELECT count(*) as c FROM projects"),
+    ]);
 
     return NextResponse.json({
-      wikiSections: get(r1),
-      wikiPages: get(r2),
-      blogPosts: get(r3),
-      projects: get(r4),
+      wikiSections: Number(firstValue(r1)) || 0,
+      wikiPages: Number(firstValue(r2)) || 0,
+      blogPosts: Number(firstValue(r3)) || 0,
+      projects: Number(firstValue(r4)) || 0,
     });
-  } catch (e: unknown) {
-    // Return empty data instead of crashing — allows build to pass
+  } catch {
     return NextResponse.json({ wikiSections: 0, wikiPages: 0, blogPosts: 0, projects: 0 });
   }
 }

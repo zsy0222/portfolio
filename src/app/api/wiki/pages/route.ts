@@ -1,38 +1,28 @@
 export const runtime = "nodejs";
-import { db } from "@/db/config";
-import { wikiPages, wikiSections } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { hasDb, tursoQuery, allRows } from "@/lib/turso";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  if (!process.env.TURSO_DB_URL) return NextResponse.json([]);
+  if (!hasDb()) return NextResponse.json([]);
 
   const { searchParams } = new URL(request.url);
   const section = searchParams.get("section");
 
-  const conditions = [eq(wikiPages.isDraft, false)];
-  if (section) {
-    conditions.push(eq(wikiSections.slug, section));
+  try {
+    let sql = `
+      SELECT wp.*, ws.name as section_name, ws.slug as section_slug
+      FROM wiki_pages wp
+      LEFT JOIN wiki_sections ws ON wp.section_id = ws.id
+      WHERE wp.is_draft = 0
+    `;
+    if (section) {
+      sql += ` AND ws.slug = ?`;
+      const r = await tursoQuery(sql + " ORDER BY wp.created_at", [{ type: "text", value: section }]);
+      return NextResponse.json(allRows(r));
+    }
+    const r = await tursoQuery(sql + " ORDER BY wp.created_at");
+    return NextResponse.json(allRows(r));
+  } catch {
+    return NextResponse.json([]);
   }
-
-  const pages = await db
-    .select({
-      id: wikiPages.id,
-      slug: wikiPages.slug,
-      title: wikiPages.title,
-      sectionId: wikiPages.sectionId,
-      tags: wikiPages.tags,
-      isDraft: wikiPages.isDraft,
-      viewCount: wikiPages.viewCount,
-      createdAt: wikiPages.createdAt,
-      updatedAt: wikiPages.updatedAt,
-      sectionName: wikiSections.name,
-      sectionSlug: wikiSections.slug,
-    })
-    .from(wikiPages)
-    .leftJoin(wikiSections, eq(wikiPages.sectionId, wikiSections.id))
-    .where(and(...conditions))
-    .orderBy(wikiPages.createdAt);
-
-  return NextResponse.json(pages);
 }

@@ -1,11 +1,14 @@
 export const runtime = "nodejs";
-import { db } from "@/db/config";
-import { projects } from "@/db/schema";
+import { hasDb, tursoQuery, allRows } from "@/lib/turso";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  if (!process.env.TURSO_DB_URL) return NextResponse.json([]);
+  if (!hasDb()) return NextResponse.json([]);
 
-  const result = await db.select().from(projects).orderBy(projects.sortOrder);
-  return NextResponse.json(result);
+  try {
+    const r = await tursoQuery("SELECT * FROM projects ORDER BY sort_order");
+    return NextResponse.json(allRows(r));
+  } catch {
+    return NextResponse.json([]);
+  }
 }

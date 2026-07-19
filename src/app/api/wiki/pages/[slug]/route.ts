@@ -1,40 +1,30 @@
 export const runtime = "nodejs";
-import { db } from "@/db/config";
-import { wikiPages, wikiSections } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { hasDb, tursoQuery, allRows } from "@/lib/turso";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  if (!process.env.TURSO_DB_URL) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!hasDb()) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const { slug } = await params;
 
-  const results = await db
-    .select({
-      id: wikiPages.id,
-      slug: wikiPages.slug,
-      title: wikiPages.title,
-      content: wikiPages.content,
-      sectionId: wikiPages.sectionId,
-      tags: wikiPages.tags,
-      isDraft: wikiPages.isDraft,
-      viewCount: wikiPages.viewCount,
-      createdAt: wikiPages.createdAt,
-      updatedAt: wikiPages.updatedAt,
-      sectionName: wikiSections.name,
-      sectionSlug: wikiSections.slug,
-    })
-    .from(wikiPages)
-    .leftJoin(wikiSections, eq(wikiPages.sectionId, wikiSections.id))
-    .where(and(eq(wikiPages.slug, slug), eq(wikiPages.isDraft, false)))
-    .limit(1);
-
-  if (results.length === 0) {
+  try {
+    const r = await tursoQuery(
+      `SELECT wp.*, ws.name as section_name, ws.slug as section_slug
+       FROM wiki_pages wp
+       LEFT JOIN wiki_sections ws ON wp.section_id = ws.id
+       WHERE wp.slug = ? AND wp.is_draft = 0
+       LIMIT 1`,
+      [{ type: "text", value: slug }]
+    );
+    const rows = allRows(r);
+    if (rows.length === 0) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+    return NextResponse.json(rows[0]);
+  } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
-
-  return NextResponse.json(results[0]);
 }

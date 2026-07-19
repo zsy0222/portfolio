@@ -1,23 +1,28 @@
 export const runtime = "nodejs";
-import { db } from "@/db/config";
-import { wikiSections, wikiPages } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { hasDb, tursoQuery, allRows } from "@/lib/turso";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  if (!process.env.TURSO_DB_URL) return NextResponse.json([]);
+  if (!hasDb()) return NextResponse.json([]);
 
-  const sections = await db.select().from(wikiSections).orderBy(wikiSections.sortOrder);
+  try {
+    const sections = await tursoQuery("SELECT * FROM wiki_sections ORDER BY sort_order");
+    const secs = allRows(sections);
 
-  const result = await Promise.all(
-    sections.map(async (s) => {
-      const pages = await db
-        .select()
-        .from(wikiPages)
-        .where(eq(wikiPages.sectionId, s.id));
-      return { ...s, pageCount: pages.length };
-    })
-  );
+    // Count pages per section
+    const result = await Promise.all(
+      secs.map(async (s) => {
+        const r = await tursoQuery("SELECT count(*) as c FROM wiki_pages WHERE section_id = ?", [
+          { type: "integer", value: s.id },
+        ]);
+        const rows = r.results[0]?.response?.result?.rows ?? [];
+        const pageCount = Number(rows[0]?.[0]?.value) || 0;
+        return { ...s, pageCount };
+      })
+    );
 
-  return NextResponse.json(result);
+    return NextResponse.json(result);
+  } catch {
+    return NextResponse.json([]);
+  }
 }

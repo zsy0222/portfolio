@@ -1,27 +1,19 @@
 export const runtime = "nodejs";
-import { db } from "@/db/config";
-import { siteSettings } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { hasDb, tursoQuery, firstValue } from "@/lib/turso";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  if (!process.env.TURSO_DB_URL) {
+  if (!hasDb()) return NextResponse.json({ ok: false }, { status: 503 });
+
+  try {
+    const { password } = await request.json();
+    const r = await tursoQuery(
+      "SELECT value FROM site_settings WHERE key = ? LIMIT 1",
+      [{ type: "text", value: "wiki_password" }]
+    );
+    const stored = firstValue(r);
+    return NextResponse.json({ ok: stored === password });
+  } catch {
     return NextResponse.json({ ok: false }, { status: 503 });
   }
-
-  const { password } = await request.json();
-
-  const result = await db
-    .select({ value: siteSettings.value })
-    .from(siteSettings)
-    .where(eq(siteSettings.key, "wiki_password"))
-    .limit(1);
-
-  const stored = result[0]?.value;
-
-  if (stored && password === stored) {
-    return NextResponse.json({ ok: true });
-  }
-
-  return NextResponse.json({ ok: false }, { status: 401 });
 }
