@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { db } from "@/db/config";
 import { wikiSections, wikiPages, blogPosts, projects } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";

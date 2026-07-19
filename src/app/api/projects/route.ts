@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { db } from "@/db/config";
 import { projects } from "@/db/schema";
 import { NextResponse } from "next/server";
