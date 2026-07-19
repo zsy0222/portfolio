@@ -95,12 +95,12 @@ function renderMarkdown(md: string): React.ReactNode[] {
       continue;
     }
 
-    // Sub-heading ### or （一） style
+    // Sub-heading ### or （一） style → same size as body
     if (line.startsWith("### ") || /^（[一二三四五六七]）/.test(line.trim())) {
       nodes.push(
-        <h3 key={key++} className="text-[22px] font-semibold text-ink mt-8 mb-2">
+        <h4 key={key++} className="text-[18px] font-semibold text-ink mt-6 mb-1">
           {line.startsWith("### ") ? line.slice(4) : line.trim()}
-        </h3>
+        </h4>
       );
       i++;
       continue;
@@ -144,6 +144,7 @@ export default function WikiPage() {
   const [sections, setSections] = useState<WikiSection[]>([]);
   const [pages, setPages] = useState<WikiPageItem[]>([]);
   const [readme, setReadme] = useState<WikiReadme | null>(null);
+  const [readmeOpen, setReadmeOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -233,18 +234,28 @@ export default function WikiPage() {
         </section>
       )}
 
-      {/* ── README: Featured article ── */}
+      {/* ── README: Featured article (collapsible) ── */}
       {readme && (
         <section className="px-15 py-14 border-t border-line">
-          <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
-            README
-          </div>
-          <h2 className="text-[36px] font-light text-ink mb-10">
-            {readme.title}
-          </h2>
-          <div className="max-w-[760px]">
-            {renderMarkdown(readme.content)}
-          </div>
+          <button
+            onClick={() => setReadmeOpen(!readmeOpen)}
+            className="flex items-center gap-3 text-left w-full group"
+          >
+            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
+              README
+            </span>
+            <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
+              {readme.title}
+            </h2>
+            <span className="text-[24px] text-muted ml-auto transition-transform duration-200" style={{ transform: readmeOpen ? "rotate(90deg)" : "rotate(0deg)" }}>
+              ›
+            </span>
+          </button>
+          {readmeOpen && (
+            <div className="max-w-[760px] mt-10">
+              {renderMarkdown(readme.content)}
+            </div>
+          )}
         </section>
       )}
 
