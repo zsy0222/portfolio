@@ -5,14 +5,23 @@ import Link from "next/link";
 import { search, type SearchResult, type SearchFilter } from "@/lib/search";
 import Footer from "@/components/Footer";
 
+const FALLBACK_PASSWORD = "nju2026";
+
 async function verifyPassword(password: string): Promise<boolean> {
-  const res = await fetch("/api/auth/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password }),
-  });
-  const data = await res.json();
-  return data.ok;
+  try {
+    const res = await fetch("/api/auth/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.ok;
+    }
+  } catch {
+    // API unreachable, fall through to hardcoded check
+  }
+  return password === FALLBACK_PASSWORD;
 }
 
 export default function WikiAskPage() {
@@ -32,12 +41,16 @@ export default function WikiAskPage() {
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(false);
-    const ok = await verifyPassword(input);
-    if (ok) {
-      setAuthed(true);
-      sessionStorage.setItem("wiki-auth", "true");
-      setInput("");
-    } else {
+    try {
+      const ok = await verifyPassword(input);
+      if (ok) {
+        setAuthed(true);
+        sessionStorage.setItem("wiki-auth", "true");
+        setInput("");
+      } else {
+        setError(true);
+      }
+    } catch {
       setError(true);
     }
   };
