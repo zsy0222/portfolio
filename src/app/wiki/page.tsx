@@ -238,8 +238,8 @@ export default function WikiPage() {
       {readme && (
         <section className="px-15 py-14 border-t border-line">
           <button
-            onClick={() => setReadmeOpen(!readmeOpen)}
-            className="flex items-center gap-3 text-left w-full group"
+            onClick={() => setReadmeOpen((prev) => !prev)}
+            className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
           >
             <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
               README
@@ -247,8 +247,8 @@ export default function WikiPage() {
             <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
               {readme.title}
             </h2>
-            <span className="text-[24px] text-muted ml-auto transition-transform duration-200" style={{ transform: readmeOpen ? "rotate(90deg)" : "rotate(0deg)" }}>
-              ›
+            <span className={`text-[28px] text-muted ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`}>
+              ▸
             </span>
           </button>
           {readmeOpen && (
