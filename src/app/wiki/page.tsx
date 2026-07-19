@@ -114,13 +114,38 @@ function renderMarkdown(md: string): React.ReactNode[] {
     }
     if (!para) { i++; continue; }
 
-    // Render inline bold: **text**
-    const parts = para.split(/(\*\*[^*]+\*\*)/g);
-    const children = parts.map((part, pi) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={pi} className="font-semibold text-ink">{part.slice(2, -2)}</strong>;
+    // Render inline: **bold**, [text](url), plain text
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const parts: Array<{ type: "text" | "bold" | "link"; text: string; url?: string }> = [];
+    let lastIdx = 0;
+
+    // Split by bold markers first
+    const boldSplit = para.split(/(\*\*[^*]+\*\*)/g);
+    for (const seg of boldSplit) {
+      if (seg.startsWith("**") && seg.endsWith("**")) {
+        parts.push({ type: "bold", text: seg.slice(2, -2) });
+      } else {
+        // Further split by [text](url) links
+        let m;
+        let sIdx = 0;
+        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        while ((m = linkRegex.exec(seg)) !== null) {
+          if (m.index > sIdx) parts.push({ type: "text", text: seg.slice(sIdx, m.index) });
+          parts.push({ type: "link", text: m[1], url: m[2] });
+          sIdx = m.index + m[0].length;
+        }
+        if (sIdx < seg.length) parts.push({ type: "text", text: seg.slice(sIdx) });
       }
-      return part;
+    }
+
+    const children = parts.map((part, pi) => {
+      if (part.type === "bold") {
+        return <strong key={pi} className="font-semibold text-ink">{part.text}</strong>;
+      }
+      if (part.type === "link") {
+        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all">{part.text} ↗</a>;
+      }
+      return part.text;
     });
 
     nodes.push(
