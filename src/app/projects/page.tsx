@@ -1,13 +1,27 @@
-import { db } from "@/db/config";
-import { projects as projectsTable } from "@/db/schema";
+"use client";
+
+import { useState, useEffect } from "react";
 import ProjectCard from "@/components/ProjectCard";
 import Footer from "@/components/Footer";
 
-export default async function ProjectsPage() {
-  const projects = await db
-    .select()
-    .from(projectsTable)
-    .orderBy(projectsTable.sortOrder);
+interface Project {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+  liveUrl: string | null;
+  repoUrl: string | null;
+}
+
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    fetch("/api/projects")
+      .then((r) => r.json())
+      .then(setProjects);
+  }, []);
 
   return (
     <>
@@ -25,25 +39,29 @@ export default async function ProjectsPage() {
       </section>
 
       <section className="px-15 py-18 border-t border-line">
-        <div className="grid grid-cols-2">
-          {projects.map((project, index) => (
-            <div
-              key={project.id}
-              className={index % 2 === 0 && index < projects.length - 1 ? "border-r border-line" : ""}
-            >
-              <ProjectCard
-                project={{
-                  id: project.slug,
-                  title: project.title,
-                  description: project.description,
-                  tags: project.tags as string[],
-                  liveUrl: project.liveUrl ?? undefined,
-                  repoUrl: project.repoUrl ?? undefined,
-                }}
-              />
-            </div>
-          ))}
-        </div>
+        {projects.length === 0 ? (
+          <div className="text-[20px] text-muted">Loading...</div>
+        ) : (
+          <div className="grid grid-cols-2">
+            {projects.map((project, index) => (
+              <div
+                key={project.id}
+                className={index % 2 === 0 && index < projects.length - 1 ? "border-r border-line" : ""}
+              >
+                <ProjectCard
+                  project={{
+                    id: project.slug,
+                    title: project.title,
+                    description: project.description,
+                    tags: project.tags,
+                    liveUrl: project.liveUrl ?? undefined,
+                    repoUrl: project.repoUrl ?? undefined,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <Footer />
