@@ -115,9 +115,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
     if (!para) { i++; continue; }
 
     // Render inline: **bold**, [text](url), plain text
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     const parts: Array<{ type: "text" | "bold" | "link"; text: string; url?: string }> = [];
-    let lastIdx = 0;
 
     // Split by bold markers first
     const boldSplit = para.split(/(\*\*[^*]+\*\*)/g);
@@ -297,8 +295,8 @@ export default function WikiPage() {
                 // Group calculus sections by prefix
                 const groups: Array<{ label: string; subtitle: string; sections: WikiSection[] }> = [];
                 const prefixes = [
-                  { prefix: "calculus-1-", label: "Calculus I", subtitle: "微积分一层次 · 学科指导" },
-                  { prefix: "calculus-2-", label: "Calculus II", subtitle: "微积分二层次 · 课堂笔记" },
+                  { prefix: "calculus-1-notes", label: "Calculus I", subtitle: "微积分一层次 · 课堂笔记" },
+                  { prefix: "calculus-2-notes", label: "Calculus II", subtitle: "微积分二层次 · 课堂笔记" },
                 ];
 
                 const grouped = new Set<string>();

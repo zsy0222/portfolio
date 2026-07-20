@@ -1,7 +1,7 @@
 import { createClient } from "@libsql/client";
 import { config } from "dotenv";
 import { resolve } from "path";
-import { readFileSync, readdirSync, existsSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import matter from "gray-matter";
 
 config({ path: resolve(__dirname, "..", ".env.local") });
