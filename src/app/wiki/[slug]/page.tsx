@@ -30,7 +30,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
     }
 
     if (line.startsWith("### ") || /^（[一二三四五六七]）/.test(line.trim())) {
-      nodes.push(<h4 key={key++} className="text-[18px] font-semibold text-ink mt-6 mb-1">{line.startsWith("### ") ? line.slice(4) : line.trim()}</h4>);
+      nodes.push(<h4 key={key++} className="text-[20px] font-semibold text-ink mt-10 mb-4 border-b border-line pb-2">{line.startsWith("### ") ? line.slice(4) : line.trim()}</h4>);
       i++; continue;
     }
 
@@ -64,7 +64,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
       return part.text;
     });
 
-    nodes.push(<p key={key++} className="text-[18px] font-medium text-lead leading-[1.8] mb-4">{children}</p>);
+    nodes.push(<p key={key++} className="text-[18px] font-medium text-lead leading-[1.8] mb-5">{children}</p>);
   }
   return nodes;
 }
