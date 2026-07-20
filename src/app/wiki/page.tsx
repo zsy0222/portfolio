@@ -352,7 +352,6 @@ export default function WikiPage() {
                         )}
                       </div>
                       )}
-                      </div>
                     </div>
                   );
                 };
