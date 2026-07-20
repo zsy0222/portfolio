@@ -271,7 +271,7 @@ export default function WikiPage() {
             <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
               {readme.title}
             </h2>
-            <span className={`text-[28px] text-muted ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`}>
+            <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`} title={readmeOpen ? "Collapse" : "Expand"}>
               ▸
             </span>
           </button>
