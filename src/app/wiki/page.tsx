@@ -291,47 +291,38 @@ export default function WikiPage() {
           ) : (
             (() => {
                 const filtered = sections.filter((s) => s.slug !== "nju-guides");
+                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
+                const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
-                // Group calculus sections by prefix
-                const groups: Array<{ label: string; subtitle: string; sections: WikiSection[] }> = [];
-                const prefixes = [
-                  { prefix: "calculus-1-notes", label: "Calculus I", subtitle: "微积分一层次 · 课堂笔记" },
-                  { prefix: "calculus-2-notes", label: "Calculus II", subtitle: "微积分二层次 · 课堂笔记" },
-                ];
+                const calcNotes = calcSections.filter((s) => s.slug.endsWith("-notes"));
+                const calcTop = calcSections.filter((s) => !s.slug.endsWith("-notes") && s.slug !== "calculus-1-notes" && s.slug !== "calculus-2-notes");
 
-                const grouped = new Set<string>();
-                for (const { prefix, label, subtitle } of prefixes) {
-                  const matched = filtered.filter((s) => s.slug.startsWith(prefix));
-                  if (matched.length > 0) {
-                    groups.push({ label, subtitle, sections: matched });
-                    matched.forEach((s) => grouped.add(s.slug));
-                  }
-                }
-                const otherSections = filtered.filter((s) => !grouped.has(s.slug));
+                const calc1 = calcNotes.find((s) => s.slug === "calculus-1-notes");
+                const calc2 = calcNotes.find((s) => s.slug === "calculus-2-notes");
 
                 const renderSection = (section: WikiSection) => {
                   const sectionPages = pagesBySection[section.id] || [];
                   return (
                     <div key={section.slug}>
-                      <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6 flex items-center gap-3">
-                        {section.name}
-                        <span className="text-[16px] text-muted/60">{sectionPages.length}</span>
+                      <div className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2">
+                        {section.name.replace("Calculus I — ", "").replace("Calculus II — ", "")}
+                        <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
                       </div>
                       <div className="flex flex-col">
                         {sectionPages.length > 0 ? (
                           sectionPages.map((item, idx) => (
-                            <div key={item.slug} className={`py-6 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}>
+                            <div key={item.slug} className={`py-5 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}>
                               {authed ? (
-                                <Link href={`/wiki/${item.slug}`} className="text-[22px] font-medium text-lead hover:text-accent transition-colors">
+                                <Link href={`/wiki/${item.slug}`} className="text-[20px] font-medium text-lead hover:text-accent transition-colors">
                                   {item.title}
                                 </Link>
                               ) : (
-                                <span className="text-[22px] font-medium text-muted cursor-default">{item.slug}.md</span>
+                                <span className="text-[20px] font-medium text-muted cursor-default">{item.slug}.md</span>
                               )}
                             </div>
                           ))
                         ) : (
-                          <span className="text-[20px] text-muted/50 italic">No pages yet</span>
+                          <span className="text-[18px] text-muted/50 italic">No pages yet</span>
                         )}
                       </div>
                     </div>
@@ -340,16 +331,30 @@ export default function WikiPage() {
 
                 return (
                   <>
-                    {groups.map((g) => (
-                      <div key={g.label}>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{g.label}</div>
-                        <div className="text-[18px] text-muted mb-8">{g.subtitle}</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-10">
-                          {g.sections.map(renderSection)}
+                    {otherSections.map(renderSection)}
+                    {calcSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Calculus</div>
+                        <div className="text-[18px] text-muted mb-8">微积分 · 学科资料</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                          {calcTop.map(renderSection)}
+                          {calc1 && (
+                            <div>
+                              <div className="text-[20px] font-semibold text-ink mb-3">Calculus I</div>
+                              <div className="text-[16px] text-muted mb-5">微积分一层次</div>
+                              {renderSection(calc1)}
+                            </div>
+                          )}
+                          {calc2 && (
+                            <div>
+                              <div className="text-[20px] font-semibold text-ink mb-3">Calculus II</div>
+                              <div className="text-[16px] text-muted mb-5">微积分二层次</div>
+                              {renderSection(calc2)}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ))}
-                    {otherSections.map(renderSection)}
+                    )}
                   </>
                 );
               })()
