@@ -1,0 +1,213 @@
+---
+title: "Weekly Paper Digest: 2026-07-13 ~ 2026-07-20"
+date: "2026-07-20"
+category: "research"
+tags: ["weekly-digest", "arxiv"]
+summary: "本周 ArXiv 论文摘要 — program slicing, fault localization, LLM for code."
+draft: false
+---
+
+## program slicing
+
+### CADAQUES: A Cost-Aware Dual Architecture for Query-Efficient Autonomous Discovery
+
+**Authors:** Jorge Bravo-Abad
+
+**Published:** 2026-07-17T17:04:20Z
+
+**Link:** http://arxiv.org/abs/2607.16127v1
+
+**Abstract:**
+
+Autonomous discovery systems couple a resource that answers queries (a simulator, instrument, or analytic model) to an algorithm that selects what to query next. Most software frameworks for this loop inherit the control structure of numerical optimization: campaigns run for a fixed number of iterations, query costs are absent from the programming interface, and decision-making is treated as free. In practice, queries may differ in cost by orders of magnitude, and planners built on large language models or expensive surrogates consume resources of their own. Here we present CADAQUES, an open-source Python framework built on one architectural principle: cost is a first-class primitive of the discovery loop. CADAQUES separates the loop into two structural protocols, an Oracle that answers queries and a Driver that proposes them, and charges both evaluations and decisions against a common vector-valued budget spanning wall time, CPU hours, monetary cost, and language model tokens. An append-only ledger records, for each transaction, the cost declared before execution and the cost settled afterwards, making their discrepancy an observable property of the campaign. We evaluate the architecture by locating the critical temperature of the two-dimensional Ising model from noisy finite-size estimates against the exact thermodynamic-limit reference. In this noisy setting, strategies that concentrate around the best observed result can be misled by noise-induced peaks, whereas a schedule that explores with cheap low-fidelity queries and refines with higher-fidelity ones yields lower and less variable errors than high fidelity throughout, at the studied budget scale. Metering adds tens of microseconds per iteration, three orders of magnitude below the cheapest oracle query. The framework is MIT-licensed and archived at Zenodo (doi:10.5281/zenodo.21293589).
+
+---
+
+### Comparison of Energy System Optimization Software and Evaluation of Selected Frameworks
+
+**Authors:** Pedro Caixeta, David Gawron, Hüseyin K. Çakmak, Haozhen Cheng
+
+**Published:** 2026-07-17T16:58:00Z
+
+**Link:** http://arxiv.org/abs/2607.16121v1
+
+**Abstract:**
+
+Optimizing energy systems is a crucial step toward achieving a carbon-neutral future, with software tools playing a major role in the process. However, selecting the most suitable tool for specific optimization challenges can be complex, given the diverse objectives and requirements of various energy systems. In this study, we aim to address this issue by evaluating five preselected software tools-REMix, MTRESS, COMANDO, OEMOF, and HOMER PRO-to identify the scenarios for which they are most suitable. To achieve this, we conducted an extensive review of literature, documentation, tutorials, and example models, and developed a set of comparison criteria that were subsequently used to evaluate these tools. Our analysis suggests that REMix is particularly effective for scenarios where investment path optimization is required. COMANDO excels in systems with atypical components. OEMOF is the best-suited open-source tool for standard optimization problems. HOMER PRO is recommended for users seeking rapid synthesis optimization, especially those with limited programming experience. Due to difficulties in obtaining sufficient information on MTRESS, we were unable to complete the analysis for this tool.
+
+---
+
+### What Does It Take to Research with AI? A Rapid Review of Competencies to Train LLM-Literate Researchers
+
+**Authors:** Danilo Monteiro Ribeiro, Ronnie de Souza Santos, Rodrigo Siqueira, Breno Andrade, Rafael Batista Duarte, Gilberto Hida, Julia Alencar, Gustavo Pinto
+
+**Published:** 2026-07-17T16:14:14Z
+
+**Link:** http://arxiv.org/abs/2607.16083v1
+
+**Abstract:**
+
+The growing adoption of Large Language Models in scientific research has created a need to understand what competencies researchers and graduate students require to use these tools critically and responsibly. This rapid review analyzed 194 articles retrieved from Elicit and Google Scholar (2022 to 2025), from which 40 were selected for competency extraction and thematic analysis following independent dual screening (Gwet AC1: 0.76 to 0.83). Eight competencies were identified. The most prevalent was domain expertise and oversight of AI outputs (n = 123), encompassing subject matter mastery, systematic skepticism, source verification, and researcher accountability. Other key competencies include metacognition and decision making about AI use (n = 55), ethics and academic integrity (n = 53), prompt engineering for research (n = 38), and reproducibility of AI use (n = 29). AI literacy and technical knowledge (n = 16) was explicitly identified as a risk factor when absent, with domain expertise treated as a prerequisite for meaningful critical evaluation. The findings suggest that preparing researchers to use LLMs goes beyond technical instruction, requiring an integrated set of epistemic, ethical, and methodological competencies centered on human accountability for the knowledge produced. These results have direct implications for the design of graduate programs and AI literacy initiatives.
+
+---
+
+### DiffTestGen: Change-Directed LLM-Based Testing for Exposing Behavioral Differences
+
+**Authors:** Huimin Hu, Cristian Cadar, Michael Pradel
+
+**Published:** 2026-07-17T14:57:59Z
+
+**Link:** http://arxiv.org/abs/2607.16024v1
+
+**Abstract:**
+
+As software evolves over time, it is important to ensure that any behavioral changes occur as intended by developers. A promising approach for this goal is to generate tests that expose behavioral differences between the old and new versions of a program. However, current approaches fail to trigger behavioral differences for many code changes. This paper presents~DiffTestGen, a novel change-directed, LLM-based differential testing approach specifically designed to expose behavioral differences introduced by a code change. The approach is enabled by two key contributions: First, DiffTestGen leverages static call graph analysis and project documentation to identify valid entry points for test generation and to guide the LLM toward reaching the changed code. Second, DiffTestGen iteratively improves our newly introduced union coverage metric, which combines coverage of modified code in the old and the new version, by providing targeted coverage feedback to the LLM. We evaluate DiffTestGen on two datasets comprising a total of 463 PRs. DiffTestGen exposes behavioral differences in 78.2% of the PRs while achieving an average union coverage of 90.7%. Compared with the baselines, DiffTestGen exposes 99 more PRs overall and increases code coverage by 12.5% and 15.6% percentage points, respectively. By integrating DiffTestGen with the Testora regression detector, we show that the identified behavioral differences can be used to detect regression bugs missed by the best existing approaches.
+
+---
+
+### TARS: A Theory-of-Mind Agent for Personalized In-IDE Code Comprehension
+
+**Authors:** Leopoldo Todisco, Antonio Della Porta, Stefano Lambiase, Fabio Palomba
+
+**Published:** 2026-07-17T13:32:20Z
+
+**Link:** http://arxiv.org/abs/2607.15948v1
+
+**Abstract:**
+
+Code comprehension is one of the most time-consuming tasks in software engineering, yet most LLM-based assistants produce explanations that ignore who is asking and force developers into a disruptive copy-paste workflow. We present TARS, an LLM-powered agent integrated into Visual Studio Code that supports program comprehension through autonomous explanations anchored directly to the code under analysis. Built around a lightweight Theory of Mind paradigm, TARS profiles a developer's expertise, role, and stylistic preferences, then adapts the depth and tone of its explanations accordingly, grounding them in project documentation via Retrieval-Augmented Generation. To evaluate TARS, we conducted a controlled experiment with 18 participants on non-trivial Java snippets. Participants using TARS completed tasks 26\% faster, reported lower cognitive load, and found the explanations meaningfully adapted to their profiles.
+
+---
+
+## fault localization
+
+### When Do Multi-Agent Systems Help? An Information Bottleneck Perspective
+
+**Authors:** Wendi Yu, Lianhao Zhou, Xiangjue Dong, Sai Sudarshan Barath, Declan Staunton, Byung-Jun Yoon, Xiaoning Qian, James Caverlee, Shuiwang Ji
+
+**Published:** 2026-07-17T17:13:44Z
+
+**Link:** http://arxiv.org/abs/2607.16133v1
+
+**Abstract:**
+
+LLM powered multi-agent systems (MAS) have emerged as a promising paradigm for complex tasks. However, their advantages over single-agent systems (SAS) remain unclear, with performance varying inconsistently across settings. Here, we provide an information bottleneck perspective on elucidating the differences between MAS and SAS. Specifically, our key observation is that a SAS accumulates its full reasoning trace in one shared context, while a MAS uses isolated local contexts connected by bounded relay messages. We show that, under infinite relay bandwidth, any SAS can be simulated by a MAS that transmits the full upstream context. Thus, the nontrivial advantage of MAS arises under bounded relays, where compression introduces a fundamental trade-off: reducing redundant context can improve efficiency, but may also incur loss of task-relevant information. We formalize this trade-off as an information bottleneck controlled by an effective parameter $β$, which captures how the balance shifts with model capability, and shows that MAS gains arise when context reduction outweighs relay information loss. We conduct 18 controlled experiments across five benchmarks and three model scales to validate our theoretical studies. We observe that MAS consistently helps when relays are near-sufficient, especially for weaker models. In contrast, MAS gains shrink or reverse when relays incur information loss, especially for stronger models that can already extract useful information from redundant context and thus gain little from compression. Our study shows that multi-agent design is fundamentally an information-bottleneck optimization problem. This perspective explains when bounded inter-agent communication helps or hurts.
+
+---
+
+### Bidirectional Typing with Freezing, Skeletons, and Ghosts
+
+**Authors:** Wenhao Tang, Shengyi Jiang, Aghilas Y. Boussaa, Sam Lindley, Bruno C. d. S. Oliveira
+
+**Published:** 2026-07-17T15:39:23Z
+
+**Link:** http://arxiv.org/abs/2607.16061v1
+
+**Abstract:**
+
+Bidirectional typing makes use of local information flow between functions and arguments. Conventional bidirectional typing only supports unidirectional information flow, typically from functions to arguments, which is insufficient to infer first-class polymorphism. Existing work on improving information flow either has limited support for mixed information flow or requires ad hoc mechanisms that harm predictability.
+  We propose Fresco, a novel bidirectional type inference approach to first-class polymorphism. Fresco enables local type information to flow back and forth between functions and arguments via skeletons, with ghosts representing unknown type information, and allows users to customise the direction of information flow by freezing. The flexible information flow of Fresco enables expressive and predictable inference for first-class polymorphism. We provide a declarative specification for Fresco, a simple type inference algorithm that is sound and complete with respect to the declarative system, and a prototype implementation that further generalises Fresco to infer modal effect types.
+
+---
+
+### Revisiting data-driven dynamic security assessment with a tabular foundation model
+
+**Authors:** Olayiwola Arowolo, Maosheng Yang, Jochen Cremer
+
+**Published:** 2026-07-17T15:06:11Z
+
+**Link:** http://arxiv.org/abs/2607.16031v1
+
+**Abstract:**
+
+Data-driven pre-fault dynamic security assessment (DSA) rapidly evaluates the dynamic risk of credible contingencies on a power system using machine learning. Existing approaches face two limitations. First, they require a large labelled database for training, with a separate model trained, tuned, and maintained for each contingency in a potentially long list of credible contingencies. Second, the trained models generalize poorly to unseen contingencies. This work addresses the limitations by using a tabular foundation model (TFM) that assesses stability through in-context learning, requiring no retraining or hyperparameter optimization. A single TFM can assess many contingencies at once, removing the need for one model per classifier. We also characterize when the use of electrical distance coordinates (EDC) as continuous features enables generalization of TFM to unseen contingencies and when they do not, demonstrating how a few labelled samples can reliably improve generalization. Through comprehensive case studies on the IEEE 68-bus system, we show that a single TFM attains an average Macro F1 score of about 90% with only 120 labelled samples per contingency, roughly two orders of magnitude fewer than conventionally assumed, without any model retraining or hyperparameter tuning. For new/unseen contingencies, we show that using just 10 labelled samples of the new contingency with EDC encoding matches the best achievable transfer learning oracle model, which requires fully labelled data and is not deployable in practice. Overall, this initial study paves the way towards developing and deploying foundation models for power system operations, with possible applications across multiple operational tasks.
+
+---
+
+### Rethinking Quantum Continual Learning with Quantum Fisher Information
+
+**Authors:** Yu-Chao Hsu, Yu-Cheng Lin, Tai-Yue Li, Nan-Yow Chen, En-Jui Kuo
+
+**Published:** 2026-07-17T15:02:32Z
+
+**Link:** http://arxiv.org/abs/2607.16030v1
+
+**Abstract:**
+
+Quantum continual learning aims to train quantum models on sequential tasks without losing previously learned knowledge. However, variational quantum classifiers (VQCs) are prone to catastrophic forgetting under nonstationary task distributions. We propose quantum elastic weight consolidation (QEWC), a quantum Fisher information (QFI)-informed regularization method for mitigating forgetting. Unlike conventional elastic weight consolidation based on classical Fisher information (CFI), which measures parameter importance through measurement-dependent output statistics, QEWC uses QFI to quantify the intrinsic sensitivity of the parameterized quantum state. This gives an information-geometric view in which important parameters are identified by the local response of the quantum state manifold. We evaluate QEWC on VQCs trained on sequential binary classification tasks, including classical image-classification and quantum phase-classification tasks. Simulations show that sequential training without regularization causes severe forgetting, while both CFI-based EWC and QFI-based QEWC improve retention of previous tasks. Mechanistic analyses further show that the two methods impose different regularization geometries: CFI acts selectively on measurement-sensitive directions, whereas QFI imposes a denser state-geometric constraint over parameter space. Under depolarizing noise, CFI values are strongly suppressed by degraded measurement statistics, while QFI preserves a more stable sensitivity structure of the noisy parameterized quantum state. These results establish QEWC as a physically motivated approach for studying and mitigating forgetting in quantum continual learning through quantum-state geometry.
+
+---
+
+### Induction in Both Directions: A Mechanistic Analysis of In-Context Learning in Masked Diffusion Language Models
+
+**Authors:** Andy Catruna, Emilian Radoi
+
+**Published:** 2026-07-17T12:07:59Z
+
+**Link:** http://arxiv.org/abs/2607.15893v1
+
+**Abstract:**
+
+While the internal mechanisms of autoregressive (AR) transformers have been studied extensively, much less is known about diffusion language models (DLMs), an emerging alternative that generates text by iterative denoising. In this work, we study how DLMs implement induction, a mechanism behind in-context learning in which the model finds a repeated context and copies the token that followed it. Our analysis compares attention-only AR models and absorbing-mask DLMs with matched architectures. We find that DLMs learn a bidirectional induction circuit, where previous-token and next-token heads write local context into the residual stream and later induction heads use it to find and copy the answer from the matching source position. The circuit is direction-symmetric, working whether the source appears in the past or in the future. When only left context is visible, matching what an AR model sees, the DLM does not outperform its AR counterpart in induction capabilities. However, we observe it has stronger induction when both sides of the masked token are visible, pointing to bidirectional context access rather than a stronger one-sided mechanism. Beyond induction, we provide causal evidence that DLMs compute the global fraction of masked tokens and use it as an implicit timestep, even though they are given no explicit timestep embedding.
+
+---
+
+## LLM for code
+
+### Evaluating Open-Weight LLMs for Generating Structured Threat Information for Autonomous Vehicle Vulnerabilities
+
+**Authors:** Md Erfan, Ahmed Ryan, Md Kamal Hossain Chowdhury, Md Rayhanur Rahman
+
+**Published:** 2026-07-17T17:55:19Z
+
+**Link:** http://arxiv.org/abs/2607.16175v1
+
+**Abstract:**
+
+Connected and Autonomous Vehicles (CAVs) rely on interconnected software and hardware components, including sensors, Electronic Control Units, in-vehicle infotainment systems, and telematics units, where vulnerabilities can compromise assets, users, and vehicle operations. These vulnerabilities are commonly documented as plain text in the Common Vulnerabilities and Exposures (CVE) database; however, security practitioners require structured information about affected assets, types of weaknesses, and attack behaviors to effectively mitigate the risks from these vulnerabilities. To this end, we evaluate open-weight Large Language Models (LLMs) for generating Structured Threat Information Expression (STIX), a well-known structured format for representing threat information, for CAV-related CVEs. We construct a dataset called CAV-STIXGen that maps CAV vulnerability descriptions to STIX domain objects (SDO), STIX relationship objects (SRO), Common Weakness Enumeration (CWE), and MITRE ATT&amp;CK techniques mappings. Using this dataset, we evaluated 11 open-weight LLMs (4B to 120B parameters) across various prompting strategies and temperatures. Single-model configurations achieve F1 scores of 0.94 for SDO, 0.63 for SRO, and 0.99 for CWE mapping, while complete MITRE ATT&amp;CK mapping remains challenging. In a multi-agent setup, Gemma-4-31B and Codestral-22B achieve F1 scores of 0.91 for SDOs and 0.43 for SROs, respectively. Lastly, we analyze CWE and MITRE ATT&amp;CK co-occurrences to identify recurring threat patterns in the CAV domain, demonstrating how AI-assisted vulnerability-to-STIX translation can automate threat intelligence and prioritize defense in transportation security.
+
+---
+
+### An Exam for Active Observers
+
+**Authors:** Jiarui Zhang, Muzi Tao, Shangshang Wang, Ollie Liu, Xuezhe Ma, Willie Neiswanger
+
+**Published:** 2026-07-17T17:46:23Z
+
+**Link:** http://arxiv.org/abs/2607.16165v1
+
+**Abstract:**
+
+Human vision is a closed loop: gaze is continuously redirected by intermediate hypotheses rather than a single snapshot. Decades of psychophysics and cognitive science have argued that this active observation is essential for a wide range of tasks. Whether today's multimodal large language models (MLLMs) exercise active observation is an empirical question that current vision-language benchmarks do not answer. We introduce ActiveVision, a benchmark that makes active observation measurable for MLLMs, comprising 17 tasks across 3 categories. Tasks are designed to force repeated visual perception rather than a single static description. Frontier MLLMs collapse on ActiveVision: the highest-scoring model we evaluate, GPT-5.5 at the highest exposed reasoning-effort tier, solves only 10.6% of items and scores zero on 11 of the 17 tasks, and even Claude Fable 5, despite topping most reasoning and coding leaderboards, solves just 3.5%, far behind three human participants who average 96.1%. Furthermore, much of the gap persists even when models write and run their own vision code: such code is unreliable on realistic imagery, and catching its failures itself requires the active perception the models lack. Together, these results indicate that current MLLMs lack robust active visual observation, motivating architectures and training objectives that close the perception-reasoning loop.
+
+---
+
+### CRAFT: Clustering Rubrics to Diagnose Weak LLM Capabilities and Generate Targeted Fine-Tuning Data
+
+**Authors:** Vipul Gupta, Zihao Wang, Razvan-Gabriel Dumitru, MohammadHossein Rezaei, Aakash Sabharwal, Yunzhong He
+
+**Published:** 2026-07-17T17:00:38Z
+
+**Link:** http://arxiv.org/abs/2607.16122v1
+
+**Abstract:**
+
+Evaluations should do more than measure a models current performance. They should tell us what to fix for the next model iteration and provide a way to generate targeted post training data. Most evaluation pipelines identify weak examples, topics, or categories, but they leave the underlying capability failure implicit: they say where a model fails, not why. We introduce CRAFT, a method that converts any rubric based evaluation dataset into a model specific diagnosis of weak capabilities. CRAFT treats each grading criterion as a capability probe: it extracts a capability description from every prompt rubric pair, clusters these descriptions into a hierarchical capability tree, scores the target model at every node, and selects low performing nodes dynamically across tree levels, at the granularity where each failure is clearest. The selected weak capabilities then direct the generation of targeted supervised finetuning data. Holding the data generation, finetuning, and evaluation setup fixed, we compare CRAFT against prompt level EvalTree clustering and untargeted random generation on four open source models, two professional domains (finance and legal), and 13 held out benchmarks disjoint from the diagnostic data. CRAFT achieves the strongest finance domain average for all four models under repeated temperature decoding; on legal domain, it is strongest for three of four models and remains within the decoding variance bands of the best baseline on the fourth. Diagnosing weaknesses at the level of rubric criteria, rather than prompts or categories, thus yields both a sharper picture of what a model cannot do and measurably better models after finetuning on that diagnosis.
+
+---
+
+### Understanding Reasoning from Pretraining to Post-Training
+
+**Authors:** Jingyan Shen, Ang Li, Salman Rahman, Yifan Sun, Micah Goldblum, Matus Telgarsky, Pavel Izmailov
+
+**Published:** 2026-07-17T16:31:58Z
+
+**Link:** http://arxiv.org/abs/2607.16097v1
+
+**Abstract:**
+
+Reinforcement learning (RL) has become central to improving large language models (LLMs) on complex reasoning tasks, yet RL post-training is largely studied in isolation from the pretraining that precedes it. As a result, two basic questions remain open: (1) how do pretraining choices (model size, data) shape the returns to RL compute, and (2) what does RL actually do to the model? These questions are difficult to study in the standard LLM setting: pretraining corpora are vast and uncontrolled, making it hard to attribute behaviors to pretraining versus RL, and systematic compute sweeps across both stages are prohibitively expensive. To address these challenges, we use chess as a controlled testbed for studying reasoning across the full pretraining-to-post-training pipeline. We follow the standard LLM training pipeline by pretraining language models from 5M to 1B parameters on human chess games, supervised fine-tuning on synthetic reasoning traces, and running RL on chess puzzles with verifiable rewards. Using this framework, we find that the post-RL performance at given RL compute level is well-predicted from the pretraining loss, and slope of the RL reward curves improves approximately linearly with the pretraining tokens. Beyond scaling, we find that RL does not simply sharpen the SFT policy: on easy puzzles it amplifies correct moves the SFT policy already preferred, while on hard puzzles it surfaces correct moves that were nearly absent under SFT. We further test whether our findings transfer beyond chess by training a 1B language model on math-domain text, where the same predictive pattern emerges: longer-pretrained checkpoints reach higher post-RL performance and improve faster under RL. In sum, we provide a quantitative account of the pretraining-to-RL interface and a controlled testbed for studying the science of reasoning across the full pretraining-to-post-training pipeline.
+
+---
+
+
