@@ -60,7 +60,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
     }
     const children = parts.map((part, pi) => {
       if (part.type === "bold") return <strong key={pi} className="font-semibold text-ink">{part.text}</strong>;
-      if (part.type === "link") return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all">{part.text} ↗</a>;
+      if (part.type === "link") { const isPdf = part.url?.endsWith(".pdf"); return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isPdf || undefined} className={`inline-flex items-center gap-1.5 px-4 py-2 border rounded-lg text-[17px] font-medium transition-all ${isPdf ? "bg-card border-line text-lead hover:border-accent hover:text-accent" : "bg-accent/10 border-accent/30 text-accent hover:bg-accent hover:text-white"}`}>{part.text} {isPdf ? "⬇" : "↗"}</a>; }
       return part.text;
     });
 
