@@ -142,7 +142,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
       }
       if (part.type === "link") {
         const isPdf = part.url?.endsWith(".pdf");
-        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isPdf || undefined} className={`inline-flex items-center gap-1.5 px-4 py-2 border rounded-lg text-[17px] font-medium transition-all ${isPdf ? "bg-card border-line text-lead hover:border-accent hover:text-accent" : "bg-accent/10 border-accent/30 text-accent hover:bg-accent hover:text-white"}`}>{part.text} {isPdf ? "⬇" : "↗"}</a>;
+        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isPdf || undefined} className={isPdf ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all"}>{part.text}{isPdf ? "" : " ↗"}</a>;
       }
       return part.text;
     });
@@ -290,8 +290,9 @@ export default function WikiPage() {
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
-                const filtered = sections.filter((s) => s.slug !== "nju-guides");
+                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-"));
                 const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
+                const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
                 const calcNotes = calcSections.filter((s) => s.slug.endsWith("-notes"));
@@ -331,6 +332,15 @@ export default function WikiPage() {
 
                 return (
                   <>
+                    {macroSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Macroeconomics</div>
+                        <div className="text-[18px] text-muted mb-8">宏观经济学</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                          {macroSections.map(renderSection)}
+                        </div>
+                      </div>
+                    )}
                     {otherSections.map(renderSection)}
                     {calcSections.length > 0 && (
                       <div>
