@@ -169,6 +169,8 @@ export default function WikiPage() {
   const [pages, setPages] = useState<WikiPageItem[]>([]);
   const [readme, setReadme] = useState<WikiReadme | null>(null);
   const [readmeOpen, setReadmeOpen] = useState(false);
+  const [studyGuide, setStudyGuide] = useState<WikiReadme | null>(null);
+  const [studyGuideOpen, setStudyGuideOpen] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -183,6 +185,11 @@ export default function WikiPage() {
     fetch("/api/wiki/pages/freshman-experience-summary")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data && data.content) setReadme(data); })
+      .catch(() => {});
+    // Fetch Study Guide
+    fetch("/api/wiki/pages/calculus-1-readme")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setStudyGuide(data); })
       .catch(() => {});
   }, []);
 
@@ -283,6 +290,31 @@ export default function WikiPage() {
         </section>
       )}
 
+      {/* ── Study Guide (collapsible) ── */}
+      {studyGuide && (
+        <section className="px-15 py-14 border-t border-line">
+          <button
+            onClick={() => setStudyGuideOpen((prev) => !prev)}
+            className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
+          >
+            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
+              Study Guide
+            </span>
+            <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
+              {studyGuide.title}
+            </h2>
+            <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${studyGuideOpen ? "rotate-90" : ""}`} title={studyGuideOpen ? "Collapse" : "Expand"}>
+              ▸
+            </span>
+          </button>
+          {studyGuideOpen && (
+            <div className="max-w-[760px] mt-10">
+              {renderMarkdown(studyGuide.content)}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* ── Sections & pages ── */}
       <section className="px-15 py-14 border-t border-line">
         <div className="flex flex-col gap-12">
@@ -291,7 +323,7 @@ export default function WikiPage() {
           ) : (
             (() => {
                 const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-"));
-                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
+                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-") && s.slug !== "calculus-readme");
                 const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
