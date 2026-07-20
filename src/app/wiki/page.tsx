@@ -170,7 +170,7 @@ export default function WikiPage() {
   const [readme, setReadme] = useState<WikiReadme | null>(null);
   const [readmeOpen, setReadmeOpen] = useState(false);
   const [studyGuide, setStudyGuide] = useState<WikiReadme | null>(null);
-  const [studyGuideOpen, setStudyGuideOpen] = useState(false);
+  const [expandedSg, setExpandedSg] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -290,31 +290,6 @@ export default function WikiPage() {
         </section>
       )}
 
-      {/* ── Study Guide (collapsible) ── */}
-      {studyGuide && (
-        <section className="px-15 py-14 border-t border-line">
-          <button
-            onClick={() => setStudyGuideOpen((prev) => !prev)}
-            className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
-          >
-            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
-              Study Guide
-            </span>
-            <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
-              {studyGuide.title}
-            </h2>
-            <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${studyGuideOpen ? "rotate-90" : ""}`} title={studyGuideOpen ? "Collapse" : "Expand"}>
-              ▸
-            </span>
-          </button>
-          {studyGuideOpen && (
-            <div className="max-w-[760px] mt-10">
-              {renderMarkdown(studyGuide.content)}
-            </div>
-          )}
-        </section>
-      )}
-
       {/* ── Sections & pages ── */}
       <section className="px-15 py-14 border-t border-line">
         <div className="flex flex-col gap-12">
@@ -323,7 +298,7 @@ export default function WikiPage() {
           ) : (
             (() => {
                 const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-"));
-                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-") && s.slug !== "calculus-readme");
+                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
                 const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
@@ -335,12 +310,30 @@ export default function WikiPage() {
 
                 const renderSection = (section: WikiSection) => {
                   const sectionPages = pagesBySection[section.id] || [];
+                  const isSG = section.slug === "calculus-readme";
                   return (
                     <div key={section.slug}>
-                      <div className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2">
-                        {section.name.replace("Calculus I — ", "").replace("Calculus II — ", "")}
-                        <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
-                      </div>
+                      {isSG ? (
+                        <button
+                          onClick={() => setExpandedSg((prev) => !prev)}
+                          className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 hover:text-accent transition-colors w-full text-left"
+                        >
+                          {section.name}
+                          <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
+                          <span className={`text-[20px] text-muted ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`}>▸</span>
+                        </button>
+                      ) : (
+                        <div className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2">
+                          {section.name.replace("Calculus I — ", "").replace("Calculus II — ", "")}
+                          <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
+                        </div>
+                      )}
+                      {isSG && expandedSg && studyGuide && (
+                        <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
+                          {renderMarkdown(studyGuide.content)}
+                        </div>
+                      )}
+                      {!isSG && (
                       <div className="flex flex-col">
                         {sectionPages.length > 0 ? (
                           sectionPages.map((item, idx) => (
@@ -357,6 +350,8 @@ export default function WikiPage() {
                         ) : (
                           <span className="text-[18px] text-muted/50 italic">No pages yet</span>
                         )}
+                      </div>
+                      )}
                       </div>
                     </div>
                   );
