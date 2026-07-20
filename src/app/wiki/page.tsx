@@ -291,10 +291,24 @@ export default function WikiPage() {
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
-                // Group Calculus I sections under a parent header
                 const filtered = sections.filter((s) => s.slug !== "nju-guides");
-                const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-1-"));
-                const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-1-"));
+
+                // Group calculus sections by prefix
+                const groups: Array<{ label: string; subtitle: string; sections: WikiSection[] }> = [];
+                const prefixes = [
+                  { prefix: "calculus-1-", label: "Calculus I", subtitle: "微积分一层次 · 学科指导" },
+                  { prefix: "calculus-2-", label: "Calculus II", subtitle: "微积分二层次 · 课堂笔记" },
+                ];
+
+                const grouped = new Set<string>();
+                for (const { prefix, label, subtitle } of prefixes) {
+                  const matched = filtered.filter((s) => s.slug.startsWith(prefix));
+                  if (matched.length > 0) {
+                    groups.push({ label, subtitle, sections: matched });
+                    matched.forEach((s) => grouped.add(s.slug));
+                  }
+                }
+                const otherSections = filtered.filter((s) => !grouped.has(s.slug));
 
                 const renderSection = (section: WikiSection) => {
                   const sectionPages = pagesBySection[section.id] || [];
@@ -327,17 +341,15 @@ export default function WikiPage() {
 
                 return (
                   <>
-                    {/* Calculus I parent group */}
-                    {calcSections.length > 0 && (
-                      <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">Calculus I</div>
-                        <div className="text-[18px] text-muted mb-8">微积分一层次 · 学科指导</div>
+                    {groups.map((g) => (
+                      <div key={g.label}>
+                        <div className="text-[24px] font-semibold text-ink mb-2">{g.label}</div>
+                        <div className="text-[18px] text-muted mb-8">{g.subtitle}</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-10">
-                          {calcSections.map(renderSection)}
+                          {g.sections.map(renderSection)}
                         </div>
                       </div>
-                    )}
-                    {/* Other sections */}
+                    ))}
                     {otherSections.map(renderSection)}
                   </>
                 );
