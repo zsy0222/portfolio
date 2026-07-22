@@ -316,11 +316,13 @@ export default function WikiPage() {
                       {isSG ? (
                         <button
                           onClick={() => setExpandedSg((prev) => !prev)}
-                          className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2 cursor-pointer bg-transparent border-none p-0 hover:text-accent transition-colors w-full text-left"
+                          className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
                         >
-                          {section.name}
-                          <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
-                          <span className={`text-[20px] text-muted ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`}>▸</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
+                            <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`}>▸</span>
+                          </div>
+                          <div className="text-[24px] font-light text-ink mt-1">微积分学科指导</div>
                         </button>
                       ) : (
                         <div className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2">
