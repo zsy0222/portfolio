@@ -173,6 +173,8 @@ export default function WikiPage() {
   const [expandedSg, setExpandedSg] = useState(false);
   const [macroGuide, setMacroGuide] = useState<WikiReadme | null>(null);
   const [expandedMg, setExpandedMg] = useState(false);
+  const [microGuide, setMicroGuide] = useState<WikiReadme | null>(null);
+  const [expandedMig, setExpandedMig] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -197,6 +199,11 @@ export default function WikiPage() {
     fetch("/api/wiki/pages/macro-readme-index")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data && data.content) setMacroGuide(data); })
+      .catch(() => {});
+    // Fetch Micro Study Guide
+    fetch("/api/wiki/pages/micro-readme-index")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setMicroGuide(data); })
       .catch(() => {});
   }, []);
 
@@ -304,9 +311,10 @@ export default function WikiPage() {
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
-                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-"));
+                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-"));
                 const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
                 const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
+                const microSections = sections.filter((s) => s.slug.startsWith("micro-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
                 const calcNotes = calcSections.filter((s) => s.slug.endsWith("-notes"));
@@ -399,6 +407,41 @@ export default function WikiPage() {
                             return null;
                           })()}
                           {macroSections.filter((s) => s.slug !== "macro-readme").map(renderSection)}
+                        </div>
+                      </div>
+                    )}
+                    {/* Microeconomics group */}
+                    {microSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Microeconomics</div>
+                        <div className="text-[18px] text-muted mb-8">微观经济学</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                          {(() => {
+                            const mgSection = microSections.find((s) => s.slug === "micro-readme");
+                            if (mgSection) {
+                              return (
+                                <div>
+                                  <button
+                                    onClick={() => setExpandedMig((prev) => !prev)}
+                                    className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
+                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMig ? "rotate-90" : ""}`}>▸</span>
+                                    </div>
+                                    <div className="text-[24px] font-light text-ink mt-1">微观经济学学科指导</div>
+                                  </button>
+                                  {expandedMig && microGuide && (
+                                    <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
+                                      {renderMarkdown(microGuide.content)}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                          {microSections.filter((s) => s.slug !== "micro-readme").map(renderSection)}
                         </div>
                       </div>
                     )}
