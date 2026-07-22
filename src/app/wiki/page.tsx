@@ -171,6 +171,8 @@ export default function WikiPage() {
   const [readmeOpen, setReadmeOpen] = useState(false);
   const [studyGuide, setStudyGuide] = useState<WikiReadme | null>(null);
   const [expandedSg, setExpandedSg] = useState(false);
+  const [macroGuide, setMacroGuide] = useState<WikiReadme | null>(null);
+  const [expandedMg, setExpandedMg] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -190,6 +192,11 @@ export default function WikiPage() {
     fetch("/api/wiki/pages/calculus-1-readme")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data && data.content) setStudyGuide(data); })
+      .catch(() => {});
+    // Fetch Macro Study Guide
+    fetch("/api/wiki/pages/macro-readme-index")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setMacroGuide(data); })
       .catch(() => {});
   }, []);
 
@@ -365,7 +372,33 @@ export default function WikiPage() {
                         <div className="text-[24px] font-semibold text-ink mb-2">Macroeconomics</div>
                         <div className="text-[18px] text-muted mb-8">宏观经济学</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
-                          {macroSections.map(renderSection)}
+                          {/* Macro Study Guide (collapsible inline) */}
+                          {(() => {
+                            const mgSection = macroSections.find((s) => s.slug === "macro-readme");
+                            if (mgSection) {
+                              return (
+                                <div>
+                                  <button
+                                    onClick={() => setExpandedMg((prev) => !prev)}
+                                    className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
+                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMg ? "rotate-90" : ""}`}>▸</span>
+                                    </div>
+                                    <div className="text-[24px] font-light text-ink mt-1">宏观经济学学科指导</div>
+                                  </button>
+                                  {expandedMg && macroGuide && (
+                                    <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
+                                      {renderMarkdown(macroGuide.content)}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                          {macroSections.filter((s) => s.slug !== "macro-readme").map(renderSection)}
                         </div>
                       </div>
                     )}
