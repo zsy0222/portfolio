@@ -141,8 +141,8 @@ function renderMarkdown(md: string): React.ReactNode[] {
         return <strong key={pi} className="font-semibold text-ink">{part.text}</strong>;
       }
       if (part.type === "link") {
-        const isPdf = part.url?.endsWith(".pdf");
-        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isPdf || undefined} className={isPdf ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all"}>{part.text}{isPdf ? "" : " ↗"}</a>;
+        const isDownload = /\.(pdf|docx|doc|xlsx|xls|pptx|ppt)$/i.test(part.url || "");
+        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isDownload || undefined} className={isDownload ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all"}>{part.text}{isDownload ? "" : " ↗"}</a>;
       }
       return part.text;
     });
