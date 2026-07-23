@@ -348,7 +348,7 @@ export default function WikiPage() {
                           <div className="text-[24px] font-light text-ink mt-1">微积分学科指导</div>
                         </button>
                       ) : (
-                        <div className="text-[18px] font-medium tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-2">
+                        <div className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted mb-2 flex items-center gap-2">
                           {section.name.replace("Calculus I — ", "").replace("Calculus II — ", "")}
                           <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
                         </div>
@@ -362,7 +362,7 @@ export default function WikiPage() {
                       <div className="flex flex-col">
                         {sectionPages.length > 0 ? (
                           sectionPages.map((item, idx) => (
-                            <div key={item.slug} className={`py-5 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}>
+                            <div key={item.slug} className={`py-2.5 ${idx < sectionPages.length - 1 ? "border-b border-line" : ""}`}>
                               {authed ? (
                                 <Link href={`/wiki/${item.slug}`} className="text-[20px] font-medium text-lead hover:text-accent transition-colors">
                                   {item.title}
@@ -387,7 +387,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Macroeconomics</div>
                         <div className="text-[18px] text-muted mb-8">宏观经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {/* Macro Study Guide (collapsible inline) */}
                           {(() => {
                             const mgSection = macroSections.find((s) => s.slug === "macro-readme");
@@ -423,7 +423,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Microeconomics</div>
                         <div className="text-[18px] text-muted mb-8">微观经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const mgSection = microSections.find((s) => s.slug === "micro-readme");
                             if (mgSection) {
@@ -458,7 +458,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Political Economics</div>
                         <div className="text-[18px] text-muted mb-8">政治经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const pg = peSections.find((s) => s.slug === "pe-readme");
                             if (pg) {
@@ -493,7 +493,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Calculus</div>
                         <div className="text-[18px] text-muted mb-8">微积分 · 学科资料</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {calcTop.map(renderSection)}
                           {calc1 && (
                             <div>
