@@ -175,6 +175,8 @@ export default function WikiPage() {
   const [expandedMg, setExpandedMg] = useState(false);
   const [microGuide, setMicroGuide] = useState<WikiReadme | null>(null);
   const [expandedMig, setExpandedMig] = useState(false);
+  const [peGuide, setPeGuide] = useState<WikiReadme | null>(null);
+  const [expandedPe, setExpandedPe] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -204,6 +206,11 @@ export default function WikiPage() {
     fetch("/api/wiki/pages/micro-readme-index")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data && data.content) setMicroGuide(data); })
+      .catch(() => {});
+    // Fetch PE Study Guide
+    fetch("/api/wiki/pages/pe-readme-index")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setPeGuide(data); })
       .catch(() => {});
   }, []);
 
@@ -311,10 +318,11 @@ export default function WikiPage() {
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
-                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-"));
+                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-") && !s.slug.startsWith("pe-"));
                 const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
                 const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
                 const microSections = sections.filter((s) => s.slug.startsWith("micro-"));
+                const peSections = sections.filter((s) => s.slug.startsWith("pe-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
                 const calcNotes = calcSections.filter((s) => s.slug.endsWith("-notes"));
@@ -442,6 +450,41 @@ export default function WikiPage() {
                             return null;
                           })()}
                           {microSections.filter((s) => s.slug !== "micro-readme").map(renderSection)}
+                        </div>
+                      </div>
+                    )}
+                    {/* Political Economics group */}
+                    {peSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Political Economics</div>
+                        <div className="text-[18px] text-muted mb-8">政治经济学</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-8">
+                          {(() => {
+                            const pg = peSections.find((s) => s.slug === "pe-readme");
+                            if (pg) {
+                              return (
+                                <div>
+                                  <button
+                                    onClick={() => setExpandedPe((prev) => !prev)}
+                                    className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
+                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedPe ? "rotate-90" : ""}`}>▸</span>
+                                    </div>
+                                    <div className="text-[24px] font-light text-ink mt-1">政治经济学学科指导</div>
+                                  </button>
+                                  {expandedPe && peGuide && (
+                                    <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
+                                      {renderMarkdown(peGuide.content)}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                          {peSections.filter((s) => s.slug !== "pe-readme").map(renderSection)}
                         </div>
                       </div>
                     )}
