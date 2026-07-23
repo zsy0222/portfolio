@@ -177,6 +177,8 @@ export default function WikiPage() {
   const [expandedMig, setExpandedMig] = useState(false);
   const [peGuide, setPeGuide] = useState<WikiReadme | null>(null);
   const [expandedPe, setExpandedPe] = useState(false);
+  const [engGuide, setEngGuide] = useState<WikiReadme | null>(null);
+  const [expandedEng, setExpandedEng] = useState(false);
 
   useEffect(() => {
     fetch("/api/wiki/sections")
@@ -211,6 +213,11 @@ export default function WikiPage() {
     fetch("/api/wiki/pages/pe-readme-index")
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => { if (data && data.content) setPeGuide(data); })
+      .catch(() => {});
+    // Fetch English Study Guide
+    fetch("/api/wiki/pages/eng-readme-index")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data && data.content) setEngGuide(data); })
       .catch(() => {});
   }, []);
 
@@ -318,11 +325,12 @@ export default function WikiPage() {
             <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
-                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-") && !s.slug.startsWith("pe-"));
+                const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-") && !s.slug.startsWith("pe-") && !s.slug.startsWith("eng-"));
                 const calcSections = filtered.filter((s) => s.slug.startsWith("calculus-"));
                 const macroSections = sections.filter((s) => s.slug.startsWith("macro-"));
                 const microSections = sections.filter((s) => s.slug.startsWith("micro-"));
                 const peSections = sections.filter((s) => s.slug.startsWith("pe-"));
+                const engSections = sections.filter((s) => s.slug.startsWith("eng-"));
                 const otherSections = filtered.filter((s) => !s.slug.startsWith("calculus-"));
 
                 const calcNotes = calcSections.filter((s) => s.slug.endsWith("-notes"));
@@ -485,6 +493,41 @@ export default function WikiPage() {
                             return null;
                           })()}
                           {peSections.filter((s) => s.slug !== "pe-readme").map(renderSection)}
+                        </div>
+                      </div>
+                    )}
+                    {/* English group */}
+                    {engSections.length > 0 && (
+                      <div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">English</div>
+                        <div className="text-[18px] text-muted mb-8">英语</div>
+                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                          {(() => {
+                            const eg = engSections.find((s) => s.slug === "eng-readme");
+                            if (eg) {
+                              return (
+                                <div>
+                                  <button
+                                    onClick={() => setExpandedEng((prev) => !prev)}
+                                    className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-2 group"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted">Study Guide</span>
+                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedEng ? "rotate-90" : ""}`}>▸</span>
+                                    </div>
+                                    <div className="text-[24px] font-light text-ink mt-1">英语学科指导</div>
+                                  </button>
+                                  {expandedEng && engGuide && (
+                                    <div className="mb-6 pb-6 border-b border-line max-w-[760px]">
+                                      {renderMarkdown(engGuide.content)}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                          {engSections.filter((s) => s.slug !== "eng-readme").map(renderSection)}
                         </div>
                       </div>
                     )}
