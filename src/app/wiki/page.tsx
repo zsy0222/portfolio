@@ -84,6 +84,43 @@ function renderMarkdown(md: string): React.ReactNode[] {
       continue;
     }
 
+    // Markdown table: consecutive lines starting with |
+    if (line.trim().startsWith("|") && lines[i + 1]?.trim().startsWith("|")) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+      // Parse: skip separator line (second line with ---)
+      const headerLine = tableLines[0];
+      const bodyLines = tableLines.filter((_, idx) => idx !== 1 && !/^\|[-:\s|]+\|$/.test(_));
+      const toCells = (l: string) => l.replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+
+      nodes.push(
+        <div key={key++} className="overflow-x-auto my-4 border border-line rounded-lg">
+          <table className="w-full text-[16px] text-lead">
+            <thead>
+              <tr className="border-b border-line bg-card/50">
+                {toCells(headerLine).map((c, ci) => (
+                  <th key={ci} className="px-4 py-2.5 text-left font-semibold text-ink">{c}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {bodyLines.map((row, ri) => (
+                <tr key={ri} className="border-b border-line last:border-none">
+                  {toCells(row).map((c, ci) => (
+                    <td key={ci} className="px-4 py-2.5">{c}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      continue;
+    }
+
     // Heading ##
     if (line.startsWith("## ")) {
       nodes.push(
