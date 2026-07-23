@@ -1,3 +1,4 @@
+export const revalidate = 300;
 export const runtime = "nodejs";
 import { hasDb, tursoQuery, allRows } from "@/lib/turso";
 import { NextRequest, NextResponse } from "next/server";
