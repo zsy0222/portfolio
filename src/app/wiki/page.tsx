@@ -382,6 +382,7 @@ export default function WikiPage() {
                   return (
                     <div key={section.slug}>
                       {isSG ? (
+                        authed ? (
                         <button
                           onClick={() => setExpandedSg((prev) => !prev)}
                           className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
@@ -392,13 +393,14 @@ export default function WikiPage() {
                           </div>
                           <div className="text-[24px] font-light text-ink mt-1">微积分学科指导</div>
                         </button>
+                        ) : null
                       ) : (
                         <div className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted mb-2 flex items-center gap-2">
                           {section.name.replace("Calculus I — ", "").replace("Calculus II — ", "")}
                           <span className="text-[14px] text-muted/60">{sectionPages.length}</span>
                         </div>
                       )}
-                      {isSG && expandedSg && studyGuide && (
+                      {isSG && authed && expandedSg && studyGuide && (
                         <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
                           {renderMarkdown(studyGuide.content)}
                         </div>
@@ -436,7 +438,7 @@ export default function WikiPage() {
                           {/* Macro Study Guide (collapsible inline) */}
                           {(() => {
                             const mgSection = macroSections.find((s) => s.slug === "macro-readme");
-                            if (mgSection) {
+                            if (mgSection && authed) {
                               return (
                                 <div>
                                   <button
@@ -471,7 +473,7 @@ export default function WikiPage() {
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const mgSection = microSections.find((s) => s.slug === "micro-readme");
-                            if (mgSection) {
+                            if (mgSection && authed) {
                               return (
                                 <div>
                                   <button
