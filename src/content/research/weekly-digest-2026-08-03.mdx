@@ -1,0 +1,212 @@
+---
+title: "Weekly Paper Digest: 2026-07-27 ~ 2026-08-03"
+date: "2026-08-03"
+category: "research"
+tags: ["weekly-digest", "arxiv"]
+summary: "本周 ArXiv 论文摘要 — program slicing, fault localization, LLM for code."
+draft: false
+---
+
+## program slicing
+
+### Educating the Agentic Engineer: Curricula, Collaboration, and Continuous Learning in the AI Era
+
+**Authors:** Mamdouh Alenezi
+
+**Published:** 2026-07-31T16:45:36Z
+
+**Link:** http://arxiv.org/abs/2607.29610v1
+
+**Abstract:**
+
+Generative and agentic artificial intelligence (AI) are reconfiguring software and systems engineering from a discipline centered on human authorship of artifacts to one focused on directing, verifying, and governing autonomous systems. This transition demands a new professional archetype, the \emph{agentic engineer}, whose enduring value lies in intent specification, orchestration of multi-agent workflows, critical evaluation of machine-generated outputs, and ethical judgment. This article presents an integrative conceptual synthesis across engineering education, computing education, human--AI interaction, human factors, and the learning sciences to derive an evidence-grounded educational architecture for this archetype. We introduce the ACCEL framework (Agentic Competencies through Curricula, Collaboration, and Enduring Learning), which organizes five competency pillars and maps them to three delivery vectors: curricula, collaboration, and continuous learning. Drawing on agency theory, trust-in-automation research, and empirical studies of AI-assisted programming, including evidence that AI benefits are unevenly realized and often misperceived, we propose a scaffolded curriculum, a delegation--verification pedagogical loop for human--AI teaming, redesigned assessment, governance-literate ethics integration, and alignment with current curricular guidelines and international AI competency frameworks. We identify key risks, including automation bias, deskilling, superficial engagement, and diffuse accountability, and conclude that educating the agentic engineer requires systemic transformation rather than incremental curricular change: instruction must shift from producing artifacts to exercising judgment over increasingly autonomous socio-technical systems.
+
+---
+
+### AMTFV: Agentic Mathematical Tool-Flow Verification for LLM Self-Correction
+
+**Authors:** Rui Zou, Yutao Zhu, Mengqi Wei, Ji-Rong Wen
+
+**Published:** 2026-07-31T15:42:00Z
+
+**Link:** http://arxiv.org/abs/2607.29549v1
+
+**Abstract:**
+
+Large language models have demonstrated strong mathematical problem-solving capabilities, yet reliably verifying their candidate answers remains challenging. Existing representative methods mainly revise outputs through natural-language reflection or assist verification by directly generating verification programs; the former may not reliably support exact computation, whereas the latter prematurely couples mathematical modeling with low-level implementation. We propose AMTFV (Agentic Mathematical Tool-Flow Verification). By introducing Mathematical Tool Flow (MTF) as an interrupt--execute--resume interface, AMTFV decouples verification modeling from concrete execution and supports exact computation through a mathematical toolbox. Specifically, the verification agent first constructs a verification workflow, encodes the mathematical objects and computational intent requiring reliable execution in an MTF request, and sends it to the mathematical toolbox agent. The latter parses the request, generates executable calls, and dispatches them to the backend for exact computation. Tool outputs then support candidate-answer adjudication, answer revision, and verification-workflow revision. We evaluate AMTFV on five challenging mathematical reasoning datasets with seven model configurations from DeepSeek, GPT, and Gemini. Experimental results show that AMTFV outperforms the representative baselines evaluated in this study overall; under an individual model configuration, it improves average accuracy over the strongest baseline by up to 8.3 percentage points, with larger gains on samples of medium and high verification complexity.
+
+---
+
+### AuditCoder: Responsibility-Preserving Task Graphs for Auditable Code Generation and Bounded Repair
+
+**Authors:** Kangjie Huang, Chen Lyu
+
+**Published:** 2026-07-31T15:29:14Z
+
+**Link:** http://arxiv.org/abs/2607.29529v1
+
+**Abstract:**
+
+Code generators return programs, but typically do not preserve the construction record needed to connect a failure to the decision that produced the affected code or to delimit a justified repair. We present AuditCoder, which treats the program and an auditable construction trace as joint outputs. Before code generation, a contract-annotated task graph assigns stable responsibility identities that remain attached to each commitment, its owned implementation, provenance, validation evidence, and intervention history. When validation fails, a conservative locator maps heterogeneous evidence to a node or dependency branch---or abstains---and bounded repair regenerates only that region while reusing the frozen complement. On APPS, \method{} reaches $82.5$--$83.0\%$ \texttt{pass@1}, recovering much of the loss caused by unrepaired graph decomposition but trailing AgentCoder by $7.5$--$8.5$ points. On ClassEval, it reaches $75.0$--$82.0\%$, outperforming CoT + retry while remaining below AgentCoder. A separate audit of 200 APPS records yields $0.9725$ task-macro decision--code trace coverage; the locator identifies an evidence-supported node or branch for 26 of 60 failures, and 17 of those localized repairs pass. For tasks with stable, locally testable boundaries, the graph functions not only as a decomposition structure but also as a persistent index for validation and repair.
+
+---
+
+### Students' Practices and Skills in the LLM-Era: "You Can't Outsource the Struggle and Still Get the Skill"
+
+**Authors:** Enne Rebeca Silva de Freitas, Gustavo Pinto, Danilo Monteiro
+
+**Published:** 2026-07-31T15:18:44Z
+
+**Link:** http://arxiv.org/abs/2607.29519v1
+
+**Abstract:**
+
+Generative AI tools have been rapidly learned in the daily workflow of graduate students in Software Engineering, but little is known about what AI-related skills they actually need for effective use in empirical research. Without this understanding, graduate programs cannot prepare students to conduct rig-orous research in the LLM era, risking creating a generation of researchers who delegate tasks without the necessary expertise. By analyzing 1,383 posts from five research-focused subreddits, we found that students systematically outsource the cognitive effort required to develop research skills and end up with neither the expected results nor the necessary competence. Naming these missing skills is the first step toward curricula that teach graduate students to work \emph{with} LLMs without being replaced by them.
+
+---
+
+### AgenticRepair: Multi-Faceted Program Context Engineering for Agentic Vulnerability Repair
+
+**Authors:** Michael Fu, Qiyue Mei, Patanamon Thongtanunam, Kla Tantithamthavorn
+
+**Published:** 2026-07-31T13:42:51Z
+
+**Link:** http://arxiv.org/abs/2607.29422v1
+
+**Abstract:**
+
+Automated vulnerability repair aims to reduce the time and effort required to patch security flaws from a vulnerability triage report. Recent agentic AI approaches have shown promising results in automated program repair. However, vulnerability repair demands richer program context than general bug repair - context that security engineers routinely assemble in practice but that existing agentic approaches do not engineer. We identify three critical gaps: code-structure context capturing cross-file data flows and memory operation patterns, runtime-execution context revealing crash semantics and memory origins, and commit-history context recovering how fragile code patterns were introduced. We present AgenticRepair, an agentic vulnerability repair framework that addresses the gaps through multi-faceted program context engineering. AgenticRepair orchestrates three specialized LLM subagents to engineer the contexts, which are then embedded into the memory of a dedicated repair subagent for context-conditioned patch synthesis. Evaluated on SEC-Bench comprising 300 real-world instances with sanitizer-based patch verification, AgenticRepair achieves a 73% success rate, substantially outperforming the strongest baseline by 29%. Our ablation study confirms that the three context facets are mutually complementary, and that multi-agent scaffolding and base-model capacity each play an essential role. Collectively, these findings establish multi-faceted program context engineering as a promising design direction for agentic vulnerability repair.
+
+---
+
+## fault localization
+
+### Development of FDD-ON: an Ontology for VAV HVAC System Fault Detection and Diagnostics
+
+**Authors:** Yimin Chen, Brian Fricke, Bo Shen, Jamie Lian, Mingkan Zhang, James Lo, Yun Zhang, Shi Ye, Jiajing Huang, Han Hu, Chujie Lu, Rui Tang, George Zhuang
+
+**Published:** 2026-07-31T17:37:34Z
+
+**Link:** http://arxiv.org/abs/2607.29657v1
+
+**Abstract:**
+
+Fault detection and diagnosis (FDD) technology is essential for improving HVAC system reliability, energy efficiency, and maintenance effectiveness. However, effective deployment of FDD solutions in buildings requires structured domain knowledge that can bridge heterogeneous data sources, diverse equipment types, and varied diagnostic outputs. Limited data interpretability and interoperability within the FDD domain have led to fragmented information silos, hindering the implementation of FDD and related applications, such as the digital twin-enabled FDD frameworks and artificial intelligence (AI)-driven maintenance decision-making systems. This paper presents an FDD Ontology (FDD-ON), a modular and extensible ontology to formally represent variable air volume (VAV) HVAC system components, fault types, symptom statuses, fault impacts and associated attributes. FDD-ON integrates HVAC system FDD semantics to provide comprehensive representations of fault and symptom attributes, supported by the well-defined controlled vocabulary. Additionally, FDD-ON offers comprehensive fault, symptom, and impact libraries to capture a broad spectrum of operational abnormalities and their consequences in VAV HVAC systems. Through explicit contributing cause-fault-symptom-impact relations, FDD-ON serves as a machine-interpretable basis for querying diagnostic knowledge, mapping heterogeneous FDD outputs, and developing interoperable FDD-related applications. FDD-ON is evaluated using publicly available VAV HVAC system datasets and demonstrated through FDD development applications. Results indicate that FDD-ON provides a foundational semantic framework for advancing scalable, transparent, and interoperable FDD solutions across various applications.
+
+---
+
+### CENDRe: Concept Extraction with Natural Domain Representations
+
+**Authors:** Antonia Holzapfel, Andres Felipe Posada Moreno, Sebastian Trimpe
+
+**Published:** 2026-07-31T16:56:27Z
+
+**Link:** http://arxiv.org/abs/2607.29621v1
+
+**Abstract:**
+
+Convolutional neural networks (CNNs) are widely used for time-series classification, but their deployment in critical domains requires understanding the temporal and spectral patterns that drive their predictions. Concept extraction (CE) methods identify such patterns by analyzing representations within the models' latent space. However, existing time-series CE methods have three limitations: they operate only in the time domain and overlook frequency features, predefine the number of concepts, and produce localizations misaligned with the regions the model uses. We address these limitations by proposing CENDRe, a concept extraction method for CNNs. It first discovers concepts by clustering per-timestep latent representations in two stages, where silhouette-guided aggregation selects the number of concepts automatically. Then, it localizes each concept through gradients of a presence score that contrasts the latent representations with their prototypes, producing masks that concentrate on the regions driving the concept. These gradients, propagated through a differentiable invertible mapping of the input such as a Fourier transform, yield localizations for the same concepts in the frequency domain. Finally, each concept receives a relevance score that quantifies its contribution to each class. On synthetic benchmarks, CENDRe achieves representation correctness comparable to state-of-the-art CE methods and significantly higher importance correctness. On real bearing-fault data, CENDRe extracts the frequency bands driving the model's predictions, located in regions commonly inspected for fault diagnosis, producing evidence to assess the model that time-domain CE methods cannot.
+
+---
+
+### DungeonBench: A Benchmark for Rules-Rich Tactical Reasoning in Dungeons &amp; Dragons Combat
+
+**Authors:** Ismayil Ismayilov, Atakan Kara, Kaan Oktay
+
+**Published:** 2026-07-31T16:03:38Z
+
+**Link:** http://arxiv.org/abs/2607.29577v1
+
+**Abstract:**
+
+Games and simulators make valuable benchmarks by turning decisions into measurable outcomes, but many current suites under-test rules-rich tactical reasoning: the ability to choose well when geometry, timing, resources, objectives, and rule interactions all matter at once. We introduce DungeonBench, a benchmark for tactical reasoning in Dungeons &amp; Dragons combat, built to cover the vast majority of combat-relevant 2014 System Reference Document content whose effects can be resolved by the simulator while retaining mechanics that simplified combat simulators often abstract away. At each step, DungeonBench exposes a complete tactical observation, a pending decision, and an indexed list of executable options spanning movement, attacks, spells, reactions, objectives, preparation, and scarce resources. The task is to value legal choices whose consequences depend on action economy, creature traits, battlefield geometry, timing windows, and future encounters. DungeonBench has two tracks: Encounter, which evaluates local tactical play in single fights, and Day, which links encounters through persistent hit points, spell slots, consumables, preparation, and short-rest timing, forcing policies to trade off immediate tactical advantage against future survivability. The same engine-generated decision stream supports heuristic controllers, language-model policies, learned option rankers, and masked-action reinforcement-learning agents. We evaluate frontier language-model policies on this shared decision stream. Results show that full tactical observations do not saturate the benchmark: frontier policies often win direct encounters, but linked encounter days expose failures in resource budgeting, rest timing, and rule-aware tactical discipline.
+
+---
+
+### MOT-SR: Multi-Objective Tool-Augmented Scientific Equation Discovery with Large Language Models
+
+**Authors:** Boxiao Wang, Runxiang Wang, Kai Li, Chongming Li, Zhiwei Chen, Yifan Zhang, Jian Cheng
+
+**Published:** 2026-07-31T15:52:07Z
+
+**Link:** http://arxiv.org/abs/2607.29561v1
+
+**Abstract:**
+
+Symbolic Regression (SR) aims to discover analytical equations from observational data and plays a central role in scientific modeling. While recent Large Language Model (LLM) based approaches show promise, they face two limitations. First, they lack data analysis mechanisms for uncovering variable dependencies, which reduces the efficiency of equation discovery. Second, most methods rely on single-objective evaluation focused solely on fitting error. This neglect of structural complexity and generalization often causes models to converge prematurely to local optima, limiting their ability to explore the broader equation space. We propose Multi-Objective Tool-augmented Symbolic Regression (MOT-SR), a unified framework that integrates external analytical tools to extract structural priors and guide equation generation, while jointly optimizing for accuracy, complexity, and generalization via a multi-objective evaluation module that maintains a dynamic Pareto front. MOT-SR employs two collaborative LLM modules: a Meta Strategy Generator, which selects tools and synthesizes structural optimization strategies based on Pareto-optimal equations, and an Equation Generator, which produces new candidate equations accordingly. The system operates in a closed-loop manner, continuously refining both strategies and equation structures. Across 40 standard tasks, MOT-SR outperforms existing SR methods in accuracy, generalization, and efficiency. We further validate MOT-SR on extreme mass-ratio inspiral (EMRI) orbital modeling, an important problem in space-based gravitational-wave astronomy where small local errors can accumulate substantially over long-term evolution. The discovered interpretable correction achieves the lowest trajectory-level integration error on held-out configurations. These results demonstrate the potential of MOT-SR to enable reliable modeling of long-horizon scientific dynamics.
+
+---
+
+## LLM for code
+
+### ExtractBench: A Benchmark for Schema-Guided Enterprise Document Extraction
+
+**Authors:** Boyang Zhang, Adrian Lyjak, Eli Stewart, Zhaoqi Li, Simon Suo
+
+**Published:** 2026-07-31T17:55:58Z
+
+**Link:** http://arxiv.org/abs/2607.29677v1
+
+**Abstract:**
+
+Enterprise workflows increasingly rely on agents for \emph{schema-guided extraction}: given a document and a user-defined schema, the agent faithfully follows the schema to produce the correct output with source evidence as grounding metadata. We present ExtractBench, a benchmark for schema-guided extraction and, to our knowledge, the first to score value accuracy, record completeness at scale, grounding, and measured cost together. The evaluation system contains 4,869 pages across 370 enterprise documents, 8 business domains, and 67 document types, with clear tags differentiating their challenge scenarios. The scalable schema and ground-truth curation pipeline combines independent-system agreement for real documents, known values for synthetic lists, and human verification for forms. We report order-insensitive value F1 for value accuracy, plus two grounding metrics for source traceability: word- and page-level F1. Commercial VLMs perform well on short documents but often truncate record lists on long ones, while coding agents retain higher accuracy at much higher cost. LlamaExtract Agentic Plus ranks first on all three metrics, with accuracy comparable to coding agents at a fraction of the cost. Dataset and evaluation code are available on \href{https://huggingface.co/datasets/llamaindex/ExtractBench}{HuggingFace} and \href{https://github.com/run-llama/ExtractBench}{GitHub}.
+
+---
+
+### Reusing Past Repairs Through Hierarchical Trajectory Abstraction for Coding Agents
+
+**Authors:** Yisen Xu, Jiayuan Zhou, Ruiqi Pan, Tse-Hsun Chen
+
+**Published:** 2026-07-31T17:38:48Z
+
+**Link:** http://arxiv.org/abs/2607.29658v1
+
+**Abstract:**
+
+Although LLM-driven repair agents can tackle complex, repository-level issues, they treat every issue independently and discard the procedural knowledge accumulated from previous repairs. We introduce STAIR, a framework that converts historical repair trajectories into hierarchical, reusable plans that can be adapted to steer future repairs. Each past trajectory is transformed into a multi-level tree that ranges from fine-grained diagnostic actions to high-level repair strategies, encoding experience at several granularities. When a new issue arrives, STAIR selects relevant plan nodes from multiple abstraction levels, tailors them into executable, issue-specific plans, and supplies them to the agent through its prompt. On SWE-bench Verified, STAIR integrated with Lingxi reaches 81.2% Pass@1 using MiniMax M2.5 and 79.2% using GPT-5. The generated plans also generalize across agents: without any code change, they lift the Pass@1 of a structurally different agent, mini-SWE-agent v2, from 75.8% to 81.0%. Ablation experiments further show that mixing multiple abstraction levels surpasses any single level and that raw, unabstracted trajectories transfer substantially worse.
+
+---
+
+### CodeShrink: Adaptive Visual Compression for Efficient Multimodal Code Understanding
+
+**Authors:** Wenxin Tang, Jingyu Xiao, Zhenyu Liu, Zipeng Xie, Junliang Liu, Wang Luo, Yuan Jiang, Yintong Huo, Michael Lyu
+
+**Published:** 2026-07-31T17:15:51Z
+
+**Link:** http://arxiv.org/abs/2607.29637v1
+
+**Abstract:**
+
+Rendering source code as images offers a promising way to reduce the input costs of Multimodal Large Language Models (MLLMs). Adjusting image resolution can trade visual token cost against content fidelity. However, resolution scaling alone overlooks two sources of inefficiency: blank regions created by line breaks and indentation, and code regions irrelevant to the current instruction. Moreover, the best compression setting varies across inputs, tasks, and models, limiting fixed-ratio strategies. We propose CodeShrink, an adaptive visual compression framework with three components. Blank-Free Rendering replaces whitespace-dependent layouts with compact layouts and explicit structural markers, removing layout-induced tokens. Adaptive Compression Configuration uses a lightweight agent trained with reinforcement learning to predict a per-input setting that balances token efficiency and readability. Dominant Token Selection jointly analyzes the instruction and code image to prune task-irrelevant visual tokens during inference. We evaluate CodeShrink on code question answering, clone detection, and code completion. CodeShrink reduces visual token use by up to 71.2\% while matching or exceeding uncompressed text-only inputs, and consistently outperforms text-based and visual compression baselines across all three tasks. These results show that combining layout compaction, adaptive configuration, and instruction-aware pruning can make multimodal code understanding more efficient. Our code is available at https://github.com/vinsontang1/CodeShrink.
+
+---
+
+### AgentHPOBench: A Benchmark For Evaluating LLM Agents as Sequential Hyperparameter Optimizers
+
+**Authors:** Tianyu Huai, Tingshuo Fan, Xinchi Chen, Yining Zheng, Yuxin Wang, Shuang Chen, Jie Zhou, Xuanjing Huang
+
+**Published:** 2026-07-31T16:58:00Z
+
+**Link:** http://arxiv.org/abs/2607.29626v1
+
+**Abstract:**
+
+As LLMs evolve from code completion systems into autonomous scientific agents, evaluating their ability to conduct experiments has become increasingly important. Existing benchmarks typically focus on static code generation, paper replication, or final answer correctness, but do not directly assess whether agents can interpret experimental evidence and use it to guide subsequent hyperparameter decisions. To address this gap, we introduce AgentHPOBench, a sequential benchmark comprising 30 executable machine learning tasks across seven research categories. Each task begins with a validated baseline run, after which an agent performs several sequential interventions. At each step, the agent observes the accumulated configurations, metrics, and logs before proposing the next valid configuration. We evaluate 12 widely used agents and conventional HPO baselines under a unified protocol. The results show that current agents exhibit measurable experimental optimization ability across domains, but still face clear limitations in sustained iterative refinement, complex log diagnosis, and consistent progress toward reported reference performance.
+
+---
+
+### TraceViT: Grounded Trace Supervision for Visual Abstract Reasoning
+
+**Authors:** Binnan Liu, Yechi Ma, Tian Xie, Wei Hua
+
+**Published:** 2026-07-31T16:09:44Z
+
+**Link:** http://arxiv.org/abs/2607.29586v1
+
+**Abstract:**
+
+The Abstraction and Reasoning Corpus (ARC) tests whether a model can infer an unseen transformation from a few input-output examples and apply it to a new grid. Looped visual reasoners refine predictions over multiple iterations, but conventional training constrains only the final output, leaving intermediate refinements unconstrained. We propose that these refinements should instead follow the transformation step by step. We introduce TraceViT, a looped visual reasoner trained with semantically monotonic transformation chains. We obtain these chains by rewriting and verifying programmatic task implementations, decomposing each solution into intermediate grid states. Each iteration is grounded by a task reference derived from the few-shot demonstrations and an object workspace representing the current grid state. Because these chains may differ in length from the loop, soft trace alignment enforces only their ordering, letting the model allocate iterations freely. TraceViT achieves 67.8% pass@2 on ARC-AGI-1 and 24.3% on ARC-AGI-2. Controlled ablations on ARC-AGI-1 show that trace supervision becomes beneficial only when paired with grounding. Code and data will be available at https://github.com/LiuBinnan/TraceViT.
+
+---
+
+
