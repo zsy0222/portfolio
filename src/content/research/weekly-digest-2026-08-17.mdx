@@ -1,0 +1,189 @@
+---
+title: "Weekly Paper Digest: 2026-08-10 ~ 2026-08-17"
+date: "2026-08-17"
+category: "research"
+tags: ["weekly-digest", "arxiv"]
+summary: "本周 ArXiv 论文摘要 — program slicing, fault localization, LLM for code."
+draft: false
+---
+
+## program slicing
+
+### Twin: Playing an Unknown Game with a Test-Time Digital Twin
+
+**Authors:** Alexy Skoutnev, Kirill Acharya, Gaston Longhitano, Madeleine Udell, Kevin Ellis, Iddo Drori
+
+**Published:** 2026-08-14T17:06:00Z
+
+**Link:** http://arxiv.org/abs/2608.14490v1
+
+**Abstract:**
+
+We present a Test-time World-model Inference (Twin) system, in which a frontier coding agent writes an executable world model for completing continual learning tasks, such as ARC-AGI-3 games. Traditional approaches hand-engineer such models, one custom design per task. Each game hides its rules and goal, and our system constructs them from simulation and interaction alone. Its inductive prior over grid games is strong enough to recover the true transitions of the game and the goal on nearly all levels. Replay validation happens in a twin world model. The harness enforces that an action is not made until the program reproduces every previous observed game transition. Each mismatch between a world model prediction and the actual action result becomes a counterexample that is used to repair the world model. Twin clears 179 out of 183 levels (97.8%), and does so more efficiently than humans in 158 out of 179 levels (88.3%). The system infers the goal before any reward on 156 of the levels it clears (87.2%), and in the remaining levels automatically discovers the goal by search. The benchmark scores completion and action efficiency, between 0 and 100, against humans playing each game for the first time. Played directly, the base model scores only 7.8%; an off-the-shelf harness increases it to 61.1%, whereas our twin world model increases the same base model to 93.3%, clearing 23 out of 25 games. Building a usable world model is simpler than anticipated, whereas the harder problem is inferring the right goal.
+
+---
+
+### LP-NAS: Linear Programming-based Neural Architecture Search
+
+**Authors:** Abhishek Shukla, Ankur Sinha, Faiz Hamid
+
+**Published:** 2026-08-14T16:53:11Z
+
+**Link:** http://arxiv.org/abs/2608.14472v1
+
+**Abstract:**
+
+Neural Architecture Search (NAS) aims to automate neural network architecture design, reducing reliance on human expertise. Among the various NAS methods, differentiable NAS has gained prominence due to its efficiency and accuracy compared to conventional NAS approaches. Since differentiable NAS relaxes the architecture search space into a continuous domain, it is possible to apply principles from continuous optimization to NAS. In this paper, we propose Linear Programming-based NAS (LP-NAS), a mathematical programming-based framework for differentiable NAS that is applicable to a wide range of continuous search spaces. LP-NAS formulates a linear program (LP) using the validation-loss gradient and the training-loss Hessian to compute an architecture update direction that improves generalization while preserving the optimality of the model parameters. By following this LP-derived descent direction, LP-NAS efficiently navigates the architecture search space, leading to faster and more effective architecture optimization. We introduce two computationally efficient variants of LP-NAS, namely S-LP-NAS and R-LP-NAS. Applying LP-NAS to the Differentiable Architecture Search (DARTS) search space results in two algorithmic variants, S-LP-DARTS and R-LP-DARTS. Both variants achieve faster convergence and significantly higher validation performance during the early search iterations than the standard DARTS algorithm. Extensive experiments on CIFAR-10 and CIFAR-100 show that LP-DARTS outperforms standard DARTS in both the architecture search and evaluation phases. Additionally, we compare our approach with several DARTS variants (P-DARTS, PC-DARTS, and STO-DARTS) on the CIFAR-10 dataset and demonstrate its effectiveness. Furthermore, we validate the transferability of the discovered architectures through experiments on the ImageNet dataset.
+
+---
+
+### Memory Allocation for Constant-Bounded Programs
+
+**Authors:** Vinícius Silva, Kael Soares, Márcio Costa e Fernando Magno Quintão Pereira
+
+**Published:** 2026-08-14T16:52:25Z
+
+**Link:** http://arxiv.org/abs/2608.14471v1
+
+**Abstract:**
+
+This work studies memory allocation for constant-bounded programs, whose execution length is syntactically limited for all inputs. Examples of such programs include verified kernel extensions, cryptographic routines, and fixed-shape machine-learning models. We show that constant boundedness enables a tight, polynomial-time approximation of optimal stack usage by viewing control flow as a tree and applying a tree-scan allocation strategy augmented with memory defragmentation. Our approach guarantees memory usage bounded by the maximum live memory plus, at most, the size of the largest buffer, and is optimal when in-place swapping is permitted. We deploy the proposed allocator in two scenarios. First, in an Elixir-to-eBPF compiler, as a spiller that optimizes stack space. Second, as a static heap allocator for bounded MLIR programs using the Structured Control-Flow dialect. Results demonstrate stack reductions exceeding 90% on real eBPF workloads and show that, even under aggressive code expansion, defragmentation is rarely required and memory usage remains a small fraction of that required by naive allocation strategies.
+
+---
+
+### Program-space Diffusion for Morphology-to-Transcriptomics Prediction
+
+**Authors:** Ruyter Swann, Dorent Reuben, Racoceanu Daniel
+
+**Published:** 2026-08-14T14:20:40Z
+
+**Link:** http://arxiv.org/abs/2608.14330v1
+
+**Abstract:**
+
+Spatial transcriptomics (ST) enables genome-wide gene expression profiling while preserving tissue architecture, but its cost and limited scalability remain major bottlenecks. This has motivated models that predict spatial expression directly from routine histology. Despite promising results, most existing approaches operate at the gene level without leveraging established transcriptomic modeling practices and rely on heterogeneous gene selection strategies, which complicates fair comparison across methods.
+  We propose to reformulate morphology-to-transcriptomics prediction as conditional generation in transcriptional program space, thereby exploiting coordinated transcriptional variation instead of predicting genes independently. Using consensus non-negative matrix factorization (cNMF), we extract a low-dimensional set of transcriptional programs capturing coordinated expression variation in the training data, and train a conditional diffusion model to generate program activations from histology. This formulation exploits coordinated transcriptional variation and substantially lowers the dimensionality of the conditional generative task.
+
+---
+
+### Rethinking Automated Program Repair: The Impact of Bug Complexity, Fault Localization, and LLM Cost-efficiency
+
+**Authors:** Junchi Liu, Ali Bigdeli, Roya Daneshi, Atu Ambala, Sudipto Ghosh, Fabio Santos
+
+**Published:** 2026-08-14T08:23:25Z
+
+**Link:** http://arxiv.org/abs/2608.14065v1
+
+**Abstract:**
+
+Background: Software bugs remain a critical challenge in development, necessitating effective Automated Program Repair (APR) techniques. While Large Language Model (LLM)-based APR systems have shown promise, prior studies primarily focus on overall repair effectiveness. The effects of bug complexity, fault localization, reasoning settings, and repair cost-effectiveness remain insufficiently explored.
+  Aims: This study presents a comprehensive empirical analysis of LLM-based APR, focusing on how repair performance is shaped by bug complexity, fault localization, reasoning settings, and costs.
+  Method: We evaluate two APR techniques (ChatRepair and CodeCorrector) using three LLMs (DeepSeek, GPT, and Llama), and examine their performance across diverse levels of bug complexity and localization strategies through a multi-dimensional empirical framework and statistical analysis.
+  Results: Although structurally complex bugs and imprecise fault localization make repair more challenging, LLM-based APR techniques still achieve competitive repair effectiveness. Imprecise fault localization can substantially enlarge the performance gap between APR techniques. Furthermore, higher-cost LLMs and stronger reasoning settings do not consistently yield better cost-efficiency, revealing a nontrivial trade-off between repair effectiveness and computational cost.
+  Conclusions: Over 50% of moderately complex bugs can be repaired by low-cost LLM-based APR techniques. The repair effectiveness gap between APR techniques becomes larger as fault localization becomes less precise. GPT-5 repairs 7 and 39 more complex bugs than DeepSeek-V4-pro and DeepSeek-V3.2, respectively; whereas the total repair cost of DeepSeek-V3.2 shows the best cost-efficiency performance.
+
+---
+
+## fault localization
+
+### Validating LLM-Modernized Scientific Software Through Differential Fault Injection
+
+**Authors:** Evan Coleman, Yuzhong Shen, Masha Sosonkina, Peng Xu
+
+**Published:** 2026-08-14T17:45:55Z
+
+**Link:** http://arxiv.org/abs/2608.14527v1
+
+**Abstract:**
+
+Large language model (LLM) agents are increasingly used to modernize the legacy Fortran underlying production scientific software, but validation of these transformations emphasizes nominal executions and may not test whether a modernization preserves the original code's response to faults, perturbations, and reduced precision. We present a differential fault-injection validation method: a harness instruments the shared self-consistent-field driver of GAMESS at twelve sites and applies identical, deterministic faults to the original and LLM-modernized implementations, isolating the converted integral kernels. Across more than 2,200 runs, transient-fault absorption costs match a contraction-based model (predicted slopes 0.74 and 1.49 iterations per bit; measured 0.82 and 1.50), persistent perturbations halve final-energy error per additional bit, and the campaigns expose phase-dependent parallel deadlocks and false convergence under reduced precision. The original and modernized kernels agree in all 200 paired injections, and a measurement-guided synchronization change composes with the modernization, matching in all 40 pairs.
+
+---
+
+### Shift Aware Transfer Learning with Adaptive Dual-Encoder Fusion for PM Forecasting in Data-Limited Environments
+
+**Authors:** Shahab Band, Hamed Mohammadi
+
+**Published:** 2026-08-14T16:41:16Z
+
+**Link:** http://arxiv.org/abs/2608.14456v1
+
+**Abstract:**
+
+Short-horizon forecasting of fine particulate matter (PM2.5) remains difficult when observations from the target domain are limited and the statistical properties of the source and target domains differ. In these settings, models trained only on local data may not capture complex temporal dynamics, while direct transfer learning can result in negative transfer. This study develops a shift-aware dual-encoder transfer framework that combines source-domain knowledge with target-specific representation learning. The source encoder was pretrained using hourly observations from 10 U.S. monitoring locations. The framework was then adapted and evaluated using two years of hourly observations from 77 stations in Taiwan under a chronological train-validation-test protocol. Among the four principal baselines, the frozen-source dual-encoder model achieved the best performance, with MSE = 21.8960, MAE = 3.1597, and R^2 = 0.8725. This corresponds to an MSE reduction of approximately 7.1% relative to TL-v1 and 4.1% relative to TL-v2. The ablation analysis showed that removing the Taiwan-specific branch caused the largest decline in performance. Allowing the source encoder to adapt produced the best overall result, with MSE = 21.6575, MAE = 3.1383, and R^2 = 0.8739. SHAP analysis indicated that predictions were driven mainly by recent PM2.5 observations and meteorological variables related to pollutant transport and dispersion. These results suggest that source-domain knowledge is most effective when target-specific information is preserved and the transferred representation is allowed to adapt under target supervision.
+
+---
+
+### AI-Assisted Discovery and Construction of a Counterexample to the Convergence of Three-Block ADMM with the Identity Matrix as its Third Constraint Block
+
+**Authors:** Kenan Xu, Xiangfeng Wang
+
+**Published:** 2026-08-14T15:36:32Z
+
+**Link:** http://arxiv.org/abs/2608.14396v1
+
+**Abstract:**
+
+The alternating direction method of multipliers (ADMM), as a landmark algorithm, has attracted tremendous research attention and extensive practical applications over the past two decades. It is well known that, although the two-block ADMM enjoys well-established theoretical convergence guarantees, its direct extension to the three-block case may fail to converge, as demonstrated by existing counterexamples [5]. However, to the best of our knowledge, the case in which the third constraint block is the identity remains unresolved: the existing literature gives neither a general convergence proof nor a counterexample for this subclass. In this paper, we give a negative answer: direct three-block ADMM may fail even when the first two blocks are strongly convex quadratics. Using Codex with GPT-5.6 Sol, we construct an explicit rational counterexample candidate and verify it along a piecewise-affine reduction path; exact checks show that direct three-block ADMM on this instance produces a bounded nonconvergent orbit of period 66. Within the same Codex workflow, we further guide a study of multiplier relaxation and clarify when convergence can be restored at the fixed-instance and class levels: a problem-dependent small dual step can restore convergence, whereas no positive relative step works uniformly over the whole class. Furthermore, we also test the recent Kimi Code with Kimi K3 model without the Codex candidate or project-specific route guidance; along a different path it produces an exact locally attracting period-23 certificate, convertible to an equivalent all-identity instance. The comparison suggests that different research-harness configurations can shape the mathematical objects explored and the certificates pursued.
+
+---
+
+### Designing Sustainable Federated Learning as a Service using Neural Architecture Search
+
+**Authors:** Keya Patel, Sajib Mistry, Sheik Fattah, Deepak Kanneganti, Aneesh Krishna, Mufti Mahmud, Monowar Bhuyan
+
+**Published:** 2026-08-14T15:00:39Z
+
+**Link:** http://arxiv.org/abs/2608.14359v1
+
+**Abstract:**
+
+The sustainability constraints of FLaaS consumers pose significant challenges to maintaining carbon-feasible federated training in FLaaS environments. These constraints often lead to infeasible consumer participation and unstable federated training under hard carbon constraints. We propose a Sustainable Federated Learning as a Service (SFLaaS), a carbon- constrained Neural Architecture Search (NAS) framework for heteroge- neous sustainable constraints. We introduce a requirement-driven search space that transforms consumer sustainability profiles into a feasible architecture region before federated execution. We develop a consumer-level carbon feasibility estimation mechanism to evaluate candidate architectures under dynamic carbon conditions. We propose a sustainable con- sumer scheduling strategy that adaptively selects feasible consumers and allocates local workloads to preserve consumer participation and statistical data coverage. An evolutionary search strategy jointly optimised for predictive performance, consumer feasibility, and participation coverage under hard carbon constraints. Experiments on real-world datasets and a simulated environment demonstrate the effectiveness of the proposed approach.
+
+---
+
+### Structure-Guided Spatiotemporal Attention Graph Neural Network for Traffic Flow Prediction
+
+**Authors:** Xuanmian He, Can Li, Wanjing Ma
+
+**Published:** 2026-08-14T10:46:37Z
+
+**Link:** http://arxiv.org/abs/2608.14177v1
+
+**Abstract:**
+
+Deep spatiotemporal models integrating graph convolutions and attention mechanisms have demonstrated excellent performance in network-level traffic flow prediction, owing to their exceptional ability to capture complex spatiotemporal dependencies. Despite their predictive success, deployment of such models in safety-critical urban systems remains constrained by their inherent lack of transparency. Existing post-hoc diagnostic methods often struggle with spurious correlations and fail to unveil the intrinsic decision-making mechanisms governing traffic dynamics, resulting in suboptimal interpretability and limited operational trustworthiness. To address these challenges, this paper proposes the Structure-Guided Spatiotemporal Attention Graph Neural Network (SGSAN). Departing from traditional architectures that rely on unconstrained adaptive graphs, SGSAN explicitly learns a static Directed Dependency Graph (DDG) to identify the invariant macroscopic propagation paths of traffic states. We further introduce an InfoNCE-based soft-coupling mechanism that anchors the model's dynamic spatiotemporal attention to this structural prior, offering a mechanistic account of the model's decision-making process while ensuring robust forecasting by aligning attention-based reasoning with identified macroscopic dependencies and preventing over-reliance on ephemeral local noise. Furthermore, a decoupled two-stage optimization framework is developed to resolve the fundamental conflict between structural discovery and predictive error minimization. Extensive experiments on multiple real-world datasets demonstrate that SGSAN achieves state-of-the-art predictive accuracy while providing built-in interpretability that organically aligns with the physical logic of traffic networks.
+
+---
+
+## LLM for code
+
+### SheetCompass: Hierarchical Relation Graphs for Agentic Spreadsheet Reasoning
+
+**Authors:** Panjing He, Mingyue Cheng, Yucong Luo, Li Li, Xiaohan Zhang
+
+**Published:** 2026-08-14T16:39:16Z
+
+**Link:** http://arxiv.org/abs/2608.14452v1
+
+**Abstract:**
+
+Spreadsheets are widely used to organize, analyze, and manipulate semi-structured data, yet automated spreadsheet reasoning remains challenging for large language models (LLMs). Real-world workbooks often contain implicit cross-table associations, fine-grained column dependencies, and complex spatial layouts. Existing methods typically flatten these multidimensional structures into sequential strings, losing important intra-sheet boundaries and inter-sheet semantics. Consequently, LLMs cannot exploit the global spatial context that human experts naturally use when inspecting spreadsheets. We propose SheetCompass, a graph-guided and memory-driven agentic framework for spreadsheet reasoning and automation. SheetCompass explicitly models structural relationships within and across worksheets while maintaining task-relevant information in memory, enabling agents to reason more effectively over complex workbooks.
+
+---
+
+### PACE-Bench: Benchmarking Physics Adaptation via Code Evolution in Dynamic Environments
+
+**Authors:** Yuhao Zhan, Bingxiang He, Zecong Tang, Chaojun Xiao
+
+**Published:** 2026-08-14T16:25:43Z
+
+**Link:** http://arxiv.org/abs/2608.14441v1
+
+**Abstract:**
+
+Self-evolving agents improve future behavior from interaction experience, yet existing evaluations typically optimize under fixed execution conditions and do not test recovery after those conditions change. To address this gap, we introduce PACE-Bench (Physics Adaptation via Code Evolution), a simulator-grounded benchmark of 144 source-to-target adaptation pairs across six physics domains. Each pair links a source environment to a mutated target environment with the same goal and interface. A code-driven design that succeeds in the source fails in the target, where agents must iteratively adapt it into a working target design using diagnostic sandbox feedback within a limited attempt budget. We compare ten self-evolving methods from four paradigms. The benchmark remains far from saturated: Reflexion + Qwen3-14B succeeds on only 35.9\% of full-benchmark pairs, while GPT-5.5 solves 66.7\% of the Statics subset under the full budget. Together, these results show that simulator-grounded reflection is more reliable than unverified self-revision, while memory anchors agents to early designs and broad tree search explores without converging. Even revealing exact physical changes does not raise the performance ceiling, pointing to mechanism redesign rather than parameter inference as the central bottleneck. Data and code are available at https://github.com/thunlp/PACE-Bench.
+
+---
+
+
