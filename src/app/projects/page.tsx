@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ProjectCard from "@/components/ProjectCard";
 import Footer from "@/components/Footer";
+import { projects as fallbackProjects } from "@/data/projects";
 
 interface Project {
   id: number;
@@ -20,7 +21,24 @@ export default function ProjectsPage() {
   useEffect(() => {
     fetch("/api/projects")
       .then((r) => r.json())
-      .then(setProjects);
+      .then((data) => setProjects(data.length ? data : fallbackProjects.map((project, index) => ({
+        id: index + 1,
+        slug: project.id,
+        title: project.title,
+        description: project.description,
+        tags: project.tags,
+        liveUrl: project.liveUrl ?? null,
+        repoUrl: project.repoUrl ?? null,
+      }))))
+      .catch(() => setProjects(fallbackProjects.map((project, index) => ({
+        id: index + 1,
+        slug: project.id,
+        title: project.title,
+        description: project.description,
+        tags: project.tags,
+        liveUrl: project.liveUrl ?? null,
+        repoUrl: project.repoUrl ?? null,
+      }))));
   }, []);
 
   return (
