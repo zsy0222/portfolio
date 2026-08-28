@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import { resolve } from "path";
 import { readFileSync, readdirSync } from "fs";
 import matter from "gray-matter";
+import { projects as sourceProjects } from "../src/data/projects";
 
 config({ path: resolve(__dirname, "..", ".env.local") });
 
@@ -11,36 +12,15 @@ const client = createClient({
   authToken: process.env.TURSO_AUTH_TOKEN!,
 });
 
-// Import project data from TypeScript source (read as text and extract)
-const projectsData = [
-  {
-    slug: "campus-recycling-tracker",
-    title: "Campus Recycling Tracker",
-    description: "AI-powered recycling tracking system with visual recognition, batch management, and anti-cheating mechanisms for campus sustainability.",
-    tags: ["#python", "#fastapi", "#ai", "#html"],
-    liveUrl: null,
-    repoUrl: "https://github.com/zsy0222/LC_project",
-    sortOrder: 0,
-  },
-  {
-    slug: "hybrid-slicing",
-    title: "Hybrid Slicing for Fault Localization",
-    description: "A two-phase hybrid slice framework using assertions as decision points — combining dynamic backward tracing with static forward path validation. Built on Tree-sitter for code structure parsing.",
-    tags: ["#research", "#fault-localization", "#program-slicing", "#tree-sitter"],
-    liveUrl: null,
-    repoUrl: "https://github.com/zsy0222/program-slicing",
-    sortOrder: 1,
-  },
-  {
-    slug: "travel-memoir",
-    title: "Travel Memoir",
-    description: "A full-stack web project that inspired research into AI-assisted code repair — discovered the challenge of debugging AI-generated code, leading to automated fix workflow design.",
-    tags: ["#full-stack", "#ai-coding", "#web"],
-    liveUrl: null,
-    repoUrl: null,
-    sortOrder: 2,
-  },
-];
+const projectsData = sourceProjects.map((project, sortOrder) => ({
+  slug: project.id,
+  title: project.title,
+  description: project.description,
+  tags: project.tags,
+  liveUrl: project.liveUrl ?? null,
+  repoUrl: project.repoUrl ?? null,
+  sortOrder,
+}));
 
 async function main() {
   const now = new Date().toISOString();
@@ -79,7 +59,15 @@ async function main() {
   console.log("\nSeeding projects...");
   for (const p of projectsData) {
     await client.execute({
-      sql: "INSERT OR IGNORE INTO projects (slug, title, description, tags, live_url, repo_url, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      sql: `INSERT INTO projects (slug, title, description, tags, live_url, repo_url, sort_order, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(slug) DO UPDATE SET
+              title = excluded.title,
+              description = excluded.description,
+              tags = excluded.tags,
+              live_url = excluded.live_url,
+              repo_url = excluded.repo_url,
+              sort_order = excluded.sort_order`,
       args: [p.slug, p.title, p.description, JSON.stringify(p.tags), p.liveUrl, p.repoUrl, p.sortOrder, now],
     });
     console.log(`  ✓ project: ${p.slug}`);
