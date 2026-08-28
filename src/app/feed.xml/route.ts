@@ -1,9 +1,15 @@
 import { getAllPosts } from "@/lib/blog";
 
 const SITE_URL = "https://chenmuqingtongyan.vercel.app";
+const FEED_URL = `${SITE_URL}/feed.xml`;
+
+export const revalidate = 3600;
 
 export async function GET() {
   const posts = getAllPosts();
+  const lastBuildDate = posts[0]?.date
+    ? new Date(posts[0].date).toUTCString()
+    : new Date().toUTCString();
 
   const items = posts
     .map((post) => {
@@ -21,13 +27,14 @@ export async function GET() {
     .join("\n");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Siyuan Zheng — Blog</title>
     <link>${SITE_URL}/blog</link>
+    <atom:link href="${FEED_URL}" rel="self" type="application/rss+xml" />
     <description>Research logs, course notes, and reflections from the intersection of engineering and business.</description>
-    <language>zh-CN</language>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <language>en</language>
+    <lastBuildDate>${lastBuildDate}</lastBuildDate>
 ${items}
   </channel>
 </rss>`;
@@ -35,7 +42,7 @@ ${items}
   return new Response(xml, {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
     },
   });
 }

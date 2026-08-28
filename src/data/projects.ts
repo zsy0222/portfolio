@@ -26,6 +26,7 @@ export const projects: Project[] = [
       "The initial Defects4J Gson-7 pilot passed 3/3 trigger-test trials with the full workflow.",
     ],
     tags: ["#program-analysis", "#fault-localization", "#llm", "#research"],
+    repoUrl: "https://github.com/zsy0222/program-slicing",
     availability: "Private research repository; public release review is in progress.",
   },
   {
@@ -42,6 +43,7 @@ export const projects: Project[] = [
       "The LSTM reached a 0.636 test AUC, and 89/89 independent verification checks passed.",
     ],
     tags: ["#quantitative-finance", "#backtesting", "#transaction-costs", "#lstm"],
+    repoUrl: "https://github.com/zsy0222/quantitative-investment",
     availability: "Private repository; results are historical backtests, not investment advice.",
   },
   {
@@ -58,6 +60,7 @@ export const projects: Project[] = [
       "Connected product evidence to the shift from standalone hardware toward equipment, installation, service, and platform bundles.",
     ],
     tags: ["#industry-research", "#elderly-care", "#e-commerce", "#product-taxonomy"],
+    repoUrl: "https://github.com/zsy0222/elderly-care-equipment",
     availability: "Public results are withheld until finalization and publication approval.",
   },
   {
@@ -74,6 +77,7 @@ export const projects: Project[] = [
       "Separates public sources, enterprise-provided information, field observations, and researcher interpretation.",
     ],
     tags: ["#international-business", "#digitalization", "#malaysia", "#case-study"],
+    repoUrl: "https://github.com/zsy0222/malaysia-digital-technology-expansion",
     availability: "The paper and field materials remain private pending authorization and sensitivity review.",
   },
   {
@@ -90,6 +94,7 @@ export const projects: Project[] = [
       "Builds an industry-to-company-to-role-to-employment structure for university readers.",
     ],
     tags: ["#bci", "#frontier-technology", "#industry-mapping", "#career-research"],
+    repoUrl: "https://github.com/zsy0222/brain-computer-interface-industry-mapping",
     availability: "Private repository; time-sensitive company and clinical data are still being reviewed.",
   },
   {
