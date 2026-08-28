@@ -112,18 +112,20 @@ export default function ProjectCard({
             </ol>
           </div>
 
-          <div className="mt-auto pt-7">
-            {project.repoUrl ? (
+          <div className="mt-auto space-y-4 pt-7">
+            {project.repoUrl && (
               <Link
                 href={project.repoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`View ${project.title} repository on GitHub`}
                 className="inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-card"
               >
-                View on GitHub
+                View Repository on GitHub
                 <span aria-hidden="true">&rarr;</span>
               </Link>
-            ) : (
+            )}
+            {project.availability && (
               <p className="border-l-2 border-accent/35 pl-3 text-[14px] italic leading-[1.5] text-muted sm:text-[15px]">
                 {project.availability}
               </p>
