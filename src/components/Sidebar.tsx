@@ -30,7 +30,11 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    setDark(localStorage.getItem("theme") === "dark");
+    const frame = window.requestAnimationFrame(() => {
+      setDark(localStorage.getItem("theme") === "dark");
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
@@ -38,10 +42,6 @@ export default function Sidebar() {
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
-
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -75,6 +75,7 @@ export default function Sidebar() {
         <Link
           key={item.href}
           href={item.href}
+          onClick={mobile ? () => setMobileOpen(false) : undefined}
           aria-current={isActive(item.href) ? "page" : undefined}
           className={`${mobile ? "text-[25px] py-2" : "text-[22px] py-1.5"} ${focusClasses} transition-colors hover:text-accent ${
             isActive(item.href)
