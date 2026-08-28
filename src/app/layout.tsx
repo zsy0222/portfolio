@@ -43,16 +43,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased" style={{ colorScheme: "light dark" }}>
+    <html lang="en" className="h-full antialiased">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://giscus.app" />
       </head>
       <body className="min-h-full bg-bg text-lead leading-[1.6]">
-        <div id="top" className="flex min-h-screen">
+        <a href="#main-content" className="skip-link">
+          Skip to Content
+        </a>
+        <div id="top" className="min-h-screen lg:flex">
           <Sidebar />
-          <main className="flex-1">{children}</main>
+          <main id="main-content" tabIndex={-1} className="min-w-0 flex-1">
+            {children}
+          </main>
         </div>
         <Analytics />
       </body>

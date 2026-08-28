@@ -1,0 +1,119 @@
+---
+title: "Summer 2026: Six Projects Across Technology and Business"
+date: "2026-08-28"
+category: "projects"
+tags: ["summer-2026", "projects", "technology-and-business", "research"]
+summary: "A summer portfolio review spanning program analysis, quantitative finance, elderly-care equipment, digital expansion in Malaysia, brain-computer interfaces, and campus sustainability."
+draft: false
+---
+
+This summer was not defined by one internship, one competition, or one codebase. It was defined by six projects that repeatedly asked the same question from different directions:
+
+> How can technical evidence be translated into decisions that are useful, responsible, and understandable?
+
+The projects ranged from program slicing and quantitative finance to elderly-care equipment, international business, brain-computer interfaces, and campus recycling. Some produced final deliverables; others remain active research. Together, they clarified the direction I want to pursue: work at the intersection of technology and business, where engineering methods meet real organizational, market, and social constraints.
+
+## The summer at a glance
+
+- **Assertion-Guided Cascaded Hybrid Slicing** — software engineering research; research in progress.
+- **Cost-Aware Asynchronous Quantitative Strategy** — data, markets, and execution; final deliverable completed.
+- **Smart Elderly-Care Equipment Industry Research** — product and industry research; research in progress.
+- **Digital Technology Expansion in Malaysia** — international business and digitalization; final paper under release review.
+- **Brain-Computer Interface Industry Mapping** — frontier technology and career research; research in progress.
+- **Campus Recycling Tracker** — AI-assisted product prototype; working prototype.
+
+The common thread was not a single programming language or research method. It was the discipline of moving from a broad question to structured evidence, and then from evidence to a result that another person could inspect.
+
+## 1. Assertion-Guided Cascaded Hybrid Slicing
+
+My longest-running technical research project asks how program slicing can become more useful for fault localization and LLM-assisted repair.
+
+Traditional backward slicing is good at recovering statements that may influence a failure, but the resulting slice is still a large dependency set. It does not automatically identify where the defect is, explain the contradiction, or tell a repair model what must remain true.
+
+The current framework therefore uses a cascade rather than a simple intersection. Dynamic backward analysis reconstructs the executed path from an observed failure. Static forward analysis then expands from candidate sources while assertions and runtime observations help eliminate infeasible explanations. An Error Invariant connects the failure, candidate location, and expected behavior in an auditable form.
+
+My work includes the research framework, workflow design, prototype integration, controlled experiments, evidence analysis, and limitation discussion. In the first Defects4J Gson-7 pilot, the complete workflow passed the trigger test in three out of three repeated trials, compared with zero out of three for a pure-LLM baseline using the complete source. This is encouraging evidence, but it is still a controlled pilot rather than a claim of general effectiveness. Larger multi-project evaluation and full regression testing remain necessary.
+
+The main lesson was that a slice is most useful not as a repair instruction by itself, but as evidence from which a precise semantic constraint can be built.
+
+## 2. Cost-Aware Asynchronous Quantitative Strategy
+
+The quantitative-investment project began with intraday liquidity dispersion and expanded into execution-aware factor scoring, asynchronous holding, layered portfolio evaluation, and an LSTM minute-prediction extension.
+
+The most important shift was conceptual: a signal cannot be evaluated only by its pre-cost ranking performance. Turnover, execution timing, and trading friction are part of the model, not details to be added at the end.
+
+The final test-set total returns for the L1, L2, and L3 portfolios were 10.66 percent, 10.25 percent, and 15.29 percent. For L3, the execution-aware design reduced average sell turnover from 37.80 percent to 12.71 percent and cumulative trading cost from 4.91 percent to 1.64 percent. The LSTM extension reached a test AUC of 0.636, while an independent verification pipeline passed 89 out of 89 checks.
+
+These results are historical out-of-sample backtests. They are not evidence of live trading performance and do not constitute investment advice. The test period also contains a limited number of realized signal days, and performance varies across validation and market regimes.
+
+Beyond the metrics, the project taught me to treat reproducibility as part of the deliverable. The final package links each reported result to its code, input table, output table, figure, and verification record.
+
+## 3. Smart Elderly-Care Equipment Industry Research
+
+This project studies smart equipment and connected services for elderly care at home. The research scope includes safety monitoring, health monitoring, rehabilitation, mobility, daily-living assistance, companionship, installation, maintenance, and service response.
+
+My main responsibility was the B-group product taxonomy and e-commerce research. I consolidated and cleaned more than 460 product records, classified products by function, price, and age-friendly design, and used customer reviews to identify recurring pain points. These included difficult installation, unstable connections, maintenance burdens, false alarms, missed alarms, and high learning costs for older users.
+
+The strongest industry insight was that the market cannot be understood as a list of standalone devices. Product value increasingly depends on the combination of equipment, installation, service, and platform support. A sensor may have impressive specifications, but its real value collapses if onboarding, maintenance, emergency response, or family communication fails.
+
+This project also made research boundaries especially important. Raw reviews, interview records, personal information, and unauthorized product images should not be treated as portfolio assets. The public version therefore emphasizes method, aggregated findings, and my contribution while the full report and dataset remain under review.
+
+## 4. Digital Technology Expansion in Malaysia
+
+The Malaysia project examines how Chinese enterprises use digital technologies to improve operational efficiency and develop digital value chains in a cross-border setting.
+
+The study uses a multi-case field-research approach. It connects two analytical levels: how digital tools change production and operational processes, and how they reshape coordination across suppliers, customers, platforms, and supporting services. Localization, data governance, technical support, and cross-border constraints are treated as central mechanisms rather than background conditions.
+
+My work focused on field-research synthesis, analytical framework development, case-evidence organization, and report writing within a team project. A key methodological principle was to separate public sources, enterprise-provided information, field observations, and researcher interpretation. This prevents a polished narrative from hiding differences in evidence quality.
+
+The final paper is the main outcome, but it is not yet released publicly. Enterprise materials, full meeting records, questionnaires, photographs, and unpublished operating data remain private pending authorization and sensitivity review.
+
+The experience changed how I understand digitalization. Technology expansion is not simply the transfer of software from one country to another. It requires organizational adaptation, local support capacity, governance choices, and continuous translation between technical systems and business practices.
+
+## 5. Brain-Computer Interface Industry Mapping
+
+The brain-computer interface project is designed as a student-oriented industry and career guide rather than a technical textbook. Its structure moves from industry to company, from company to role, and from role to employment preparation.
+
+The current research compares invasive, endovascular or semi-invasive, and non-invasive routes. It maps eight leading Chinese and international companies across financing, clinical progress, productization, and talent needs. It also distinguishes exploratory studies from stronger clinical and regulatory milestones, because superficially similar announcements can represent very different levels of evidence.
+
+My contribution centers on leading-company research, technology-route comparison, evidence verification, and industry-to-career synthesis within the collaborative book project.
+
+This field changes quickly. Company financing, clinical trials, regulatory status, and product timelines may become outdated within months. Every important claim therefore needs both a source and an update date. The project does not provide investment advice, medical advice, or a guarantee of career outcomes.
+
+The most valuable insight was that frontier-technology research needs a dual map: one for scientific and engineering feasibility, and another for institutions, regulation, commercialization, and talent.
+
+## 6. Campus Recycling Tracker
+
+Campus Recycling Tracker is the most product-oriented project in this summer portfolio. It is an AI-assisted prototype that follows recyclable materials from submission to batch collection, reuse, and final feedback.
+
+The workflow begins with a recycling-point scan and location validation. A user uploads an image, the system estimates the material category and condition, and the item enters a batch defined by location, date, category, and grade. A downstream user can claim the batch, upload the reused product, and send that outcome back to the original contributor.
+
+The prototype combines GPS validation, submission cooldowns, perceptual-hash duplicate detection, multi-item counting, FastAPI endpoints, SQLite storage, and a lightweight web interface. The recognition path uses a CPU-compatible MobileNetV3-based engineering approach and can fall back to a mock mode when the model environment is unavailable.
+
+This project taught me that a sustainability product needs more than an appealing carbon dashboard. Trust depends on traceability, anti-cheating design, understandable feedback, and a complete path from individual action to visible outcome.
+
+## What connected the six projects
+
+Looking back, four habits appeared in almost every project.
+
+### Evidence before narrative
+
+Whether the evidence came from execution traces, backtests, product records, interviews, company disclosures, or user submissions, the conclusion had to remain traceable to its source.
+
+### Constraints are part of the design
+
+Transaction costs are part of a strategy. Installation and maintenance are part of an elderly-care product. Localization and governance are part of digital expansion. Regulation and clinical evidence are part of BCI commercialization. Privacy and anti-cheating are part of a campus platform.
+
+### Team output is not the same as personal contribution
+
+Several projects were collaborative. A responsible portfolio must state what I personally designed, implemented, analyzed, verified, or wrote without presenting the entire team result as individual work.
+
+### A result needs a release boundary
+
+Not every useful file belongs on GitHub. Raw interviews, private enterprise materials, licensed reports, personal data, large proprietary datasets, and unstable intermediate outputs should remain private. A good public repository is a reviewed research package, not a copy of the working directory.
+
+## Where this summer leaves me
+
+The six projects made the phrase Technology and Business more concrete. For me, it does not mean placing technical and commercial vocabulary side by side. It means using technical methods to investigate real systems, while taking seriously the costs, institutions, users, evidence standards, and release boundaries that shape whether those methods create value.
+
+The work is not finished. Some repositories are still private, some reports require publication review, and several research questions need larger evaluation. But the direction is clearer: build things, study the systems around them, and make every important claim inspectable.

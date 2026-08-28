@@ -6,7 +6,14 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import rehypePrettyCode from "rehype-pretty-code";
 import { getAllPosts, getPostFilePath, categories } from "@/lib/blog";
 import GiscusComments from "@/components/GiscusComments";
+import ReadingProgress from "@/components/ReadingProgress";
 import type { Metadata } from "next";
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
 
 export async function generateStaticParams() {
   return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -16,20 +23,22 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getAllPosts().find((p) => p.slug === slug);
+  const post = getAllPosts().find((item) => item.slug === slug);
   if (!post) return {};
 
   return {
-    title: `${post.title} — Siyuan Zheng`,
+    title: post.title + " — Siyuan Zheng",
     description: post.summary,
     openGraph: {
       title: post.title,
       description: post.summary,
       type: "article",
       publishedTime: post.date,
-      url: `https://chenmuqingtongyan.vercel.app/blog/${post.slug}`,
+      url: "https://chenmuqingtongyan.vercel.app/blog/" + post.slug,
     },
   };
 }
@@ -41,7 +50,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { content } = matter(raw);
-  const post = getAllPosts().find((p) => p.slug === slug);
+  const post = getAllPosts().find((item) => item.slug === slug);
   if (!post) notFound();
 
   const { content: mdxContent } = await compileMDX({
@@ -53,42 +62,65 @@ export default async function BlogPostPage({ params }: PageProps) {
     },
   });
 
-  const categoryLabel = categories.find((c) => c.slug === post.category)?.label || post.category;
+  const categoryLabel =
+    categories.find((item) => item.slug === post.category)?.label ||
+    post.category;
+  const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+  const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
 
   return (
     <>
-      <article className="px-15 pt-25 pb-20 max-w-[800px]">
-        <h1 className="text-[48px] font-semibold text-ink leading-[1.2] mb-5" style={{ textWrap: "balance" }}>
-          {post.title}
-        </h1>
-        <div className="flex items-center gap-4 mb-10 pb-6 border-b border-line">
-          <span className="text-[18px] text-muted">
-            {new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-          </span>
-          <span className="text-[18px] font-semibold text-accent uppercase tracking-[0.1em]">
-            {categoryLabel}
-          </span>
-        </div>
+      <ReadingProgress />
+      <article className="ui-enter mx-auto max-w-[900px] px-6 pb-16 pt-14 sm:px-10 sm:pb-20 sm:pt-20 xl:px-12 xl:pt-24">
+        <header className="mb-10 border-b border-line pb-8 sm:mb-12 sm:pb-10">
+          <Link
+            href="/blog"
+            className="mb-6 inline-flex items-center gap-2 rounded-sm text-[15px] font-semibold uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
+          >
+            <span aria-hidden="true">&larr;</span>
+            Blog
+          </Link>
+          <h1 className="max-w-[860px] text-pretty text-[38px] font-semibold leading-[1.13] tracking-[-0.015em] text-ink sm:text-[50px] xl:text-[56px]">
+            {post.title}
+          </h1>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-[15px] text-muted sm:text-[17px]">
+            <time dateTime={post.date} className="tabular-nums">
+              {dateFormatter.format(new Date(post.date))}
+            </time>
+            <span aria-hidden="true">·</span>
+            <span>{readingMinutes} min read</span>
+            <span aria-hidden="true">·</span>
+            <span className="font-semibold uppercase tracking-[0.1em] text-accent">
+              {categoryLabel}
+            </span>
+          </div>
+        </header>
 
-        <div className="prose prose-lg max-w-none text-[20px] text-lead leading-[1.8]
-          [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:text-ink [&_h2]:mt-10 [&_h2]:mb-4
-          [&_p]:mb-6
-          [&_code]:bg-card [&_code]:text-accent [&_code]:px-2 [&_code]:py-0.5 [&_code]:rounded
-          [&_pre]:bg-[#1a1525] [&_pre]:text-[#e8e0f0] [&_pre]:p-5 [&_pre]:rounded-lg [&_pre]:overflow-auto [&_pre]:text-[16px] [&_pre]:leading-[1.5] [&_pre]:my-6
-          [&_pre_code]:bg-transparent [&_pre_code]:text-inherit [&_pre_code]:p-0
-          [&_blockquote]:border-l-[3px] [&_blockquote]:border-accent [&_blockquote]:pl-5 [&_blockquote]:text-body [&_blockquote]:italic [&_blockquote]:my-6
-          [&_a]:text-accent [&_a]:underline
-          [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-6
-          [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-6
-          [&_li]:mb-2
-        ">
+        <div
+          className="prose prose-lg max-w-none break-words text-[18px] leading-[1.85] text-lead sm:text-[20px]
+          [&_h2]:scroll-mt-24 [&_h2]:text-pretty [&_h2]:text-[27px] [&_h2]:font-semibold [&_h2]:leading-[1.25] [&_h2]:text-ink [&_h2]:mt-12 [&_h2]:mb-5 sm:[&_h2]:text-[31px]
+          [&_h3]:scroll-mt-24 [&_h3]:text-pretty [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:text-ink [&_h3]:mt-9 [&_h3]:mb-3 sm:[&_h3]:text-[24px]
+          [&_p]:mb-6 [&_p]:text-pretty
+          [&_strong]:font-semibold [&_strong]:text-ink
+          [&_code]:rounded [&_code]:bg-card [&_code]:px-2 [&_code]:py-0.5 [&_code]:text-accent
+          [&_pre]:my-7 [&_pre]:overflow-auto [&_pre]:rounded-xl [&_pre]:bg-[#1a1525] [&_pre]:p-5 [&_pre]:text-[15px] [&_pre]:leading-[1.6] [&_pre]:text-[#e8e0f0] sm:[&_pre]:p-6 sm:[&_pre]:text-[16px]
+          [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-inherit
+          [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-[3px] [&_blockquote]:border-accent [&_blockquote]:bg-card/55 [&_blockquote]:px-5 [&_blockquote]:py-4 [&_blockquote]:italic [&_blockquote]:text-body
+          [&_a]:rounded-sm [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_a]:transition-colors [&_a]:hover:text-ink [&_a]:focus-visible:outline-none [&_a]:focus-visible:ring-2 [&_a]:focus-visible:ring-accent
+          [&_ul]:mb-7 [&_ul]:list-disc [&_ul]:pl-6
+          [&_ol]:mb-7 [&_ol]:list-decimal [&_ol]:pl-6
+          [&_li]:mb-2.5 [&_li]:pl-1"
+        >
           {mdxContent}
         </div>
 
         {post.tags && post.tags.length > 0 && (
-          <div className="flex gap-3 mt-10 pt-6 border-t border-line">
+          <div className="mt-12 flex flex-wrap gap-2 border-t border-line pt-7">
             {post.tags.map((tag) => (
-              <span key={tag} className="text-[18px] text-body">
+              <span
+                key={tag}
+                className="rounded-full border border-line bg-card/55 px-3 py-1 text-[14px] text-body sm:text-[16px]"
+              >
                 #{tag}
               </span>
             ))}
@@ -97,16 +129,23 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[20px] font-medium text-ink border-b border-ink pb-1 mt-10 hover:text-accent hover:border-accent transition-colors"
+          className="mt-10 inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg sm:text-[19px]"
         >
-          ← Back to Blog
+          <span aria-hidden="true">&larr;</span>
+          Back to Blog
         </Link>
       </article>
 
-      <section className="px-15 py-14 border-t border-line max-w-[800px]">
-        <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
+      <section
+        aria-labelledby="comments-heading"
+        className="mx-auto max-w-[900px] border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-12"
+      >
+        <h2
+          id="comments-heading"
+          className="mb-6 text-[16px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]"
+        >
           Comments
-        </div>
+        </h2>
         <GiscusComments />
       </section>
     </>
