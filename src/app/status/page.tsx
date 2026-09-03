@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
+import PasswordField from "@/components/PasswordField";
+import Icon from "@/components/Icon";
 
 interface Stats {
   wikiSections: number;
@@ -103,25 +105,15 @@ export default function StatusPage() {
           </p>
         </section>
         <section className="px-15 pb-6">
-          <form onSubmit={handleUnlock} className="inline-flex items-center gap-3">
-            <input
-              type="password"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Password to unlock"
-              autoComplete="off"
-              className="bg-card border border-line rounded-lg px-3 py-1.5 text-[16px] text-ink focus:outline-none focus:border-accent transition-colors w-[200px]"
-            />
+          <form onSubmit={handleUnlock} className="ui-unlock-form">
+            <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
               type="submit"
               className="text-[16px] font-medium text-muted hover:text-accent transition-colors"
             >
-              Unlock →
+              Unlock <Icon name="arrow-right" />
             </button>
           </form>
-          {error && (
-            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
-          )}
         </section>
         <Footer />
       </>
@@ -153,7 +145,7 @@ export default function StatusPage() {
             rel="noopener noreferrer"
             className="text-[20px] font-medium text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors"
           >
-            Vercel Analytics &rarr;
+            Vercel Analytics <Icon name="arrow-up-right" />
           </a>
           <a
             href="https://github.com/zsy0222/portfolio"
@@ -161,7 +153,7 @@ export default function StatusPage() {
             rel="noopener noreferrer"
             className="text-[20px] font-medium text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors"
           >
-            GitHub Repo &rarr;
+            GitHub Repo <Icon name="arrow-up-right" />
           </a>
           <a
             href="https://chenmuqingtongyan.vercel.app/feed.xml"
@@ -169,7 +161,7 @@ export default function StatusPage() {
             rel="noopener noreferrer"
             className="text-[20px] font-medium text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors"
           >
-            RSS Feed &rarr;
+            RSS Feed <Icon name="arrow-right" />
           </a>
         </div>
       </section>
@@ -185,7 +177,7 @@ export default function StatusPage() {
             { label: "Blog Posts", count: stats.blogPosts },
             { label: "Projects", count: stats.projects },
           ].map((s) => (
-            <div key={s.label} className="border border-line rounded-lg p-6 bg-card">
+            <div key={s.label} className="ui-surface border border-line p-6 bg-card">
               <div className="text-[40px] font-light text-accent mb-1">
                 {s.count}
               </div>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Icon from "./Icon";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -26,6 +27,7 @@ const focusClasses =
 export default function Sidebar() {
   const pathname = usePathname();
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [dark, setDark] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -61,9 +63,12 @@ export default function Sidebar() {
   }, [mobileOpen]);
 
   const copyWechat = async () => {
-    await navigator.clipboard.writeText(wechatId);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(wechatId);
+      setCopyFailed(false);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch { setCopyFailed(true); }
   };
 
   const isActive = (href: string) =>
@@ -107,7 +112,9 @@ export default function Sidebar() {
         title="Copy WeChat ID"
       >
         <span aria-live="polite">{copied ? "Copied!" : "WeChat"}</span>
+        <Icon name={copied ? "check" : "copy"} className="ml-1.5" />
       </button>
+      {copyFailed && <span role="status" className="text-sm text-muted">Copy manually: {wechatId}</span>}
     </div>
   );
 
@@ -124,15 +131,15 @@ export default function Sidebar() {
           <button
             type="button"
             onClick={() => setDark((value) => !value)}
-            className={`grid size-10 place-items-center rounded-full text-[19px] text-muted transition-colors hover:bg-card hover:text-accent ${focusClasses}`}
+            className={`ui-icon-button ${focusClasses}`}
             aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
           >
-            <span aria-hidden="true">{dark ? "☀" : "☾"}</span>
+            <Icon name={dark ? "sun" : "moon"} />
           </button>
           <button
             type="button"
             onClick={() => setMobileOpen((value) => !value)}
-            className={`grid size-10 place-items-center rounded-full text-ink transition-colors hover:bg-card hover:text-accent ${focusClasses}`}
+            className={`ui-icon-button ${focusClasses}`}
             aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation-panel"
@@ -194,10 +201,10 @@ export default function Sidebar() {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className={`grid size-10 place-items-center rounded-full text-[24px] text-muted transition-colors hover:bg-card hover:text-accent ${focusClasses}`}
+              className={`ui-icon-button ${focusClasses}`}
               aria-label="Close navigation"
             >
-              <span aria-hidden="true">×</span>
+              <Icon name="close" />
             </button>
           </div>
 
@@ -226,11 +233,11 @@ export default function Sidebar() {
           <button
             type="button"
             onClick={() => setDark((value) => !value)}
-            className={`grid size-9 place-items-center rounded-full text-[20px] text-muted transition-colors hover:bg-card hover:text-accent ${focusClasses}`}
+            className={`ui-icon-button shrink-0 ${focusClasses}`}
             aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
             title="Toggle Dark Mode"
           >
-            <span aria-hidden="true">{dark ? "☀" : "☾"}</span>
+            <Icon name={dark ? "sun" : "moon"} />
           </button>
         </div>
         <div className="mb-8 text-[18px] font-medium text-body xl:text-[20px]">

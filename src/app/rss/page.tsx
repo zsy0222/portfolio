@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Footer from "@/components/Footer";
+import Icon from "@/components/Icon";
 
 const FEED_URL = "https://chenmuqingtongyan.vercel.app/feed.xml";
 
@@ -65,7 +66,7 @@ export default function RssPage() {
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           Feed URL
         </div>
-        <div className="max-w-[820px] rounded-2xl border border-line bg-card/55 p-5 sm:p-7">
+        <div className="ui-surface max-w-[820px] border border-line bg-card/55 p-5 sm:p-7">
           <code className="block overflow-x-auto break-all text-[14px] leading-[1.6] text-lead sm:text-[17px]">
             {FEED_URL}
           </code>
@@ -77,7 +78,7 @@ export default function RssPage() {
               type="application/rss+xml"
               className="inline-flex min-h-11 items-center rounded-lg bg-accent px-4 py-2 text-[16px] font-semibold text-white transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
             >
-              Open RSS Feed <span className="ml-2" aria-hidden="true">↗</span>
+              Open RSS Feed <Icon name="arrow-up-right" className="ml-2" />
             </a>
             <button
               type="button"
@@ -85,6 +86,7 @@ export default function RssPage() {
               className="min-h-11 rounded-lg border border-line px-4 py-2 text-[16px] font-semibold text-ink transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
             >
               <span aria-live="polite">{copyLabel}</span>
+              <Icon name={copyState === "copied" ? "check" : "copy"} className="ml-2" />
             </button>
           </div>
           {copyState === "failed" && (
@@ -132,7 +134,7 @@ export default function RssPage() {
           ].map((step, index) => (
             <li
               key={step}
-              className="rounded-2xl border border-line bg-card/40 p-5"
+              className="ui-surface border border-line bg-card/40 p-5"
             >
               <span className="font-mono text-[13px] font-semibold tabular-nums text-accent">
                 {String(index + 1).padStart(2, "0")}
