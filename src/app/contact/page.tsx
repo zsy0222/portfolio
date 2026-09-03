@@ -3,6 +3,8 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import { useState } from "react";
+import FormField from "@/components/FormField";
+import Icon from "@/components/Icon";
 
 const wechatId = "chenmuqingtongyan";
 const qqNumber = "3578379159";
@@ -25,21 +27,43 @@ export default function ContactPage() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [copyError, setCopyError] = useState("");
+
+  const updateField = (name: keyof typeof form, value: string) => {
+    setForm((current) => ({ ...current, [name]: value }));
+    setErrors((current) => ({ ...current, [name]: "" }));
+  };
 
   const copyWechat = async () => {
-    await navigator.clipboard.writeText(wechatId);
-    setCopiedWechat(true);
-    window.setTimeout(() => setCopiedWechat(false), 2000);
+    try {
+      await navigator.clipboard.writeText(wechatId);
+      setCopyError("");
+      setCopiedWechat(true);
+      window.setTimeout(() => setCopiedWechat(false), 2000);
+    } catch { setCopyError("Copy unavailable. Select the contact details and copy manually."); }
   };
 
   const copyEmail = async () => {
-    await navigator.clipboard.writeText(emailAddress);
-    setCopiedEmail(true);
-    window.setTimeout(() => setCopiedEmail(false), 2000);
+    try {
+      await navigator.clipboard.writeText(emailAddress);
+      setCopyError("");
+      setCopiedEmail(true);
+      window.setTimeout(() => setCopiedEmail(false), 2000);
+    } catch { setCopyError("Copy unavailable. Select the contact details and copy manually."); }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const nextErrors: Record<string, string> = {};
+    if (!form.name.trim()) nextErrors.name = "Please enter your name.";
+    const email = e.currentTarget.elements.namedItem("email") as HTMLInputElement;
+    if (!form.email.trim()) nextErrors.email = "Please enter your email address.";
+    else if (!email.validity.valid) nextErrors.email = "Please enter a valid email address.";
+    if (!form.message.trim()) nextErrors.message = "Please enter a message.";
+    setErrors(nextErrors);
+    const firstError = Object.keys(nextErrors)[0];
+    if (firstError) { (e.currentTarget.elements.namedItem(firstError) as HTMLElement)?.focus(); return; }
     const subject = encodeURIComponent(`Portfolio contact from ${form.name}`);
     const body = encodeURIComponent(`${form.message}\n\nFrom: ${form.name}\nEmail: ${form.email}`);
     window.location.href = `mailto:3578379159@qq.com?subject=${subject}&body=${body}`;
@@ -66,7 +90,7 @@ export default function ContactPage() {
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           Quick Info
         </div>
-        <div className="grid max-w-[900px] gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+        <div className="ui-surface grid max-w-[900px] gap-px overflow-hidden border border-line bg-line sm:grid-cols-2">
           {infoCards.map((card) => (
             <div
               key={card.label}
@@ -125,6 +149,7 @@ export default function ContactPage() {
               <span aria-live="polite">
                 {copiedEmail ? "Copied" : emailAddress}
               </span>
+              <Icon name={copiedEmail ? "check" : "copy"} className="ml-2" />
             </button>
           </div>
           <div className="py-6 border-b border-line">
@@ -140,9 +165,11 @@ export default function ContactPage() {
               <span aria-live="polite">
                 {copiedWechat ? "Copied" : wechatId}
               </span>
+              <Icon name={copiedWechat ? "check" : "copy"} className="ml-2" />
             </button>
           </div>
         </div>
+        {copyError && <p role="status" className="mt-3 text-sm text-muted">{copyError}</p>}
       </section>
 
       <section className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15">
@@ -152,27 +179,23 @@ export default function ContactPage() {
         <p className="text-[18px] font-normal text-muted mb-6">
           Fill in the form and click send — your email client will open with the message pre-filled.
         </p>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-[600px]">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
-              Name
-            </label>
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 max-w-[600px]">
+          <FormField id="name" label="Name" error={errors.name}>
             <input
               id="name"
               name="name"
               type="text"
               required
               autoComplete="name"
-              placeholder="Your name\u2026"
+              placeholder="Your name…"
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => updateField("name", e.target.value)}
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={errors.name ? "name-error" : undefined}
               className="rounded-lg border border-line bg-card px-4 py-2.5 text-[18px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-[20px]"
             />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
-              Email
-            </label>
+          </FormField>
+          <FormField id="email" label="Email" error={errors.email}>
             <input
               id="email"
               name="email"
@@ -180,33 +203,34 @@ export default function ContactPage() {
               required
               autoComplete="email"
               spellCheck={false}
-              placeholder="you@example.com\u2026"
+              placeholder="you@example.com…"
               value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              onChange={(e) => updateField("email", e.target.value)}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? "email-error" : undefined}
               className="rounded-lg border border-line bg-card px-4 py-2.5 text-[18px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-[20px]"
             />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="message" className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
-              Message
-            </label>
+          </FormField>
+          <FormField id="message" label="Message" error={errors.message}>
             <textarea
               id="message"
               name="message"
               required
               rows={5}
-              placeholder="Tell me about your opportunity or idea\u2026"
+              placeholder="Tell me about your opportunity or idea…"
               value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              onChange={(e) => updateField("message", e.target.value)}
+              aria-invalid={Boolean(errors.message)}
+              aria-describedby={errors.message ? "message-error" : undefined}
               className="resize-y rounded-lg border border-line bg-card px-4 py-2.5 text-[18px] text-ink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:text-[20px]"
             />
-          </div>
+          </FormField>
           <button
             type="submit"
             className="self-start rounded-sm border-b border-ink pb-1 text-[19px] font-semibold text-ink transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg sm:text-[22px]"
           >
-            {sent ? "Opening email\u2026" : "Send Message"}{" "}
-            <span aria-hidden="true">&rarr;</span>
+            <span aria-live="polite">{sent ? "Opening email…" : "Send Message"}</span>{" "}
+            <Icon name="arrow-right" />
           </button>
         </form>
       </section>

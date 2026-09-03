@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { search, type SearchResult, type SearchFilter } from "@/lib/search";
 import Footer from "@/components/Footer";
+import PasswordField from "@/components/PasswordField";
+import Icon from "@/components/Icon";
+import FormField from "@/components/FormField";
 
 const FALLBACK_PASSWORD = "nju2026";
 
@@ -37,6 +40,7 @@ export default function WikiAskPage() {
   const [searched, setSearched] = useState(false);
   const [modelLoading, setModelLoading] = useState(false);
   const [filter, setFilter] = useState<SearchFilter>("all");
+  const [searchError, setSearchError] = useState("");
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +64,7 @@ export default function WikiAskPage() {
     if (!query.trim()) return;
 
     setLoading(true);
+    setSearchError("");
     setSearched(false);
     setModelLoading(true);
 
@@ -69,6 +74,7 @@ export default function WikiAskPage() {
       setSearched(true);
     } catch (err) {
       console.error("Search error:", err);
+      setSearchError("Search unavailable. Please try again.");
     } finally {
       setLoading(false);
       setModelLoading(false);
@@ -79,11 +85,13 @@ export default function WikiAskPage() {
     setFilter(newFilter);
     if (searched && query.trim()) {
       setLoading(true);
+      setSearchError("");
       try {
         const res = await search(query.trim(), 10, newFilter);
         setResults(res);
       } catch (err) {
         console.error("Search error:", err);
+        setSearchError("Search unavailable. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -106,25 +114,15 @@ export default function WikiAskPage() {
         </section>
 
         <section className="px-15 pb-6">
-          <form onSubmit={handleUnlock} className="inline-flex items-center gap-3">
-            <input
-              type="password"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Password to unlock"
-              autoComplete="off"
-              className="bg-card border border-line rounded-lg px-3 py-1.5 text-[16px] text-ink focus:outline-none focus:border-accent transition-colors w-[200px]"
-            />
+          <form onSubmit={handleUnlock} className="ui-unlock-form">
+            <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
               type="submit"
               className="text-[16px] font-medium text-muted hover:text-accent transition-colors"
             >
-              Unlock →
+              Unlock <Icon name="arrow-right" />
             </button>
           </form>
-          {error && (
-            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
-          )}
         </section>
 
         <Footer />
@@ -148,21 +146,29 @@ export default function WikiAskPage() {
       </section>
 
       <section className="px-15 pb-10">
-        <form onSubmit={handleSearch} className="flex items-center gap-4">
+        <form onSubmit={handleSearch} className="flex flex-wrap items-start gap-4">
+          <div className="min-w-0 flex-1 max-w-[600px]">
+          <FormField id="wiki-query" label="Search the knowledge base" error={searchError}>
           <input
+            id="wiki-query"
+            name="query"
+            aria-invalid={Boolean(searchError)}
+            aria-describedby={searchError ? "wiki-query-error" : undefined}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => { setQuery(e.target.value); setSearchError(""); }}
             placeholder="Ask anything..."
             className="flex-1 max-w-[600px] bg-card border border-line rounded-lg px-4 py-2.5 text-[18px] text-ink focus:outline-none focus:border-accent transition-colors"
             disabled={loading}
           />
+          </FormField>
+          </div>
           <button
             type="submit"
             disabled={loading || !query.trim()}
-            className="text-[18px] font-medium text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mt-7 min-h-11 text-[18px] font-medium text-ink border-b border-ink pb-1 hover:text-accent hover:border-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Search &rarr;
+            Search <Icon name="arrow-right" />
           </button>
         </form>
         {modelLoading && (

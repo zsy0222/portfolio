@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import BackToTop from "@/components/BackToTop";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -59,6 +60,7 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+        <BackToTop />
         <Analytics />
       </body>
     </html>

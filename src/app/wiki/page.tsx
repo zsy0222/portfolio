@@ -3,6 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import PasswordField from "@/components/PasswordField";
+import Icon from "@/components/Icon";
+import ArticleReader from "@/components/ArticleReader";
+import ZoomableImage from "@/components/ZoomableImage";
 
 interface WikiPageItem {
   id: number;
@@ -152,7 +156,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
     if (!para) { i++; continue; }
 
     // Render inline: **bold**, [text](url), plain text
-    const parts: Array<{ type: "text" | "bold" | "link"; text: string; url?: string }> = [];
+    const parts: Array<{ type: "text" | "bold" | "link" | "image"; text: string; url?: string }> = [];
 
     // Split by bold markers first
     const boldSplit = para.split(/(\*\*[^*]+\*\*)/g);
@@ -163,10 +167,10 @@ function renderMarkdown(md: string): React.ReactNode[] {
         // Further split by [text](url) links
         let m;
         let sIdx = 0;
-        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const linkRegex = /(!?)\[([^\]]*)\]\(([^)]+)\)/g;
         while ((m = linkRegex.exec(seg)) !== null) {
           if (m.index > sIdx) parts.push({ type: "text", text: seg.slice(sIdx, m.index) });
-          parts.push({ type: "link", text: m[1], url: m[2] });
+          parts.push({ type: m[1] ? "image" : "link", text: m[2], url: m[3] });
           sIdx = m.index + m[0].length;
         }
         if (sIdx < seg.length) parts.push({ type: "text", text: seg.slice(sIdx) });
@@ -177,9 +181,10 @@ function renderMarkdown(md: string): React.ReactNode[] {
       if (part.type === "bold") {
         return <strong key={pi} className="font-semibold text-ink">{part.text}</strong>;
       }
+      if (part.type === "image") return <ZoomableImage key={pi} src={part.url} alt={part.text} />;
       if (part.type === "link") {
         const isDownload = /\.(pdf|docx|doc|xlsx|xls|pptx|ppt)$/i.test(part.url || "");
-        return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isDownload || undefined} className={isDownload ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all"}>{part.text}{isDownload ? "" : " ↗"}</a>;
+        return <a key={pi} href={part.url} target={part.url?.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer" download={isDownload || undefined} className={isDownload ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "ui-control inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-colors"}>{part.text}{!isDownload && !part.url?.startsWith("#") && <Icon name="arrow-up-right" />}</a>;
       }
       return part.text;
     });
@@ -295,7 +300,7 @@ export default function WikiPage() {
         <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[520px]">
           Personal notes, snippets, references, and decisions.{" "}
           <Link href="/wiki/ask" className="text-accent hover:underline">
-            Ask the knowledge base &rarr;
+            Ask the knowledge base <Icon name="arrow-right" />
           </Link>
         </p>
         {!authed && (
@@ -308,25 +313,15 @@ export default function WikiPage() {
       {/* ── Password gate ── */}
       {!authed && (
         <section className="px-15 pb-6">
-          <form onSubmit={handleUnlock} className="inline-flex items-center gap-3">
-            <input
-              type="password"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Password to unlock"
-              autoComplete="off"
-              className="bg-card border border-line rounded-lg px-3 py-1.5 text-[16px] text-ink focus:outline-none focus:border-accent transition-colors w-[200px]"
-            />
+          <form onSubmit={handleUnlock} className="ui-unlock-form">
+            <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
               type="submit"
               className="text-[16px] font-medium text-muted hover:text-accent transition-colors"
             >
-              Unlock →
+              Unlock <Icon name="arrow-right" />
             </button>
           </form>
-          {error && (
-            <p className="text-[16px] text-red-400 mt-2">Wrong password, try again.</p>
-          )}
         </section>
       )}
 
@@ -344,12 +339,12 @@ export default function WikiPage() {
               {readme.title}
             </h2>
             <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`} title={readmeOpen ? "Collapse" : "Expand"}>
-              ▸
+              <Icon name="chevron-right" />
             </span>
           </button>
           {readmeOpen && (
             <div className="max-w-[760px] mt-10">
-              {renderMarkdown(readme.content)}
+              <ArticleReader>{renderMarkdown(readme.content)}</ArticleReader>
             </div>
           )}
         </section>
@@ -389,7 +384,7 @@ export default function WikiPage() {
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
-                            <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`}>▸</span>
+                            <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`} />
                           </div>
                           <div className="text-[24px] font-light text-ink mt-1">微积分学科指导</div>
                         </button>
@@ -447,7 +442,7 @@ export default function WikiPage() {
                                   >
                                     <div className="flex items-center gap-3">
                                       <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
-                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMg ? "rotate-90" : ""}`}>▸</span>
+                            <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMg ? "rotate-90" : ""}`} />
                                     </div>
                                     <div className="text-[24px] font-light text-ink mt-1">宏观经济学学科指导</div>
                                   </button>
@@ -482,7 +477,7 @@ export default function WikiPage() {
                                   >
                                     <div className="flex items-center gap-3">
                                       <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
-                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMig ? "rotate-90" : ""}`}>▸</span>
+                            <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMig ? "rotate-90" : ""}`} />
                                     </div>
                                     <div className="text-[24px] font-light text-ink mt-1">微观经济学学科指导</div>
                                   </button>
@@ -517,7 +512,7 @@ export default function WikiPage() {
                                   >
                                     <div className="flex items-center gap-3">
                                       <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
-                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedPe ? "rotate-90" : ""}`}>▸</span>
+                            <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedPe ? "rotate-90" : ""}`} />
                                     </div>
                                     <div className="text-[24px] font-light text-ink mt-1">政治经济学学科指导</div>
                                   </button>
@@ -552,7 +547,7 @@ export default function WikiPage() {
                                   >
                                     <div className="flex items-center gap-3">
                                       <span className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted">Study Guide</span>
-                                      <span className={`text-[28px] text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedEng ? "rotate-90" : ""}`}>▸</span>
+                            <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedEng ? "rotate-90" : ""}`} />
                                     </div>
                                     <div className="text-[24px] font-light text-ink mt-1">英语学科指导</div>
                                   </button>

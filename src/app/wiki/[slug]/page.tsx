@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Footer from "@/components/Footer";
+import ArticleReader from "@/components/ArticleReader";
+import ZoomableImage from "@/components/ZoomableImage";
+import Icon from "@/components/Icon";
 
 interface WikiPage {
   slug: string;
@@ -67,10 +70,10 @@ function renderMarkdown(md: string): React.ReactNode[] {
         parts.push({ type: "bold", text: seg.slice(2, -2) });
       } else {
         let m; let sIdx = 0;
-        const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+        const linkRegex = /(!?)\[([^\]]*)\]\(([^)]+)\)/g;
         while ((m = linkRegex.exec(seg)) !== null) {
           if (m.index > sIdx) parts.push({ type: "text", text: seg.slice(sIdx, m.index) });
-          parts.push({ type: "link", text: m[1], url: m[2] });
+          parts.push({ type: m[1] ? "image" : "link", text: m[2], url: m[3] });
           sIdx = m.index + m[0].length;
         }
         if (sIdx < seg.length) parts.push({ type: "text", text: seg.slice(sIdx) });
@@ -78,7 +81,8 @@ function renderMarkdown(md: string): React.ReactNode[] {
     }
     const children = parts.map((part, pi) => {
       if (part.type === "bold") return <strong key={pi} className="font-semibold text-ink">{part.text}</strong>;
-      if (part.type === "link") { const isDownload = /\.(pdf|docx|doc|xlsx|xls|pptx|ppt)$/i.test(part.url || ""); return <a key={pi} href={part.url} target="_blank" rel="noopener noreferrer" download={isDownload || undefined} className={isDownload ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 rounded-lg text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-all"}>{part.text}{isDownload ? "" : " ↗"}</a>; }
+      if (part.type === "image") return <ZoomableImage key={pi} src={part.url} alt={part.text} />;
+      if (part.type === "link") { const isDownload = /\.(pdf|docx|doc|xlsx|xls|pptx|ppt)$/i.test(part.url || ""); return <a key={pi} href={part.url} target={part.url?.startsWith("#") ? undefined : "_blank"} rel="noopener noreferrer" download={isDownload || undefined} className={isDownload ? "text-[17px] font-medium text-lead hover:text-accent hover:underline underline-offset-4 transition-colors" : "ui-control inline-flex items-center gap-1.5 px-4 py-2 bg-accent/10 border border-accent/30 text-[17px] font-medium text-accent hover:bg-accent hover:text-white transition-colors"}>{part.text}{!isDownload && !part.url?.startsWith("#") && <Icon name="arrow-up-right" />}</a>; }
       return part.text;
     });
 
@@ -115,7 +119,7 @@ export default function WikiDetailPage() {
         <section className="px-15 pt-25 pb-16">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">Wiki</div>
           <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5">Page not found.</h1>
-          <Link href="/wiki" className="text-[20px] text-accent hover:underline">&larr; Back to Wiki</Link>
+          <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
         </section>
         <Footer />
       </>
@@ -131,15 +135,15 @@ export default function WikiDetailPage() {
         <h1 className="text-[48px] font-light text-ink leading-[1.2] mb-5">
           {page.title}
         </h1>
-        <Link href="/wiki" className="text-[20px] text-accent hover:underline">&larr; Back to Wiki</Link>
+        <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
       </section>
 
       <section className="px-15 py-14 border-t border-line">
-        <div className="max-w-[760px]">
+        <ArticleReader key={slug} className="max-w-[760px]">
           {page.content ? renderMarkdown(page.content) : (
             <p className="text-[20px] text-muted">No content yet.</p>
           )}
-        </div>
+        </ArticleReader>
       </section>
 
       <Footer />

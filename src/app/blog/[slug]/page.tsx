@@ -7,6 +7,9 @@ import rehypePrettyCode from "rehype-pretty-code";
 import { getAllPosts, getPostFilePath, categories } from "@/lib/blog";
 import GiscusComments from "@/components/GiscusComments";
 import ReadingProgress from "@/components/ReadingProgress";
+import ArticleReader from "@/components/ArticleReader";
+import ZoomableImage from "@/components/ZoomableImage";
+import Icon from "@/components/Icon";
 import type { Metadata } from "next";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -55,6 +58,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   const { content: mdxContent } = await compileMDX({
     source: content,
+    components: { img: ZoomableImage },
     options: {
       mdxOptions: {
         rehypePlugins: [[rehypePrettyCode, { theme: "github-dark" }]],
@@ -77,7 +81,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             href="/blog"
             className="mb-6 inline-flex items-center gap-2 rounded-sm text-[15px] font-semibold uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg"
           >
-            <span aria-hidden="true">&larr;</span>
+            <Icon name="arrow-left" />
             Blog
           </Link>
           <h1 className="max-w-[860px] text-pretty text-[38px] font-semibold leading-[1.13] tracking-[-0.015em] text-ink sm:text-[50px] xl:text-[56px]">
@@ -96,7 +100,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
         </header>
 
-        <div
+        <ArticleReader
           className="prose prose-lg max-w-none break-words text-[18px] leading-[1.85] text-lead sm:text-[20px]
           [&_h2]:scroll-mt-24 [&_h2]:text-pretty [&_h2]:text-[27px] [&_h2]:font-semibold [&_h2]:leading-[1.25] [&_h2]:text-ink [&_h2]:mt-12 [&_h2]:mb-5 sm:[&_h2]:text-[31px]
           [&_h3]:scroll-mt-24 [&_h3]:text-pretty [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:text-ink [&_h3]:mt-9 [&_h3]:mb-3 sm:[&_h3]:text-[24px]
@@ -112,7 +116,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           [&_li]:mb-2.5 [&_li]:pl-1"
         >
           {mdxContent}
-        </div>
+        </ArticleReader>
 
         {post.tags && post.tags.length > 0 && (
           <div className="mt-12 flex flex-wrap gap-2 border-t border-line pt-7">
@@ -131,7 +135,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           href="/blog"
           className="mt-10 inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg sm:text-[19px]"
         >
-          <span aria-hidden="true">&larr;</span>
+          <Icon name="arrow-left" />
           Back to Blog
         </Link>
       </article>

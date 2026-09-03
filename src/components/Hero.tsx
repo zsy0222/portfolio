@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import TypingText from "@/components/TypingText";
+import Icon from "./Icon";
 
 export default function Hero() {
   return (
@@ -30,13 +31,13 @@ export default function Hero() {
               href="/projects"
               className="inline-flex items-center gap-2 rounded-sm border-b border-ink pb-1 text-[18px] font-semibold text-ink transition-colors hover:border-accent hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg sm:text-[21px]"
             >
-              View Work <span aria-hidden="true">&rarr;</span>
+              View Work <Icon name="arrow-right" />
             </Link>
             <span
               className="inline-flex cursor-not-allowed items-center gap-2 text-[18px] font-medium text-muted opacity-50 sm:text-[21px]"
               aria-disabled="true"
             >
-              Resume <span aria-hidden="true">&darr;</span>
+              Resume <Icon name="arrow-down" />
             </span>
           </div>
         </div>

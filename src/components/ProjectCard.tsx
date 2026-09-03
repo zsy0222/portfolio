@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Icon from "./Icon";
 import type { Project } from "@/data/projects";
 
 interface ProjectCardProps {
@@ -15,7 +16,7 @@ export default function ProjectCard({
   return (
     <article
       className={[
-        "group h-full overflow-hidden rounded-2xl border border-line bg-card/55 p-6 shadow-[0_18px_50px_rgba(42,30,62,0.04)] motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1 sm:p-8",
+        "ui-surface group h-full overflow-hidden border border-line bg-card/55 p-6 motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1 sm:p-8",
         featured ? "lg:p-10" : "",
       ].join(" ")}
     >
@@ -122,7 +123,7 @@ export default function ProjectCard({
                 className="inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-card"
               >
                 View Repository on GitHub
-                <span aria-hidden="true">&rarr;</span>
+                <Icon name="arrow-up-right" />
               </Link>
             )}
             {project.availability && (
