@@ -16,12 +16,14 @@ const skills = [
 ];
 
 const awards = [
+  { date: "2026.09", title: "National Scholarship" },
   { date: "2026.06", title: "Hengyang Logistics Scholarship" },
   { date: "2026.05", title: "Outstanding Student, NJU Freshman College" },
   { date: "2026.03", title: "Excellent Volunteer — Nanxing Dream Plan" },
   { date: "2025.12", title: "Top 10 Team — Business Case Analysis Competition" },
   { date: "2025.12", title: "Backbone Star — Career Development Association" },
   { date: "2025.11", title: "Military Training Advanced Individual" },
+  { date: "2025.10", title: "First Place — Push-Putt Run, Business School Sports Day" },
 ];
 
 const sectionClasses =
