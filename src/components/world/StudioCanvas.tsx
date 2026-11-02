@@ -131,7 +131,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
         terracotta: mat("#b67e64"), blue: mat("#536684"), cream: mat("#e8d1ac"),
       };
 
-      function mesh(g: Three.BufferGeometry, m: Three.Material, parent: Three.Object3D = scene) {
+      function mesh(g: Three.BufferGeometry, m: Three.Material | Three.Material[], parent: Three.Object3D = scene) {
         geometry.add(g);
         const item = new T.Mesh(g, m);
         item.castShadow = true;
@@ -139,9 +139,18 @@ export default function StudioCanvas(props: StudioCanvasProps) {
         parent.add(item);
         return item;
       }
+      // SVG uses triangle painter order instead of a depth buffer. Large, nearly
+      // coplanar surfaces need stable layers to avoid long diagonal occlusion seams.
+      function svgLayer(item: Three.Mesh, order: number) {
+        if (compatibility) item.renderOrder = order;
+        return item;
+      }
       function box(w: number, h: number, d: number, x: number, y: number, z: number, m: Three.Material, parent: Three.Object3D = scene, bevel = 0) {
         let g: Three.BufferGeometry;
-        if (bevel > 0 && Math.min(w, h, d) > bevel * 3) {
+        if (compatibility) {
+          // Short faces reduce painter-order errors where furniture intersects.
+          g = new T.BoxGeometry(w, h, d, Math.ceil(w / 0.4), Math.ceil(h / 0.4), Math.ceil(d / 0.4));
+        } else if (bevel > 0 && Math.min(w, h, d) > bevel * 3) {
           const shape = new T.Shape();
           shape.moveTo(-w / 2 + bevel, -h / 2 + bevel);
           shape.lineTo(w / 2 - bevel, -h / 2 + bevel);
@@ -193,17 +202,17 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       }
 
       // Floating architectural section, individual timber floorboards and skirting.
-      box(8.25, 0.3, 6.35, 0, -0.2, 0, palette.violet, scene, 0.08);
+      svgLayer(box(8.25, 0.3, 6.35, 0, -0.2, 0, palette.violet, scene, 0.08), -60);
       for (let i = 0; i < 22; i++) {
         const color = new T.Color("#bc9675").offsetHSL(0, 0, ((i * 7) % 9 - 4) * 0.008);
         const plankMaterial = mat(`#${color.getHexString()}`);
-        box(0.357, 0.085, 6.05, -3.82 + i * 0.363, 0, 0, plankMaterial);
-        for (let j = 0; j < 3; j++) {
+        svgLayer(box(0.357, 0.085, 6.05, -3.82 + i * 0.363, 0, 0, plankMaterial), -50);
+        for (let j = 0; !compatibility && j < 3; j++) {
           box(0.006, 0.003, 1.2 + ((i + j) % 3) * 0.2, -3.8 + i * 0.363 + j * 0.075, 0.044, -2.15 + j * 2.05, palette.woodLight);
         }
       }
-      box(8.1, 3.8, 0.12, 0, 1.86, -3.07, palette.wall);
-      box(0.12, 3.8, 6.15, -4.06, 1.86, 0, palette.wall);
+      svgLayer(box(8.1, 3.8, 0.12, 0, 1.86, -3.07, palette.wall), -40);
+      svgLayer(box(0.12, 3.8, 6.15, -4.06, 1.86, 0, palette.wall), -40);
       box(8, 0.14, 0.09, 0, 0.11, -2.98, palette.woodLight);
       box(0.09, 0.14, 6, -3.98, 0.11, 0, palette.woodLight);
       box(8.1, 0.1, 0.16, 0, 3.8, -3.06, palette.ivory);
@@ -230,9 +239,13 @@ export default function StudioCanvas(props: StudioCanvasProps) {
           for (let w = 0; w < 3; w++) for (let row = 0; row < 10; row++) if ((i + w * 3 + row * 7) % 4 === 0) ctx.fillRect(x + 6 + w * 11, y + 12 + row * 20, 4, 7);
         }
       });
-      box(2.9, 2.15, 0.13, 2.04, 2.28, -2.96, palette.darkWood);
+      const windowFrame = box(2.9, 2.15, 0.13, 2.04, 2.28, -2.96, palette.darkWood);
       const skyMat = new T.MeshBasicMaterial({ map: skyline, color: compatibility ? "#a69cb7" : "#ffffff" }); materials.add(skyMat);
       const windowScene = mesh(new T.PlaneGeometry(2.7, 1.95), skyMat); windowScene.position.set(2.04, 2.28, -2.877);
+      if (compatibility) {
+        windowFrame.material = [palette.darkWood, palette.darkWood, palette.darkWood, palette.darkWood, skyMat, palette.darkWood];
+        windowScene.visible = false;
+      }
       box(0.055, 2, 0.09, 2.04, 2.28, -2.81, palette.ivory);
       box(2.8, 0.05, 0.09, 2.04, 2.27, -2.81, palette.ivory);
       box(3.15, 0.1, 0.39, 2.04, 1.18, -2.84, palette.woodLight, scene, 0.02);
@@ -257,9 +270,9 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       sphere(-2.66, 2.48, -2.27, 0.14, 0.15, 0.14, palette.mauve, shelf);
       cylinder(0.06, 0.06, 0.12, -2.66, 2.61, -2.27, palette.mauve, shelf);
 
-      const rug = box(3.25, 0.025, 2.9, -0.15, 0.06, 0.9, palette.ivory, scene, 0.01);
+      const rug = svgLayer(box(3.25, 0.025, 2.9, -0.15, 0.06, 0.9, palette.ivory, scene, 0.01), -30);
       rug.rotation.y = -0.04;
-      for (let i = 0; i < 8; i++) box(0.012, 0.003, 2.7, -1.55 + i * 0.39, 0.075, 0.9, palette.cream);
+      for (let i = 0; !compatibility && i < 8; i++) box(0.012, 0.003, 2.7, -1.55 + i * 0.39, 0.075, 0.9, palette.cream);
 
       // Walnut desk and screens form the engineering portal.
       const desk = group("computer", "/lab?category=software");
@@ -293,9 +306,13 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       for (let i = 0; i < 2; i++) {
         const x = -0.92 + i * 1.25;
         const monitor = new T.Group(); desk.add(monitor); monitor.position.set(x, 1.84, -2.18); monitor.rotation.y = i ? -0.12 : 0.12;
-        box(1.16, 0.76, 0.075, 0, 0, 0, palette.ink, monitor, 0.025);
+        const monitorBody = box(1.16, 0.76, 0.075, 0, 0, 0, palette.ink, monitor, 0.025);
         const sm = new T.MeshBasicMaterial({ map: i ? screenWorld : screenCode, color: compatibility ? (i ? "#a79bb8" : "#52516c") : "#ffffff" }); materials.add(sm);
         const display = mesh(new T.PlaneGeometry(1.07, 0.65), sm, monitor); display.position.z = 0.041;
+        if (compatibility) {
+          monitorBody.material = [palette.ink, palette.ink, palette.ink, palette.ink, sm, palette.ink];
+          display.visible = false;
+        }
         box(0.055, 0.23, 0.07, 0, -0.48, -0.005, palette.metal, monitor);
         box(0.37, 0.025, 0.23, 0, -0.6, 0.02, palette.ink, monitor, 0.01);
       }
@@ -359,8 +376,9 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const photoMat = new T.MeshBasicMaterial({ map: photoTexture, color: compatibility ? "#9aab99" : "#ffffff" }); materials.add(photoMat);
       for (let i = 0; i < 3; i++) {
         const print = new T.Group(); photos.add(print); print.position.set(-3.93, 2.55 - (i % 2) * 0.1, -0.65 + i * 0.94); print.rotation.y = Math.PI / 2;
-        box(0.76, 0.92, 0.035, 0, 0, 0, palette.white, print);
+        box(0.76, 0.92, 0.035, 0, 0, 0, compatibility ? palette.greenLight : palette.white, print);
         const image = mesh(new T.PlaneGeometry(0.66, 0.67), photoMat, print); image.position.set(0, 0.06, 0.022);
+        image.visible = !compatibility;
         box(0.15, 0.07, 0.008, 0, 0.46, 0.026, palette.cream, print);
       }
       rod(new T.Vector3(-3.86, 3.11, -1.2), new T.Vector3(-3.86, 3.11, 1.8), 0.009, palette.darkWood, photos);
@@ -370,12 +388,14 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const bed = group();
       box(1.77, 0.32, 2.45, 2.68, 0.3, 0.97, palette.wood, bed, 0.05);
       for (const x of [1.96, 3.4]) for (const z of [-0.1, 2.03]) cylinder(0.06, 0.045, 0.2, x, 0.14, z, palette.darkWood, bed);
-      box(1.68, 0.22, 2.3, 2.68, 0.56, 0.97, palette.white, bed, 0.08);
+      svgLayer(box(1.68, 0.22, 2.3, 2.68, 0.56, 0.97, compatibility ? palette.mauve : palette.white, bed, 0.08), 1);
       box(1.79, 0.87, 0.15, 2.68, 0.6, -0.27, palette.woodLight, bed, 0.035);
-      box(1.74, 0.19, 1.68, 2.68, 0.73, 1.31, palette.mauve, bed, 0.07);
-      for (let i = 0; i < 12; i++) box(0.008, 0.004, 1.55, 1.91 + i * 0.139, 0.828, 1.32, palette.cream, bed);
-      box(1.48, 0.12, 0.42, 2.68, 0.81, 0.65, palette.violet, bed, 0.045);
-      box(1.12, 0.2, 0.53, 2.68, 0.76, 0.19, palette.ivory, bed, 0.07);
+      if (!compatibility) {
+        box(1.74, 0.19, 1.68, 2.68, 0.73, 1.31, palette.mauve, bed, 0.07);
+        for (let i = 0; i < 12; i++) box(0.008, 0.004, 1.55, 1.91 + i * 0.139, 0.828, 1.32, palette.cream, bed);
+      }
+      svgLayer(box(1.48, 0.12, 0.42, 2.68, compatibility ? 0.71 : 0.81, 0.65, palette.violet, bed, 0.045), 2);
+      svgLayer(box(1.12, 0.2, 0.53, 2.68, compatibility ? 0.75 : 0.76, 0.19, palette.ivory, bed, 0.07), 2);
       cylinder(0.43, 0.43, 0.07, 1.44, 0.69, -0.44, palette.woodLight);
       cylinder(0.045, 0.045, 0.59, 1.44, 0.36, -0.44, palette.darkWood);
       cylinder(0.26, 0.26, 0.04, 1.44, 0.09, -0.44, palette.darkWood);
@@ -408,9 +428,13 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const shade = cylinder(0.06, 0.14, 0.12, -1.5, 2.02, -2.39, palette.ivory); shade.rotation.z = -0.3;
       const taskLight = new T.PointLight("#ffd9ad", 3, 3); taskLight.position.set(-1.5, 1.94, -2.3); scene.add(taskLight);
       const posterTex = canvasTexture(256, 320, ctx => { ctx.fillStyle = "#f1e8d9"; ctx.fillRect(0, 0, 256, 320); ctx.fillStyle = "#77566f"; ctx.font = "bold 25px sans-serif"; ctx.fillText("STILL", 28, 80); ctx.fillText("LEARNING.", 28, 118); ctx.fillText("ALWAYS", 28, 177); ctx.fillText("MAKING.", 28, 215); ctx.fillStyle = "#b9a0b5"; ctx.fillRect(28, 258, 45, 3); });
-      box(0.76, 0.95, 0.055, -1.22, 2.91, -2.95, palette.wood);
+      const posterFrame = box(0.76, 0.95, 0.055, -1.22, 2.91, -2.95, palette.wood);
       const posterMat = new T.MeshBasicMaterial({ map: posterTex, color: compatibility ? "#eee4d7" : "#ffffff" }); materials.add(posterMat);
       const poster = mesh(new T.PlaneGeometry(0.68, 0.87), posterMat); poster.position.set(-1.22, 2.91, -2.916);
+      if (compatibility) {
+        posterFrame.material = [palette.wood, palette.wood, palette.wood, palette.wood, posterMat, palette.wood];
+        poster.visible = false;
+      }
 
       scene.add(new T.HemisphereLight("#e7e3ff", "#9b7664", 2.2));
       const key = new T.DirectionalLight("#fff0d7", 4.2); key.position.set(3, 9, 7); key.castShadow = true;
