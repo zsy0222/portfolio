@@ -286,7 +286,7 @@ export default function WikiPage() {
   };
 
   return (
-    <>
+    <div className="utility-page">
       {/* ── Header ── */}
       <section className="px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
@@ -595,6 +595,6 @@ export default function WikiPage() {
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 }

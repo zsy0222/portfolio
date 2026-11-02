@@ -90,7 +90,7 @@ export default function StatusPage() {
 
   if (!authed) {
     return (
-      <>
+      <div className="utility-page">
         <section className="px-6 sm:px-10 xl:px-15 pt-25 pb-16">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
             Status
@@ -114,12 +114,12 @@ export default function StatusPage() {
           </form>
         </section>
         <Footer />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="utility-page">
       <section className="px-6 sm:px-10 xl:px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Status
@@ -235,6 +235,6 @@ export default function StatusPage() {
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 }

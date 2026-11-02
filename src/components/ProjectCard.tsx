@@ -1,138 +1,32 @@
 import Link from "next/link";
 import Icon from "./Icon";
+import ProjectVisual from "./ProjectVisual";
 import type { Project } from "@/data/projects";
 
-interface ProjectCardProps {
-  project: Project;
-  featured?: boolean;
-  sequence: number;
-}
+interface ProjectCardProps { project: Project; featured?: boolean; sequence: number }
 
-export default function ProjectCard({
-  project,
-  featured = false,
-  sequence,
-}: ProjectCardProps) {
+export default function ProjectCard({ project, featured = false, sequence }: ProjectCardProps) {
   return (
-    <article
-      className={[
-        "motion-project-card ui-surface group h-full overflow-hidden border border-line bg-card/55 p-6 sm:p-8",
-        featured ? "lg:p-10" : "",
-      ].join(" ")}
-    >
-      <div
-        className={[
-          "h-full min-w-0",
-          featured
-            ? "lg:grid lg:grid-cols-[minmax(0,1.12fr)_minmax(280px,0.88fr)] lg:gap-12"
-            : "flex flex-col",
-        ].join(" ")}
-      >
-        <div className="min-w-0">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <span className="rounded-full border border-accent/25 bg-accent/8 px-3 py-1 text-[13px] font-semibold uppercase tracking-[0.1em] text-accent">
-              {project.status}
-            </span>
-            <span
-              className="font-mono text-[14px] tabular-nums text-muted"
-              aria-hidden="true"
-            >
-              {String(sequence).padStart(2, "0")}
-            </span>
+    <article id={project.id} className={`work-project ${featured ? "work-project-featured" : "work-project-compact"} work-project-${sequence}`} data-motion="section">
+      <div className="work-project-art"><ProjectVisual variant={sequence - 1} /></div>
+      <div className="work-project-copy">
+        <div className="work-project-meta"><span className="work-project-number">{String(sequence).padStart(2, "0")}</span><span>{project.status}</span></div>
+        <h2>{project.title}</h2>
+        <p className="work-project-description">{project.description}</p>
+        <div className="work-project-tags">{project.tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+        <details className="work-project-details">
+          <summary><span>My Role &amp; Selected Outcomes</span><span className="work-details-plus" aria-hidden="true">+</span></summary>
+          <div className="work-project-detail-body">
+            <h3>My Role</h3><p>{project.role}</p>
+            <h3>Selected Outcomes</h3>
+            <ol>{project.highlights.map((highlight, index) => <li key={highlight}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><p>{highlight}</p></li>)}</ol>
           </div>
-
-          <h2
-            className={[
-              "text-pretty font-semibold leading-[1.15] text-ink",
-              featured
-                ? "text-[34px] sm:text-[40px] xl:text-[44px]"
-                : "text-[30px] sm:text-[34px]",
-            ].join(" ")}
-          >
-            {project.title}
-          </h2>
-          <p
-            className={[
-              "mt-4 text-pretty font-medium leading-[1.65] text-lead",
-              featured
-                ? "text-[19px] sm:text-[21px]"
-                : "text-[18px] sm:text-[20px]",
-            ].join(" ")}
-          >
-            {project.description}
-          </p>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full border border-line bg-bg/70 px-3 py-1 text-[14px] font-medium text-body sm:text-[15px]"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
+        </details>
+        <div className="work-project-links">
+          {project.repoUrl && <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} repository on GitHub`} className="motion-link">View Repository <Icon name="arrow-up-right" /></Link>}
+          {project.liveUrl && <Link href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="motion-link">View Project <Icon name="arrow-up-right" /></Link>}
         </div>
-
-        <div
-          className={[
-            "mt-8 flex min-w-0 flex-col border-t border-line pt-7",
-            featured
-              ? "lg:mt-0 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0"
-              : "",
-          ].join(" ")}
-        >
-          <div className="mb-6">
-            <div className="mb-2 text-[13px] font-semibold uppercase tracking-[0.13em] text-muted">
-              My Role
-            </div>
-            <p className="text-[17px] leading-[1.6] text-body sm:text-[18px]">
-              {project.role}
-            </p>
-          </div>
-
-          <div>
-            <div className="mb-3 text-[13px] font-semibold uppercase tracking-[0.13em] text-muted">
-              Selected Outcomes
-            </div>
-            <ol className="space-y-3">
-              {project.highlights.map((highlight, index) => (
-                <li
-                  key={highlight}
-                  className="grid grid-cols-[1.6rem_minmax(0,1fr)] gap-2.5 text-[16px] leading-[1.55] text-lead sm:text-[17px]"
-                >
-                  <span
-                    className="pt-0.5 font-mono text-[13px] tabular-nums text-accent"
-                    aria-hidden="true"
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span>{highlight}</span>
-                </li>
-              ))}
-            </ol>
-          </div>
-
-          <div className="mt-auto space-y-4 pt-7">
-            {project.repoUrl && (
-              <Link
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View ${project.title} repository on GitHub`}
-                className="motion-link inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-card"
-              >
-                View Repository on GitHub
-                <Icon name="arrow-up-right" />
-              </Link>
-            )}
-            {project.availability && (
-              <p className="border-l-2 border-accent/35 pl-3 text-[14px] italic leading-[1.5] text-muted sm:text-[15px]">
-                {project.availability}
-              </p>
-            )}
-          </div>
-        </div>
+        {project.availability && <p className="work-project-availability">{project.availability}</p>}
       </div>
     </article>
   );

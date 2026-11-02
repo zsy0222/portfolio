@@ -115,19 +115,19 @@ export default function WikiDetailPage() {
 
   if (!page || (page as unknown as Record<string, unknown>).error) {
     return (
-      <>
+      <div className="utility-page">
         <section className="px-15 pt-25 pb-16">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">Wiki</div>
           <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5">Page not found.</h1>
           <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
         </section>
         <Footer />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="utility-page">
       <section className="px-15 pt-25 pb-16">
         <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
           {page.section_name || "Wiki"}
@@ -147,6 +147,6 @@ export default function WikiDetailPage() {
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 }
