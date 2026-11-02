@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Icon from "./Icon";
+import SpatialScene from "./SpatialScene";
 
 export default function Hero() {
   return (
@@ -14,7 +15,7 @@ export default function Hero() {
           <div className="hero-actions"><Link className="pill-link" href="/projects">View Work <span><Icon name="arrow-up-right" /></span></Link><Link className="understated-link" href="/about">About me <Icon name="arrow-right" /></Link></div>
         </div>
         <div className="hero-portrait-composition">
-          <div className="portrait-field" aria-hidden="true"><span className="portrait-orbit orbit-one" /><span className="portrait-orbit orbit-two" /><span className="portrait-cross">+</span><span className="portrait-grid" /></div>
+          <SpatialScene className="portrait-field" />
           <figure className="portrait-print"><div className="portrait-photo"><Image src="/images/1fb9c4aafdb8974d3eda5d2c039aec06.jpg" alt="Siyuan Zheng" width={958} height={958} priority sizes="(max-width: 700px) 76vw, 400px" /></div><figcaption><span>Siyuan Zheng</span><span>郑思源</span></figcaption></figure>
           <div className="portrait-note"><span className="section-label">Currently</span><p>Exploring quantitative analysis<br />&amp; AI product management</p></div>
           <span className="portrait-side-note" aria-hidden="true">ENGINEERING · RESEARCH · PRODUCT</span>

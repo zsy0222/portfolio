@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "@/components/studio-design.css";
+import "@/components/material-details.css";
+import "@/components/spatial-motion.css";
 import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
 import BackToTop from "@/components/BackToTop";
