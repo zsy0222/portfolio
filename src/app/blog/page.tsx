@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getAllPosts, categories } from "@/lib/blog";
 import Icon from "@/components/Icon";
 import Footer from "@/components/Footer";
+import BlogTravelPreview from "@/components/BlogTravelPreview";
 import "@/components/editorial-pages.css";
 
 interface PageProps {
@@ -37,11 +38,14 @@ export default async function BlogPage({ searchParams }: PageProps) {
         </p>
       </section>
 
+      {!category && <BlogTravelPreview />}
+
       <div className="editorial-wrap journal-index">
         <nav aria-label="Blog categories" className="journal-categories">
           <Link href="/blog" aria-current={!category ? "page" : undefined}>
             All <span>{allPosts.length}</span>
           </Link>
+          <Link href="/blog/travel">旅行墙 <Icon name="arrow-up-right" /></Link>
           {categories.map((item) => {
             const count = allPosts.filter((post) => post.category === item.slug).length;
             return (
