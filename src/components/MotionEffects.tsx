@@ -76,8 +76,9 @@ export default function MotionEffects() {
 
     const pointerMove = (event: PointerEvent) => {
       if (reduced.matches || !finePointer.matches || event.pointerType !== "mouse") return;
-      const target = event.target instanceof Element
-        ? event.target.closest<HTMLElement>(".home-work-visual, .work-project-art, .portrait-print, .studio-footer") : null;
+      const origin = event.target instanceof Element ? event.target : null;
+      const target = origin?.closest<HTMLElement>(".home-work-visual, .work-project-art, .portrait-print, .studio-footer, .pg-card-visual")
+        ?? origin?.closest(".pg-card")?.querySelector<HTMLElement>(".pg-card-visual") ?? null;
       if (!target) { resetSurface(); return; }
       if (activeSurface !== target) { resetSurface(); activeSurface = target; }
       latestX = event.clientX; latestY = event.clientY;

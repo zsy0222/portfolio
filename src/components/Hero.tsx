@@ -16,7 +16,7 @@ export default function Hero() {
         </div>
         <div className="hero-portrait-composition">
           <SpatialScene className="portrait-field" />
-          <figure className="portrait-print"><div className="portrait-photo"><Image src="/images/1fb9c4aafdb8974d3eda5d2c039aec06.jpg" alt="Siyuan Zheng" width={958} height={958} priority sizes="(max-width: 700px) 76vw, 400px" /></div><figcaption><span>Siyuan Zheng</span><span>郑思源</span></figcaption></figure>
+          <figure className="portrait-print"><div className="portrait-photo"><Image src="/images/1fb9c4aafdb8974d3eda5d2c039aec06.jpg" alt="Siyuan Zheng" width={958} height={958} priority sizes="(max-width: 700px) 32vw, 190px" /></div><figcaption><span>Siyuan Zheng</span><span>郑思源</span></figcaption></figure>
           <div className="portrait-note"><span className="section-label">Currently</span><p>Exploring quantitative analysis<br />&amp; AI product management</p></div>
           <span className="portrait-side-note" aria-hidden="true">ENGINEERING · RESEARCH · PRODUCT</span>
         </div>

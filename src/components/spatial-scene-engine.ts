@@ -1,10 +1,19 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { createCanvasSceneRenderer } from "./spatial-canvas-renderer";
 
-export interface SpatialSceneController { dispose: () => void; reset: () => void }
-interface SceneCallbacks { onReady: () => void; onError: () => void }
+export type SpatialMaterial = "titanium" | "crystal" | "porcelain";
+export type SpatialRenderMode = "webgl" | "canvas";
+export interface SpatialSceneController {
+  dispose: () => void; reset: () => void; setMaterial: (material: SpatialMaterial) => void;
+  setPlaying: (playing: boolean) => void; setZoom: (zoom: number) => void;
+}
+interface SceneCallbacks {
+  onReady: (mode: SpatialRenderMode) => void; onError: () => void;
+  onPlayingChange: (playing: boolean) => void; onZoomChange: (zoom: number) => void;
+}
 
-/** Client-only, procedurally built material study. No remote models or texture requests. */
+/** Lazy client-only scene; GPU PBR or a projected, interactive CPU 3D renderer. */
 export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbacks): SpatialSceneController {
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>();
@@ -12,68 +21,45 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
   const targets = new Set<THREE.WebGLRenderTarget>();
   const cleanups: (() => void)[] = [];
   let renderer: THREE.WebGLRenderer | undefined;
-  let destroyed = false;
-  let frame = 0;
-  let visible = true;
-  let lastPaint = 0;
-  let pointer: { id: number; x: number; y: number; rotation: number } | null = null;
+  let canvasRenderer: ReturnType<typeof createCanvasSceneRenderer> | undefined;
+  let removeGLListener = () => {};
+  let mode: SpatialRenderMode = "webgl";
+  let destroyed = false, frame = 0, visible = true, lastPaint = 0;
+  let pointer: { id: number; x: number; y: number; yaw: number; pitch: number; lastAt: number } | null = null;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-  const createdAt = performance.now();
-  let activeUntil = createdAt + (reduceMotion.matches ? 0 : 4400);
-  let targetRotation = -.13;
-  let targetTilt = 0;
-  let targetCameraX = 0;
-  let targetCameraY = 0;
-  let lastTheme: boolean | null = null;
-
+  let targetYaw = .45, yaw = .45, targetPitch = .27, pitch = .27, targetZoom = 1;
+  let velocity = 0, playing = false;
+  let settleUntil = performance.now() + (reduceMotion.matches ? 0 : 3500);
   const dispose = () => {
     if (destroyed) return;
-    destroyed = true;
-    cancelAnimationFrame(frame); frame = 0;
-    cleanups.forEach(cleanup => cleanup());
-    geometries.forEach(geometry => geometry.dispose());
-    materials.forEach(material => material.dispose());
-    textures.forEach(texture => texture.dispose());
-    targets.forEach(target => target.dispose());
-    if (renderer) {
-      renderer.renderLists.dispose();
-      renderer.dispose();
-      renderer.domElement.remove();
-      renderer.forceContextLoss();
-    }
+    destroyed = true; cancelAnimationFrame(frame); frame = 0;
+    cleanups.forEach(cleanup => cleanup()); removeGLListener();
+    canvasRenderer?.dispose();
+    geometries.forEach(item => item.dispose()); materials.forEach(item => item.dispose());
+    textures.forEach(item => item.dispose()); targets.forEach(item => item.dispose());
+    if (renderer) { renderer.renderLists.dispose(); renderer.dispose(); renderer.domElement.remove(); renderer.forceContextLoss(); }
   };
-  const fail = () => { if (!destroyed) { dispose(); callbacks.onError(); } };
+  const fatal = () => { if (!destroyed) { dispose(); callbacks.onError(); } };
   const ownMaterial = <T extends THREE.Material>(material: T) => { materials.add(material); return material; };
   const ownGeometry = <T extends THREE.BufferGeometry>(geometry: T) => { geometries.add(geometry); return geometry; };
-
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power", preserveDrawingBuffer: false });
-    const view = renderer;
-    view.outputColorSpace = THREE.SRGBColorSpace;
-    view.toneMapping = THREE.ACESFilmicToneMapping;
-    view.toneMappingExposure = 1.04;
-    view.shadowMap.enabled = true;
-    view.shadowMap.type = THREE.PCFSoftShadowMap;
-    view.domElement.setAttribute("aria-hidden", "true");
-    view.domElement.setAttribute("role", "presentation");
-    host.appendChild(view.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-2.9, 2.9, 3.2, -3.2, .1, 60);
-    const cameraBase = new THREE.Vector3(4.4, 3.3, 7.8);
-    camera.position.copy(cameraBase);
-    const cameraTarget = new THREE.Vector3(0, 1.52, 0);
-    camera.lookAt(cameraTarget);
-    const sculpture = new THREE.Group(); scene.add(sculpture); sculpture.rotation.y = targetRotation;
-
-    const pmrem = new THREE.PMREMGenerator(view);
-    const environment = new RoomEnvironment();
     try {
-      const target = pmrem.fromScene(environment, .05); targets.add(target); scene.environment = target.texture;
-    } finally { environment.dispose(); pmrem.dispose(); }
-    scene.environmentIntensity = .95;
-
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "low-power" });
+      renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.domElement.setAttribute("aria-hidden", "true"); host.appendChild(renderer.domElement);
+    } catch { renderer = undefined; mode = "canvas"; }
+    const scene = new THREE.Scene(); scene.background = new THREE.Color("#17131f");
+    const camera = new THREE.OrthographicCamera(-2.9, 2.9, 3.2, -3.2, .1, 60);
+    const cameraTarget = new THREE.Vector3(0, 1.52, 0);
+    const sculpture = new THREE.Group(); scene.add(sculpture);
+    if (renderer) {
+      const pmrem = new THREE.PMREMGenerator(renderer); const environment = new RoomEnvironment();
+      try { const target = pmrem.fromScene(environment, .04); targets.add(target); scene.environment = target.texture; scene.environmentIntensity = 1.25; }
+      catch { renderer.dispose(); renderer.domElement.remove(); renderer.forceContextLoss(); renderer = undefined; mode = "canvas"; }
+      finally { environment.dispose(); pmrem.dispose(); }
+    }
     const texture = (brushed: boolean) => {
       const size = 128;
       const bytes = new Uint8Array(size * size * 4);
@@ -95,19 +81,19 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     };
     const brushing = texture(true);
     const ceramicGrain = texture(false);
-    const violet = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#82659d", metalness: .9, roughness: .29, roughnessMap: brushing, bumpMap: brushing, bumpScale: .006, anisotropy: .65, anisotropyRotation: .4, clearcoat: .25, clearcoatRoughness: .28 }));
-    const wine = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#885467", metalness: .86, roughness: .27, roughnessMap: brushing, bumpMap: brushing, bumpScale: .004, anisotropy: .5, clearcoat: .3 }));
-    const ceramic = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#ede6d9", metalness: .03, roughness: .5, bumpMap: ceramicGrain, bumpScale: .009, clearcoat: .12, clearcoatRoughness: .5 }));
-    const paleCeramic = ownMaterial(new THREE.MeshStandardMaterial({ color: "#d8cedd", roughness: .57, metalness: .02, bumpMap: ceramicGrain, bumpScale: .008 }));
-    const glass = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#d7cae6", metalness: 0, roughness: .24, transmission: .8, thickness: .28, ior: 1.4, attenuationColor: new THREE.Color("#ad93c4"), attenuationDistance: 2.3, clearcoat: .9, clearcoatRoughness: .2, side: THREE.DoubleSide }));
-    const trim = ownMaterial(new THREE.MeshStandardMaterial({ color: "#b8a1cc", metalness: .7, roughness: .32 }));
-    const floorMaterial = ownMaterial(new THREE.MeshStandardMaterial({ color: "#e5ddea", roughness: .9, metalness: 0 }));
-
+    const violet = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#9790b3", metalness: .96, roughness: .18, bumpMap: brushing, bumpScale: .004, anisotropy: .5, clearcoat: .8, clearcoatRoughness: .16 }));
+    const wine = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#b17ca4", metalness: .92, roughness: .21, bumpMap: brushing, bumpScale: .004, clearcoat: .6 }));
+    const ceramic = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#554b5d", metalness: .38, roughness: .24, bumpMap: ceramicGrain, bumpScale: .005, clearcoat: .7 }));
+    const paleCeramic = ownMaterial(new THREE.MeshStandardMaterial({ color: "#39313f", metalness: .6, roughness: .2 }));
+    const glass = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#a6c3dc", roughness: .2, transmission: .76, thickness: .25, ior: 1.4, attenuationColor: new THREE.Color("#8c88ba"), attenuationDistance: 2.3, clearcoat: .8, side: THREE.DoubleSide }));
+    const trim = ownMaterial(new THREE.MeshStandardMaterial({ color: "#b4a1ce", metalness: .8, roughness: .2 }));
+    const floorMaterial = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#14111b", metalness: .38, roughness: .24, clearcoat: .8 }));
     const mesh = (geometry: THREE.BufferGeometry, material: THREE.Material, parent: THREE.Object3D = sculpture) => {
       const object = new THREE.Mesh(ownGeometry(geometry), material);
       object.castShadow = true; object.receiveShadow = true; parent.add(object); return object;
     };
     const roundedBlock = (width: number, height: number, depth: number, radius: number, material: THREE.Material) => {
+      if (mode === "canvas") return mesh(new THREE.BoxGeometry(width, height, depth), material);
       const shape = new THREE.Shape(); const x = -width / 2; const y = -height / 2; const r = Math.min(radius, width / 3, height / 3);
       shape.moveTo(x + r, y); shape.lineTo(x + width - r, y); shape.quadraticCurveTo(x + width, y, x + width, y + r);
       shape.lineTo(x + width, y + height - r); shape.quadraticCurveTo(x + width, y + height, x + width - r, y + height);
@@ -119,17 +105,16 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     };
     // A rounded ceramic dais with a separate thin top lip catches broad soft shadows.
     const profile = [new THREE.Vector2(0, 0), new THREE.Vector2(1.47, 0), new THREE.Vector2(1.55, .025), new THREE.Vector2(1.59, .075), new THREE.Vector2(1.59, .19), new THREE.Vector2(1.56, .24), new THREE.Vector2(1.48, .265), new THREE.Vector2(0, .265)];
-    const dais = mesh(new THREE.LatheGeometry(profile, 72), ceramic); dais.position.y = .06;
-    const upper = mesh(new THREE.CylinderGeometry(1.24, 1.24, .13, 64), paleCeramic); upper.position.set(-.2, .38, -.03);
-    const etched = mesh(new THREE.TorusGeometry(1.43, .005, 6, 100), trim); etched.rotation.x = Math.PI / 2; etched.position.y = .329;
+    const dais = mesh(new THREE.LatheGeometry(profile, mode === "canvas" ? 24 : 72), ceramic); dais.position.y = .06;
+    const upper = mesh(new THREE.CylinderGeometry(1.24, 1.24, .13, mode === "canvas" ? 24 : 64), paleCeramic); upper.position.set(-.2, .38, -.03);
+    if (mode === "webgl") { const etched = mesh(new THREE.TorusGeometry(1.43, .005, 6, 100), trim); etched.rotation.x = Math.PI / 2; etched.position.y = .329; }
 
     // Interlocking metal forms are the central object; the genuine portrait sits outside this scene.
-    const ringOne = mesh(new THREE.TorusGeometry(1.19, .145, 24, 96), violet);
+    const ringOne = mesh(new THREE.TorusGeometry(1.12, .18, mode === "canvas" ? 10 : 24, mode === "canvas" ? 40 : 96), violet);
     ringOne.position.set(-.18, 1.79, -.12); ringOne.rotation.set(.08, -.22, -.18);
-    const ringTwo = mesh(new THREE.TorusGeometry(.92, .082, 20, 88), wine);
+    const ringTwo = mesh(new THREE.TorusGeometry(.89, .12, mode === "canvas" ? 8 : 20, mode === "canvas" ? 32 : 88), wine);
     ringTwo.position.set(-.13, 1.67, .18); ringTwo.rotation.set(1.04, .3, .55);
-    const fineRing = mesh(new THREE.TorusGeometry(1.23, .012, 8, 96), trim);
-    fineRing.position.copy(ringOne.position); fineRing.position.z -= .12; fineRing.rotation.copy(ringOne.rotation);
+    if (mode === "webgl") { const fineRing = mesh(new THREE.TorusGeometry(1.23, .012, 8, 96), trim); fineRing.position.copy(ringOne.position); fineRing.position.z -= .12; fineRing.rotation.copy(ringOne.rotation); }
 
     // Frosted architectural screens and a three-step ceramic staircase add spatial depth.
     const screenOne = roundedBlock(.75, 2.34, .1, .13, glass); screenOne.position.set(.92, 1.69, -.82); screenOne.rotation.y = -.32;
@@ -141,118 +126,159 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       const block = roundedBlock(.8, height, .35, .04, ceramic);
       block.position.set(-1.05, height / 2 + .07, .98 - step * .32); block.rotation.y = -.16;
     }
-    const orb = mesh(new THREE.SphereGeometry(.23, 28, 20), wine); orb.position.set(-1.03, .74, .32);
-    const orbBase = mesh(new THREE.CylinderGeometry(.26, .31, .22, 36), ceramic); orbBase.position.set(-1.03, .4, .32);
+    const orb = mesh(new THREE.SphereGeometry(.23, mode === "canvas" ? 12 : 28, mode === "canvas" ? 8 : 20), wine); orb.position.set(-1.03, .74, .32);
+    const orbBase = mesh(new THREE.CylinderGeometry(.26, .31, .22, mode === "canvas" ? 16 : 36), ceramic); orbBase.position.set(-1.03, .4, .32);
     const floor = mesh(new THREE.PlaneGeometry(120, 120), floorMaterial, scene); floor.rotation.x = -Math.PI / 2; floor.position.y = .035; floor.castShadow = false;
-    const hemisphere = new THREE.HemisphereLight("#f7f0ff", "#877a89", 2.15); scene.add(hemisphere);
-    const key = new THREE.DirectionalLight("#fff4df", 3.8); key.position.set(-3, 7, 5); key.castShadow = true;
-    const shadowSize = finePointer.matches ? 1024 : 768; key.shadow.mapSize.set(shadowSize, shadowSize);
+    scene.add(new THREE.HemisphereLight("#d3c4ef", "#17111e", .9));
+    const key = new THREE.DirectionalLight("#fff1e7", 4.3); key.position.set(-3, 7, 5); key.castShadow = true;
+    key.shadow.mapSize.set(finePointer.matches ? 1024 : 768, finePointer.matches ? 1024 : 768);
     key.shadow.camera.left = -4; key.shadow.camera.right = 4; key.shadow.camera.top = 5; key.shadow.camera.bottom = -4;
     key.shadow.normalBias = .028; key.shadow.bias = -.0002; key.shadow.radius = 4; scene.add(key);
-    const fill = new THREE.DirectionalLight("#d2b7f2", 2); fill.position.set(4, 3, -2); scene.add(fill);
-    const rim = new THREE.DirectionalLight("#ffffff", 1.5); rim.position.set(-3, 2, -4); scene.add(rim);
+    const fill = new THREE.DirectionalLight("#919fe9", 2.8); fill.position.set(4, 3, -2); scene.add(fill);
+    const rim = new THREE.DirectionalLight("#ffffff", 3.5); rim.position.set(-3, 2, -4); scene.add(rim);
     cleanups.push(() => key.shadow.dispose());
 
-    const theme = () => {
-      const dark = document.documentElement.classList.contains("dark");
-      if (dark === lastTheme) return;
-      lastTheme = dark;
-      scene.background = new THREE.Color(dark ? "#352d42" : "#e9e2eb");
-      floorMaterial.color.set(dark ? "#352d42" : "#e9e2eb");
-      ceramic.color.set(dark ? "#a49aaf" : "#ede6d9");
-      paleCeramic.color.set(dark ? "#776785" : "#d8cedd");
-      view.toneMappingExposure = dark ? .85 : 1.04;
-    };
-    theme();
-
     const schedule = () => { if (!frame && visible && !document.hidden && !destroyed) frame = requestAnimationFrame(draw); };
-    function draw(now: number) {
-      frame = 0;
-      if (destroyed || !visible || document.hidden) return;
-      if (now - lastPaint < 30 && !reduceMotion.matches) { schedule(); return; }
-      const dt = Math.min(.06, (now - lastPaint) / 1000 || .03); lastPaint = now;
-      const ease = reduceMotion.matches ? 1 : 1 - Math.exp(-dt * 7);
-      const automatic = !reduceMotion.matches && now < activeUntil;
-      const phase = (now - createdAt) / 1000;
-      sculpture.rotation.y += (targetRotation - sculpture.rotation.y) * ease;
-      sculpture.rotation.x += (targetTilt - sculpture.rotation.x) * ease;
-      camera.position.x += (cameraBase.x + targetCameraX - camera.position.x) * ease;
-      camera.position.y += (cameraBase.y + targetCameraY - camera.position.y) * ease;
-      camera.lookAt(cameraTarget);
-      // A short settling motion; no endless render loop or involuntary movement after 4.4 seconds.
-      if (automatic) {
-        ringTwo.rotation.z = .55 + Math.sin(phase * .8) * .055;
-        ringTwo.rotation.y = .3 + Math.sin(phase * .55) * .035;
-      }
-      try { view.render(scene, camera); } catch { fail(); return; }
-      const unsettled = Math.abs(sculpture.rotation.y - targetRotation) + Math.abs(sculpture.rotation.x - targetTilt) + Math.abs(camera.position.x - cameraBase.x - targetCameraX) + Math.abs(camera.position.y - cameraBase.y - targetCameraY) > .001;
-      if (automatic || unsettled) schedule();
-    }
-    const resize = () => {
-      if (destroyed) return;
-      const { width, height } = host.getBoundingClientRect();
-      if (width < 1 || height < 1) return;
-      const aspect = width / height;
-      const frustumHeight = Math.max(4.75, 4.25 / aspect);
-      camera.left = -frustumHeight * aspect / 2; camera.right = frustumHeight * aspect / 2;
-      camera.top = frustumHeight / 2; camera.bottom = -frustumHeight / 2; camera.updateProjectionMatrix();
-      view.setPixelRatio(Math.min(window.devicePixelRatio || 1, finePointer.matches ? 1.5 : 1.25));
-      view.setSize(width, height, false); schedule();
-    };
-    const onMove = (event: PointerEvent) => {
-      if (pointer && event.pointerId === pointer.id) {
-        targetRotation = THREE.MathUtils.clamp(pointer.rotation + (event.clientX - pointer.x) * .007, -1.15, 1.05);
-        targetTilt = THREE.MathUtils.clamp((event.clientY - pointer.y) * .002, -.11, .11);
-        schedule();
-      } else if (event.pointerType === "mouse" && finePointer.matches && !reduceMotion.matches) {
-        const bounds = host.getBoundingClientRect();
-        targetCameraX = ((event.clientX - bounds.left) / bounds.width - .5) * .5;
-        targetCameraY = -((event.clientY - bounds.top) / bounds.height - .5) * .24;
-        schedule();
-      }
-    };
-    const onDown = (event: PointerEvent) => {
-      if (event.button !== 0 || destroyed) return;
-      pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, rotation: targetRotation };
-      host.setPointerCapture(event.pointerId); host.dataset.dragging = "true";
-    };
-    const release = () => {
-      const pointerId = pointer?.id;
-      pointer = null; delete host.dataset.dragging;
-      if (pointerId !== undefined && host.hasPointerCapture(pointerId)) host.releasePointerCapture(pointerId);
-      targetTilt = 0; schedule();
-    };
-    const leave = () => { if (!pointer) { targetCameraX = targetCameraY = 0; schedule(); } };
-    const reset = () => { targetRotation = -.13; targetTilt = targetCameraX = targetCameraY = 0; ringTwo.rotation.set(1.04, .3, .55); activeUntil = 0; schedule(); };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.target !== host) return;
-      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home"].includes(event.key)) return;
-      event.preventDefault();
-      if (event.key === "Home") reset();
-      else if (event.key === "ArrowLeft" || event.key === "ArrowRight") targetRotation = THREE.MathUtils.clamp(targetRotation + (event.key === "ArrowLeft" ? -.12 : .12), -1.15, 1.05);
-      else targetTilt = THREE.MathUtils.clamp(targetTilt + (event.key === "ArrowUp" ? -.04 : .04), -.11, .11);
+    const setPlaying = (value: boolean) => { playing = value; velocity = 0; settleUntil = 0; callbacks.onPlayingChange(value); schedule(); };
+    const setZoom = (value: number) => { targetZoom = Math.round(THREE.MathUtils.clamp(value, .75, 1.45) * 100) / 100; callbacks.onZoomChange(targetZoom); schedule(); };
+    const setMaterial = (finish: SpatialMaterial) => {
+      const crystal = finish === "crystal", porcelain = finish === "porcelain";
+      [violet, wine].forEach((material, index) => {
+        material.color.set(crystal ? (index ? "#e2bdef" : "#b9e7fc") : porcelain ? (index ? "#c6a5af" : "#f2e2c9") : (index ? "#b17ca4" : "#9790b3"));
+        material.metalness = crystal || porcelain ? 0 : .96;
+        material.roughness = crystal ? .085 : porcelain ? .33 : .18;
+        material.transmission = crystal ? .88 : 0;
+        material.thickness = crystal ? .48 : 0;
+        material.ior = 1.47; material.attenuationColor.set(crystal ? "#bdd5ff" : "#ffffff"); material.attenuationDistance = 2.5;
+        material.clearcoat = crystal ? 1 : porcelain ? .72 : .8;
+        material.clearcoatRoughness = porcelain ? .21 : .1;
+        material.bumpMap = crystal ? null : porcelain ? ceramicGrain : brushing;
+        material.bumpScale = porcelain ? .007 : .003;
+        material.anisotropy = crystal || porcelain ? 0 : .5;
+        material.needsUpdate = true;
+      });
       schedule();
     };
-    const lostContext = (event: Event) => { event.preventDefault(); fail(); };
-    const visibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else schedule(); };
-    const preference = () => { if (reduceMotion.matches) { activeUntil = 0; targetCameraX = targetCameraY = 0; } schedule(); };
-    host.addEventListener("pointerdown", onDown); host.addEventListener("pointermove", onMove, { passive: true });
-    host.addEventListener("pointerup", release); host.addEventListener("pointercancel", release); host.addEventListener("lostpointercapture", release); host.addEventListener("pointerleave", leave); host.addEventListener("keydown", onKey);
-    view.domElement.addEventListener("webglcontextlost", lostContext);
+    const reset = () => { targetYaw = .45; targetPitch = .27; velocity = 0; ringTwo.rotation.set(1.04, .3, .55); setZoom(1); setPlaying(false); schedule(); };
+    const updateCamera = () => {
+      const distance = 9;
+      camera.position.set(Math.sin(yaw) * Math.cos(pitch) * distance, cameraTarget.y + Math.sin(pitch) * distance, Math.cos(yaw) * Math.cos(pitch) * distance);
+      camera.lookAt(cameraTarget); camera.zoom = targetZoom; camera.updateProjectionMatrix(); camera.updateMatrixWorld(); scene.updateMatrixWorld();
+    };
+    const render = () => { if (renderer) renderer.render(scene, camera); else canvasRenderer?.render(); };
+    const resize = () => {
+      if (destroyed) return;
+      const { width, height } = host.getBoundingClientRect(); if (width < 1 || height < 1) return;
+      const aspect = width / height; const frustum = Math.max(4.75, 4.1 / aspect);
+      camera.left = -frustum * aspect / 2; camera.right = frustum * aspect / 2; camera.top = frustum / 2; camera.bottom = -frustum / 2;
+      camera.updateProjectionMatrix();
+      const dpr = mode === "canvas" ? 1 : Math.min(window.devicePixelRatio || 1, finePointer.matches ? 1.5 : 1.25);
+      if (renderer) { renderer.setPixelRatio(dpr); renderer.setSize(width, height, false); }
+      else canvasRenderer?.setSize(width, height, dpr);
+      schedule();
+    };
+    const simplifyForCanvas = () => {
+      const meshes: THREE.Mesh[] = [];
+      sculpture.traverse(object => { if (object instanceof THREE.Mesh) meshes.push(object); });
+      for (const object of meshes) {
+        const geometry = object.geometry;
+        let replacement: THREE.BufferGeometry | undefined;
+        if (geometry instanceof THREE.TorusGeometry) {
+          const p = geometry.parameters;
+          if (p.tube < .03) { object.removeFromParent(); continue; }
+          replacement = new THREE.TorusGeometry(p.radius, p.tube, p.radius > 1 ? 10 : 8, p.radius > 1 ? 40 : 32, p.arc);
+        } else if (geometry instanceof THREE.LatheGeometry) {
+          const p = geometry.parameters; replacement = new THREE.LatheGeometry(p.points, 24, p.phiStart, p.phiLength);
+        } else if (geometry instanceof THREE.CylinderGeometry) {
+          const p = geometry.parameters; replacement = new THREE.CylinderGeometry(p.radiusTop, p.radiusBottom, p.height, p.radiusTop > 1 ? 24 : 16);
+        } else if (geometry instanceof THREE.SphereGeometry) {
+          replacement = new THREE.SphereGeometry(geometry.parameters.radius, 12, 8);
+        } else if (geometry instanceof THREE.ExtrudeGeometry) {
+          geometry.computeBoundingBox();
+          if (geometry.boundingBox) {
+            const size = geometry.boundingBox.getSize(new THREE.Vector3());
+            const center = geometry.boundingBox.getCenter(new THREE.Vector3());
+            replacement = new THREE.BoxGeometry(size.x, size.y, size.z); replacement.translate(center.x, center.y, center.z);
+          }
+        }
+        if (replacement) { object.geometry = ownGeometry(replacement); geometry.dispose(); geometries.delete(geometry); }
+      }
+    };
+    const useCanvas = () => {
+      if (canvasRenderer || destroyed) return;
+      if (mode === "webgl") simplifyForCanvas();
+      removeGLListener();
+      if (renderer) { renderer.renderLists.dispose(); renderer.dispose(); renderer.domElement.remove(); renderer = undefined; }
+      targets.forEach(target => target.dispose()); targets.clear(); scene.environment = null;
+      canvasRenderer = createCanvasSceneRenderer(host, scene, camera, sculpture); mode = "canvas";
+      canvasRenderer.domElement.setAttribute("aria-hidden", "true"); resize(); callbacks.onReady(mode);
+    };
+    function draw(now: number) {
+      frame = 0; if (destroyed || !visible || document.hidden) return;
+      const minimumFrame = mode === "canvas" ? 1000 / 24 : 1000 / 30;
+      if (now - lastPaint < minimumFrame && !reduceMotion.matches) { schedule(); return; }
+      const dt = Math.min(.07, (now - lastPaint) / 1000 || .03); lastPaint = now;
+      if (playing && !pointer) targetYaw += dt * .26;
+      if (!pointer && !playing && !reduceMotion.matches && Math.abs(velocity) > .003) { targetYaw += velocity * dt; velocity *= Math.exp(-dt * 6); }
+      const ease = reduceMotion.matches ? 1 : 1 - Math.exp(-dt * 10);
+      yaw += (targetYaw - yaw) * ease; pitch += (targetPitch - pitch) * ease;
+      if (!reduceMotion.matches && now < settleUntil) { ringTwo.rotation.z = .55 + Math.sin((now - settleUntil + 3500) / 1700) * .04; }
+      updateCamera();
+      try { render(); } catch { try { useCanvas(); updateCamera(); render(); } catch { fatal(); return; } }
+      const drifting = !pointer && !reduceMotion.matches && Math.abs(velocity) > .003;
+      if (playing || now < settleUntil || drifting || Math.abs(yaw - targetYaw) + Math.abs(pitch - targetPitch) > .0008) schedule();
+    }
+    const onDown = (event: PointerEvent) => {
+      if (event.button !== 0 || destroyed || pointer) return;
+      setPlaying(false); velocity = 0;
+      pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, yaw: targetYaw, pitch: targetPitch, lastAt: performance.now() };
+      host.setPointerCapture(event.pointerId); host.dataset.dragging = "true";
+    };
+    const onMove = (event: PointerEvent) => {
+      if (!pointer || pointer.id !== event.pointerId) return;
+      const now = performance.now(), nextYaw = pointer.yaw - (event.clientX - pointer.x) * .009;
+      velocity = THREE.MathUtils.clamp((nextYaw - targetYaw) / Math.max(.012, (now - pointer.lastAt) / 1000), -2.2, 2.2);
+      targetYaw = nextYaw; targetPitch = THREE.MathUtils.clamp(pointer.pitch + (event.clientY - pointer.y) * .005, .05, .88);
+      pointer.lastAt = now; schedule();
+    };
+    const release = () => {
+      const id = pointer?.id; if (pointer && performance.now() - pointer.lastAt > 120) velocity = 0;
+      pointer = null; delete host.dataset.dragging;
+      if (id !== undefined && host.hasPointerCapture(id)) host.releasePointerCapture(id);
+      if (reduceMotion.matches) velocity = 0; schedule();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.target !== host || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "+", "=", "-", " "].includes(event.key)) return;
+      event.preventDefault();
+      if (event.key === " ") { setPlaying(!playing); return; }
+      setPlaying(false);
+      if (event.key === "Home") reset();
+      else if (event.key === "+" || event.key === "=") setZoom(targetZoom + .1);
+      else if (event.key === "-") setZoom(targetZoom - .1);
+      else if (event.key === "ArrowLeft" || event.key === "ArrowRight") targetYaw += event.key === "ArrowLeft" ? -.15 : .15;
+      else targetPitch = THREE.MathUtils.clamp(targetPitch + (event.key === "ArrowUp" ? .06 : -.06), .05, .88);
+      schedule();
+    };
+    const visibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; velocity = 0; } else { lastPaint = performance.now(); schedule(); } };
+    const preference = () => { if (reduceMotion.matches) { settleUntil = 0; setPlaying(false); velocity = 0; } schedule(); };
+    host.addEventListener("pointerdown", onDown); host.addEventListener("pointermove", onMove, { passive: true }); host.addEventListener("pointerup", release); host.addEventListener("pointercancel", release); host.addEventListener("lostpointercapture", release); host.addEventListener("keydown", onKey);
     document.addEventListener("visibilitychange", visibility); reduceMotion.addEventListener("change", preference);
     const resizer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(resize);
     if (resizer) resizer.observe(host); else window.addEventListener("resize", resize);
-    const themeObserver = new MutationObserver(() => { theme(); schedule(); }); themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    const intersection = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); if (visible) schedule(); else { cancelAnimationFrame(frame); frame = 0; } });
-    intersection?.observe(host);
+    const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(entries => { visible = entries.some(entry => entry.isIntersecting); if (visible) { lastPaint = performance.now(); schedule(); } else { cancelAnimationFrame(frame); frame = 0; velocity = 0; } }); observer?.observe(host);
     cleanups.push(() => {
-      host.removeEventListener("pointerdown", onDown); host.removeEventListener("pointermove", onMove); host.removeEventListener("pointerup", release); host.removeEventListener("pointercancel", release); host.removeEventListener("lostpointercapture", release); host.removeEventListener("pointerleave", leave); host.removeEventListener("keydown", onKey);
-      view.domElement.removeEventListener("webglcontextlost", lostContext); document.removeEventListener("visibilitychange", visibility); reduceMotion.removeEventListener("change", preference);
-      resizer?.disconnect(); window.removeEventListener("resize", resize); themeObserver.disconnect(); intersection?.disconnect(); delete host.dataset.dragging;
+      host.removeEventListener("pointerdown", onDown); host.removeEventListener("pointermove", onMove); host.removeEventListener("pointerup", release); host.removeEventListener("pointercancel", release); host.removeEventListener("lostpointercapture", release); host.removeEventListener("keydown", onKey);
+      document.removeEventListener("visibilitychange", visibility); reduceMotion.removeEventListener("change", preference); resizer?.disconnect(); observer?.disconnect(); window.removeEventListener("resize", resize); delete host.dataset.dragging;
     });
-    resize();
-    view.render(scene, camera);
-    callbacks.onReady();
-    return { dispose, reset };
+    if (renderer) {
+      const glCanvas = renderer.domElement;
+      const contextLost = (event: Event) => { event.preventDefault(); try { useCanvas(); } catch { fatal(); } };
+      glCanvas.addEventListener("webglcontextlost", contextLost); removeGLListener = () => glCanvas.removeEventListener("webglcontextlost", contextLost);
+    } else useCanvas();
+    setMaterial("titanium");
+    try { resize(); updateCamera(); render(); }
+    catch { useCanvas(); resize(); updateCamera(); render(); }
+    callbacks.onReady(mode);
+    return { dispose, reset, setMaterial, setPlaying, setZoom };
   } catch (error) { dispose(); throw error; }
 }
