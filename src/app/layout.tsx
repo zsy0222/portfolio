@@ -3,6 +3,8 @@ import "./globals.css";
 import "@/components/studio-design.css";
 import "@/components/material-details.css";
 import "@/components/spatial-motion.css";
+import "@/components/reference-design.css";
+import { ProjectWindowsProvider } from "@/components/ProjectWindows";
 import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
 import BackToTop from "@/components/BackToTop";
@@ -55,6 +57,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://giscus.app" />
       </head>
       <body className="min-h-full bg-bg text-lead leading-[1.6]">
+        <ProjectWindowsProvider>
         <a href="#main-content" className="skip-link">
           Skip to Content
         </a>
@@ -66,6 +69,7 @@ export default function RootLayout({
         </div>
         <MotionEffects />
         <BackToTop />
+        </ProjectWindowsProvider>
         <Analytics />
       </body>
     </html>

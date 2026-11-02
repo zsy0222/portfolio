@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Icon from "./Icon";
 import ProjectVisual from "./ProjectVisual";
+import OpenProjectButton from "./OpenProjectButton";
 import type { Project } from "@/data/projects";
 
 interface ProjectCardProps { project: Project; featured?: boolean; sequence: number }
@@ -23,6 +24,7 @@ export default function ProjectCard({ project, featured = false, sequence }: Pro
           </div>
         </details>
         <div className="work-project-links">
+          <OpenProjectButton projectId={project.id} />
           {project.repoUrl && <Link href={project.repoUrl} target="_blank" rel="noopener noreferrer" aria-label={`View ${project.title} repository on GitHub`} className="motion-link">View Repository <Icon name="arrow-up-right" /></Link>}
           {project.liveUrl && <Link href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="motion-link">View Project <Icon name="arrow-up-right" /></Link>}
         </div>
