@@ -91,3 +91,49 @@
   .home-work-visual, .work-project-art, .hero-portrait-composition .portrait-print,
   .hero-bottom a .ui-icon, .about-asterisk { transition: none; animation: none; }
 }
+
+/* Each editorial surface has its own motion vocabulary. Static rules stay visible. */
+.home-journal-row, .journal-entry, .contact-link-row { position: relative; }
+.home-journal-row::after, .journal-entry::after, .contact-link-row::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  pointer-events: none;
+  transform-origin: left center;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 40%, transparent), transparent 85%);
+}
+.archive-timeline-entry::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  pointer-events: none;
+  transform-origin: center top;
+  background: linear-gradient(var(--color-accent), color-mix(in srgb, var(--color-accent) 12%, transparent));
+  opacity: .5;
+}
+.home-about-copy em {
+  background-image: linear-gradient(transparent 86%, color-mix(in srgb, currentColor 20%, transparent) 86%);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+/* Only deliberate interactions move these accents; nothing loops while reading. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .archive-timeline-date > span { transition: box-shadow 300ms ease, scale 300ms var(--motion-out); }
+  .archive-timeline-entry:hover .archive-timeline-date > span,
+  .archive-timeline-entry:focus-within .archive-timeline-date > span {
+    scale: 1.25;
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+  .contact-link-row::after { transition: background 300ms ease; }
+  .contact-link-row:focus-within::after,
+  .contact-link-row:hover::after { background: linear-gradient(90deg, var(--color-accent), transparent 95%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .archive-timeline-date > span, .contact-link-row::after { transition: none; }
+}

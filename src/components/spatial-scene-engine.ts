@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { createCanvasSceneRenderer } from "./spatial-canvas-renderer";
+import { createCanvasSceneRenderer, paintSpatialBackdrop } from "./spatial-canvas-renderer";
 
 export type SpatialMaterial = "titanium" | "crystal" | "porcelain";
 export type SpatialRenderMode = "webgl" | "canvas";
@@ -50,7 +50,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       renderer.toneMappingExposure = 1.1; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.domElement.setAttribute("aria-hidden", "true"); host.appendChild(renderer.domElement);
     } catch { renderer = undefined; mode = "canvas"; }
-    const scene = new THREE.Scene(); scene.background = new THREE.Color("#17131f");
+    const scene = new THREE.Scene(); scene.background = new THREE.Color("#827994");
     const camera = new THREE.OrthographicCamera(-2.9, 2.9, 3.2, -3.2, .1, 60);
     const cameraTarget = new THREE.Vector3(0, 1.52, 0);
     const sculpture = new THREE.Group(); scene.add(sculpture);
@@ -60,6 +60,26 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       catch { renderer.dispose(); renderer.domElement.remove(); renderer.forceContextLoss(); renderer = undefined; mode = "canvas"; }
       finally { environment.dispose(); pmrem.dispose(); }
     }
+    // The same camera-reactive chamber is used by both rendering paths.
+    const backdropCanvas = document.createElement("canvas");
+    const backdropContext = renderer ? backdropCanvas.getContext("2d", { alpha: false }) : null;
+    let backdropTexture: THREE.CanvasTexture | undefined;
+    let backdropYaw = Infinity, backdropPitch = Infinity;
+    if (backdropContext) {
+      backdropCanvas.width = 640; backdropCanvas.height = 640;
+      backdropTexture = new THREE.CanvasTexture(backdropCanvas);
+      backdropTexture.colorSpace = THREE.SRGBColorSpace;
+      backdropTexture.generateMipmaps = false; backdropTexture.minFilter = THREE.LinearFilter;
+      textures.add(backdropTexture); scene.background = backdropTexture;
+    }
+    const updateBackdrop = (force = false) => {
+      if (!renderer || !backdropContext || !backdropTexture) return;
+      if (!force && Math.abs(yaw - backdropYaw) + Math.abs(pitch - backdropPitch) < .025) return;
+      backdropYaw = yaw; backdropPitch = pitch;
+      paintSpatialBackdrop(backdropContext, backdropCanvas.width, backdropCanvas.height, yaw, pitch);
+      backdropTexture.needsUpdate = true;
+    };
+    cleanups.push(() => { backdropCanvas.width = backdropCanvas.height = 1; });
     const texture = (brushed: boolean) => {
       const size = 128;
       const bytes = new Uint8Array(size * size * 4);
@@ -81,13 +101,13 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     };
     const brushing = texture(true);
     const ceramicGrain = texture(false);
-    const violet = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#9790b3", metalness: .96, roughness: .18, bumpMap: brushing, bumpScale: .004, anisotropy: .5, clearcoat: .8, clearcoatRoughness: .16 }));
-    const wine = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#b17ca4", metalness: .92, roughness: .21, bumpMap: brushing, bumpScale: .004, clearcoat: .6 }));
-    const ceramic = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#554b5d", metalness: .38, roughness: .24, bumpMap: ceramicGrain, bumpScale: .005, clearcoat: .7 }));
-    const paleCeramic = ownMaterial(new THREE.MeshStandardMaterial({ color: "#39313f", metalness: .6, roughness: .2 }));
+    const violet = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#bbb5d1", metalness: .96, roughness: .18, bumpMap: brushing, bumpScale: .004, anisotropy: .5, clearcoat: .8, clearcoatRoughness: .16 }));
+    const wine = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#c395b7", metalness: .92, roughness: .21, bumpMap: brushing, bumpScale: .004, clearcoat: .6 }));
+    const ceramic = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#998daa", metalness: .38, roughness: .24, bumpMap: ceramicGrain, bumpScale: .005, clearcoat: .7 }));
+    const paleCeramic = ownMaterial(new THREE.MeshStandardMaterial({ color: "#77708b", metalness: .6, roughness: .2 }));
     const glass = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#a6c3dc", roughness: .2, transmission: .76, thickness: .25, ior: 1.4, attenuationColor: new THREE.Color("#8c88ba"), attenuationDistance: 2.3, clearcoat: .8, side: THREE.DoubleSide }));
     const trim = ownMaterial(new THREE.MeshStandardMaterial({ color: "#b4a1ce", metalness: .8, roughness: .2 }));
-    const floorMaterial = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#14111b", metalness: .38, roughness: .24, clearcoat: .8 }));
+    const floorMaterial = ownMaterial(new THREE.MeshPhysicalMaterial({ color: "#726c87", metalness: .32, roughness: .3, clearcoat: .8, transparent: true, opacity: .52, depthWrite: false }));
     const mesh = (geometry: THREE.BufferGeometry, material: THREE.Material, parent: THREE.Object3D = sculpture) => {
       const object = new THREE.Mesh(ownGeometry(geometry), material);
       object.castShadow = true; object.receiveShadow = true; parent.add(object); return object;
@@ -129,7 +149,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     const orb = mesh(new THREE.SphereGeometry(.23, mode === "canvas" ? 12 : 28, mode === "canvas" ? 8 : 20), wine); orb.position.set(-1.03, .74, .32);
     const orbBase = mesh(new THREE.CylinderGeometry(.26, .31, .22, mode === "canvas" ? 16 : 36), ceramic); orbBase.position.set(-1.03, .4, .32);
     const floor = mesh(new THREE.PlaneGeometry(120, 120), floorMaterial, scene); floor.rotation.x = -Math.PI / 2; floor.position.y = .035; floor.castShadow = false;
-    scene.add(new THREE.HemisphereLight("#d3c4ef", "#17111e", .9));
+    scene.add(new THREE.HemisphereLight("#eadcf7", "#7c718d", 1.1));
     const key = new THREE.DirectionalLight("#fff1e7", 4.3); key.position.set(-3, 7, 5); key.castShadow = true;
     key.shadow.mapSize.set(finePointer.matches ? 1024 : 768, finePointer.matches ? 1024 : 768);
     key.shadow.camera.left = -4; key.shadow.camera.right = 4; key.shadow.camera.top = 5; key.shadow.camera.bottom = -4;
@@ -144,7 +164,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     const setMaterial = (finish: SpatialMaterial) => {
       const crystal = finish === "crystal", porcelain = finish === "porcelain";
       [violet, wine].forEach((material, index) => {
-        material.color.set(crystal ? (index ? "#e2bdef" : "#b9e7fc") : porcelain ? (index ? "#c6a5af" : "#f2e2c9") : (index ? "#b17ca4" : "#9790b3"));
+        material.color.set(crystal ? (index ? "#e2bdef" : "#b9e7fc") : porcelain ? (index ? "#c6a5af" : "#f2e2c9") : (index ? "#c395b7" : "#bbb5d1"));
         material.metalness = crystal || porcelain ? 0 : .96;
         material.roughness = crystal ? .085 : porcelain ? .33 : .18;
         material.transmission = crystal ? .88 : 0;
@@ -165,7 +185,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       camera.position.set(Math.sin(yaw) * Math.cos(pitch) * distance, cameraTarget.y + Math.sin(pitch) * distance, Math.cos(yaw) * Math.cos(pitch) * distance);
       camera.lookAt(cameraTarget); camera.zoom = targetZoom; camera.updateProjectionMatrix(); camera.updateMatrixWorld(); scene.updateMatrixWorld();
     };
-    const render = () => { if (renderer) renderer.render(scene, camera); else canvasRenderer?.render(); };
+    const render = () => { if (renderer) { updateBackdrop(); renderer.render(scene, camera); } else canvasRenderer?.render(); };
     const resize = () => {
       if (destroyed) return;
       const { width, height } = host.getBoundingClientRect(); if (width < 1 || height < 1) return;
@@ -173,7 +193,12 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       camera.left = -frustum * aspect / 2; camera.right = frustum * aspect / 2; camera.top = frustum / 2; camera.bottom = -frustum / 2;
       camera.updateProjectionMatrix();
       const dpr = mode === "canvas" ? 1 : Math.min(window.devicePixelRatio || 1, finePointer.matches ? 1.5 : 1.25);
-      if (renderer) { renderer.setPixelRatio(dpr); renderer.setSize(width, height, false); }
+      if (renderer) {
+        renderer.setPixelRatio(dpr); renderer.setSize(width, height, false);
+        const scale = Math.min(1.25, 768 / Math.max(width, height));
+        backdropCanvas.width = Math.max(1, Math.round(width * scale));
+        backdropCanvas.height = Math.max(1, Math.round(height * scale)); updateBackdrop(true);
+      }
       else canvasRenderer?.setSize(width, height, dpr);
       schedule();
     };

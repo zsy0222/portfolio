@@ -1,0 +1,22 @@
+/* One brief edge sweep connects pages while the navigation stays still. */
+.route-transition-accent {
+  position: fixed;
+  z-index: 150;
+  inset: 0 0 auto;
+  height: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, #ab91cd, #d1b8db 52%, #e4bfcd 82%, #f3dfb8);
+  box-shadow: 0 1px 7px #bda0d238;
+}
+/* A route-level fade replaces, rather than stacks with, first-paint entrances. */
+.site-main[data-client-navigation] :is(.ui-enter, .hero-copy h1, .hero-name,
+.hero-description, .hero-actions, .hero-portrait-composition,
+.motion-heading-segment, .motion-hero-description, .motion-hero-actions, .motion-portrait) {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-transition-accent { display: none; }
+}
