@@ -204,7 +204,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
         if (replacement) { object.geometry = ownGeometry(replacement); geometry.dispose(); geometries.delete(geometry); }
       }
     };
-    const useCanvas = () => {
+    const activateCanvasFallback = () => {
       if (canvasRenderer || destroyed) return;
       if (mode === "webgl") simplifyForCanvas();
       removeGLListener();
@@ -224,7 +224,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       yaw += (targetYaw - yaw) * ease; pitch += (targetPitch - pitch) * ease;
       if (!reduceMotion.matches && now < settleUntil) { ringTwo.rotation.z = .55 + Math.sin((now - settleUntil + 3500) / 1700) * .04; }
       updateCamera();
-      try { render(); } catch { try { useCanvas(); updateCamera(); render(); } catch { fatal(); return; } }
+      try { render(); } catch { try { activateCanvasFallback(); updateCamera(); render(); } catch { fatal(); return; } }
       const drifting = !pointer && !reduceMotion.matches && Math.abs(velocity) > .003;
       if (playing || now < settleUntil || drifting || Math.abs(yaw - targetYaw) + Math.abs(pitch - targetPitch) > .0008) schedule();
     }
@@ -272,12 +272,12 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     });
     if (renderer) {
       const glCanvas = renderer.domElement;
-      const contextLost = (event: Event) => { event.preventDefault(); try { useCanvas(); } catch { fatal(); } };
+      const contextLost = (event: Event) => { event.preventDefault(); try { activateCanvasFallback(); } catch { fatal(); } };
       glCanvas.addEventListener("webglcontextlost", contextLost); removeGLListener = () => glCanvas.removeEventListener("webglcontextlost", contextLost);
-    } else useCanvas();
+    } else activateCanvasFallback();
     setMaterial("titanium");
     try { resize(); updateCamera(); render(); }
-    catch { useCanvas(); resize(); updateCamera(); render(); }
+    catch { activateCanvasFallback(); resize(); updateCamera(); render(); }
     callbacks.onReady(mode);
     return { dispose, reset, setMaterial, setPlaying, setZoom };
   } catch (error) { dispose(); throw error; }
