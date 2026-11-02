@@ -8,8 +8,6 @@ import PasswordField from "@/components/PasswordField";
 import Icon from "@/components/Icon";
 import FormField from "@/components/FormField";
 
-const FALLBACK_PASSWORD = "nju2026";
-
 async function verifyPassword(password: string): Promise<boolean> {
   try {
     const res = await fetch("/api/auth/verify", {
@@ -22,9 +20,9 @@ async function verifyPassword(password: string): Promise<boolean> {
       return data.ok;
     }
   } catch {
-    // API unreachable, fall through to hardcoded check
+    // Verification failures must remain locked; only the server can grant access.
   }
-  return password === FALLBACK_PASSWORD;
+  return false;
 }
 
 export default function WikiAskPage() {

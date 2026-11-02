@@ -31,7 +31,7 @@ export default function GiscusComments() {
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="bottom"
-      theme={isDark ? "/giscus-dark.css" : "/giscus-light.css"}
+      theme={isDark ? "https://chenmuqingtongyan.vercel.app/giscus-dark.css" : "light"}
       lang="zh-CN"
       loading="lazy"
     />

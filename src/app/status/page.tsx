@@ -12,8 +12,6 @@ interface Stats {
   projects: number;
 }
 
-const FALLBACK_PASSWORD = "nju2026";
-
 async function verifyPassword(password: string): Promise<boolean> {
   try {
     const res = await fetch("/api/auth/verify", {
@@ -26,9 +24,9 @@ async function verifyPassword(password: string): Promise<boolean> {
       return data.ok;
     }
   } catch {
-    // API unreachable, fall through to hardcoded check
+    // Verification failures must remain locked; only the server can grant access.
   }
-  return password === FALLBACK_PASSWORD;
+  return false;
 }
 
 const siteRoutes = [
@@ -93,7 +91,7 @@ export default function StatusPage() {
   if (!authed) {
     return (
       <>
-        <section className="px-15 pt-25 pb-16">
+        <section className="px-6 sm:px-10 xl:px-15 pt-25 pb-16">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
             Status
           </div>
@@ -104,7 +102,7 @@ export default function StatusPage() {
             Password required to unlock content.
           </p>
         </section>
-        <section className="px-15 pb-6">
+        <section className="px-6 sm:px-10 xl:px-15 pb-6">
           <form onSubmit={handleUnlock} className="ui-unlock-form">
             <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
@@ -122,7 +120,7 @@ export default function StatusPage() {
 
   return (
     <>
-      <section className="px-15 pt-25 pb-16">
+      <section className="px-6 sm:px-10 xl:px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Status
         </div>
@@ -134,7 +132,7 @@ export default function StatusPage() {
         </p>
       </section>
 
-      <section className="px-15 py-14 border-t border-line">
+      <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Quick Links
         </div>
@@ -166,11 +164,11 @@ export default function StatusPage() {
         </div>
       </section>
 
-      <section className="px-15 py-14 border-t border-line">
+      <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Content Stats
         </div>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats ? [
             { label: "Wiki Sections", count: stats.wikiSections },
             { label: "Wiki Pages", count: stats.wikiPages },
@@ -186,12 +184,12 @@ export default function StatusPage() {
               </div>
             </div>
           )) : (
-            <div className="text-[20px] text-muted col-span-3">Loading stats...</div>
+            <div className="text-[20px] text-muted col-span-full">Loading stats...</div>
           )}
         </div>
       </section>
 
-      <section className="px-15 py-14 border-t border-line">
+      <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Routes
         </div>
@@ -199,7 +197,7 @@ export default function StatusPage() {
           {siteRoutes.map((route, idx) => (
             <div
               key={route.path}
-              className={`py-5 flex items-center gap-6 ${idx < siteRoutes.length - 1 ? "border-b border-line" : ""}`}
+              className={`py-5 flex flex-wrap items-center gap-x-6 gap-y-2 ${idx < siteRoutes.length - 1 ? "border-b border-line" : ""}`}
             >
               <code className="text-[18px] text-ink font-mono w-[180px] shrink-0">
                 {route.path}
@@ -215,7 +213,7 @@ export default function StatusPage() {
         </div>
       </section>
 
-      <section className="px-15 py-14 border-t border-line">
+      <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Tech Stack
         </div>

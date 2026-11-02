@@ -29,8 +29,6 @@ interface WikiReadme {
   content: string;
 }
 
-const FALLBACK_PASSWORD = "nju2026";
-
 const FALLBACK_SECTIONS: WikiSection[] = [
   { id: 1, slug: "frontend", name: "Frontend", pageCount: 3 },
   { id: 2, slug: "ai-agent", name: "AI Agent", pageCount: 3 },
@@ -69,7 +67,7 @@ async function verifyPassword(password: string): Promise<boolean> {
       return data.ok;
     }
   } catch { /* fall through */ }
-  return password === FALLBACK_PASSWORD;
+  return false;
 }
 
 // ── Simple markdown to JSX converter ──────────────────────────────────
