@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import ArticleReader from "@/components/ArticleReader";
 import ZoomableImage from "@/components/ZoomableImage";
 import Icon from "@/components/Icon";
+import { useWorldLocale } from "@/components/world/WorldProvider";
 
 interface WikiPage {
   slug: string;
@@ -92,6 +93,7 @@ function renderMarkdown(md: string): React.ReactNode[] {
 }
 
 export default function WikiDetailPage() {
+  const { t } = useWorldLocale();
   const params = useParams();
   const slug = params.slug as string;
   const [page, setPage] = useState<WikiPage | null>(null);
@@ -108,7 +110,7 @@ export default function WikiDetailPage() {
   if (loading) {
     return (
       <div className="px-15 pt-25 pb-16">
-        <div className="text-[20px] text-muted">Loading...</div>
+        <div className="text-[20px] text-muted">{t("正在加载…", "Loading…")}</div>
       </div>
     );
   }
@@ -117,9 +119,9 @@ export default function WikiDetailPage() {
     return (
       <>
         <section className="px-15 pt-25 pb-16">
-          <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">Wiki</div>
-          <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5">Page not found.</h1>
-          <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
+          <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">{t("知识库", "Wiki")}</div>
+          <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5">{t("未找到这篇笔记。", "Page not found.")}</h1>
+          <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> {t("返回知识库", "Back to Wiki")}</Link>
         </section>
         <Footer />
       </>
@@ -130,18 +132,21 @@ export default function WikiDetailPage() {
     <>
       <section className="px-15 pt-25 pb-16">
         <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
-          {page.section_name || "Wiki"}
+          {page.section_name || t("知识库", "Wiki")}
         </div>
         <h1 className="text-[48px] font-light text-ink leading-[1.2] mb-5">
           {page.title}
         </h1>
-        <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
+        <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> {t("返回知识库", "Back to Wiki")}</Link>
+        <p className="text-[16px] text-muted mt-4">
+          {t("以下笔记与资料保留作者的原始语言。", "The notes and materials below remain in the author’s original language.")}
+        </p>
       </section>
 
       <section className="px-15 py-14 border-t border-line">
         <ArticleReader key={slug} className="max-w-[760px]">
           {page.content ? renderMarkdown(page.content) : (
-            <p className="text-[20px] text-muted">No content yet.</p>
+            <p className="text-[20px] text-muted">{t("暂无内容。", "No content yet.")}</p>
           )}
         </ArticleReader>
       </section>

@@ -37,8 +37,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f0ecf2" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1525" },
+    { media: "(prefers-color-scheme: light)", color: "#f6f3ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e1925" },
   ],
 };
 
@@ -56,7 +56,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-bg text-lead leading-[1.6]">
         <a href="#main-content" className="skip-link">
-          Skip to Content
+          跳至内容 / Skip to content
         </a>
         <WorldProvider>
         <div id="top" className="min-h-screen">
@@ -66,8 +66,8 @@ export default function RootLayout({
           </main>
           <WorldFooter />
         </div>
-        </WorldProvider>
         <BackToTop />
+        </WorldProvider>
         <Analytics />
       </body>
     </html>

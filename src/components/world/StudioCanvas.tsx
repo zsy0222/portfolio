@@ -11,7 +11,15 @@ interface StudioCanvasProps {
   onError: () => void;
   onNavigate: (href: string) => void;
   onHover: (name: string | null) => void;
+  onCompatibility?: () => void;
   label: string;
+}
+
+interface StudioRenderer {
+  domElement: HTMLCanvasElement | SVGElement;
+  setSize: (width: number, height: number) => void;
+  render: (scene: Three.Scene, camera: Three.Camera) => void;
+  dispose: () => void;
 }
 
 /** A lightweight, original scene study. No downloaded model or personal room is implied. */
@@ -27,25 +35,54 @@ export default function StudioCanvas(props: StudioCanvasProps) {
     const host = container.current;
     if (!host) return;
     let disposed = false;
+    let failed = false;
     let cleanup = () => {};
+    const reportError = () => {
+      if (disposed || failed) return;
+      failed = true;
+      try { cleanup(); } finally { callbacks.current.onError(); }
+    };
 
     async function createStudio() {
       const T = await import("three");
       if (disposed || !host) return;
-      let renderer: Three.WebGLRenderer;
-      try {
-        renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-      } catch {
-        callbacks.current.onError();
-        return;
-      }
+      let renderer: StudioRenderer;
+      let compatibility = false;
       const smallScreen = window.matchMedia("(max-width: 700px)").matches;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallScreen ? 1.3 : 1.65));
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = T.PCFSoftShadowMap;
-      renderer.outputColorSpace = T.SRGBColorSpace;
-      renderer.toneMapping = T.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.05;
+      try {
+        const webgl = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+        webgl.setPixelRatio(Math.min(window.devicePixelRatio || 1, smallScreen ? 1.3 : 1.65));
+        webgl.shadowMap.enabled = true;
+        webgl.shadowMap.type = T.PCFSoftShadowMap;
+        webgl.outputColorSpace = T.SRGBColorSpace;
+        webgl.toneMapping = T.ACESFilmicToneMapping;
+        webgl.toneMappingExposure = 1.05;
+        renderer = {
+          domElement: webgl.domElement,
+          setSize: (width, height) => webgl.setSize(width, height, false),
+          render: (scene, camera) => webgl.render(scene, camera),
+          dispose: () => webgl.dispose(),
+        };
+      } catch {
+        // Render the same geometry with a CPU/vector backend when WebGL is unavailable.
+        // This does not request or enable GPU access, and its simpler materials are labelled.
+        const { SVGRenderer } = await import("three/examples/jsm/renderers/SVGRenderer.js");
+        if (disposed) return;
+        const svg = new SVGRenderer();
+        svg.setQuality("low");
+        svg.setPrecision(2);
+        renderer = {
+          domElement: svg.domElement,
+          setSize: (width, height) => svg.setSize(width, height),
+          render: (scene, camera) => {
+            svg.render(scene, camera);
+            svg.domElement.style.backgroundColor = "transparent";
+          },
+          dispose: () => svg.clear(),
+        };
+        compatibility = true;
+        callbacks.current.onCompatibility?.();
+      }
       renderer.domElement.setAttribute("aria-hidden", "true");
       host.appendChild(renderer.domElement);
 
@@ -59,7 +96,10 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const materials = new Set<Three.Material>();
       const geometry = new Set<Three.BufferGeometry>();
       // Also release a partially constructed scene if an asset/setup step throws.
+      let resourcesDisposed = false;
       const disposeResources = () => {
+        if (resourcesDisposed) return;
+        resourcesDisposed = true;
         geometry.forEach(g => g.dispose());
         materials.forEach(m => m.dispose());
         textures.forEach(t => t.dispose());
@@ -173,6 +213,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       materials.add(shadowMat);
       const ground = mesh(new T.PlaneGeometry(200, 200), shadowMat);
       ground.rotation.x = -Math.PI / 2; ground.position.y = -0.37; ground.castShadow = false;
+      ground.visible = !compatibility; // The SVG backend does not implement ShadowMaterial.
 
       // Dusk skyline is a scene illustration, not a photograph or claimed location.
       const skyline = canvasTexture(768, 576, (ctx) => {
@@ -190,7 +231,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
         }
       });
       box(2.9, 2.15, 0.13, 2.04, 2.28, -2.96, palette.darkWood);
-      const skyMat = new T.MeshBasicMaterial({ map: skyline }); materials.add(skyMat);
+      const skyMat = new T.MeshBasicMaterial({ map: skyline, color: compatibility ? "#a69cb7" : "#ffffff" }); materials.add(skyMat);
       const windowScene = mesh(new T.PlaneGeometry(2.7, 1.95), skyMat); windowScene.position.set(2.04, 2.28, -2.877);
       box(0.055, 2, 0.09, 2.04, 2.28, -2.81, palette.ivory);
       box(2.8, 0.05, 0.09, 2.04, 2.27, -2.81, palette.ivory);
@@ -253,7 +294,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
         const x = -0.92 + i * 1.25;
         const monitor = new T.Group(); desk.add(monitor); monitor.position.set(x, 1.84, -2.18); monitor.rotation.y = i ? -0.12 : 0.12;
         box(1.16, 0.76, 0.075, 0, 0, 0, palette.ink, monitor, 0.025);
-        const sm = new T.MeshBasicMaterial({ map: i ? screenWorld : screenCode }); materials.add(sm);
+        const sm = new T.MeshBasicMaterial({ map: i ? screenWorld : screenCode, color: compatibility ? (i ? "#a79bb8" : "#52516c") : "#ffffff" }); materials.add(sm);
         const display = mesh(new T.PlaneGeometry(1.07, 0.65), sm, monitor); display.position.z = 0.041;
         box(0.055, 0.23, 0.07, 0, -0.48, -0.005, palette.metal, monitor);
         box(0.37, 0.025, 0.23, 0, -0.6, 0.02, palette.ink, monitor, 0.01);
@@ -315,7 +356,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const photoLoader = new T.TextureLoader();
       const photoTexture = photoLoader.load("/images/huolunbeier-memory.webp", () => { if (!disposed) invalidate(); }, undefined, () => {});
       photoTexture.colorSpace = T.SRGBColorSpace; textures.add(photoTexture);
-      const photoMat = new T.MeshBasicMaterial({ map: photoTexture }); materials.add(photoMat);
+      const photoMat = new T.MeshBasicMaterial({ map: photoTexture, color: compatibility ? "#9aab99" : "#ffffff" }); materials.add(photoMat);
       for (let i = 0; i < 3; i++) {
         const print = new T.Group(); photos.add(print); print.position.set(-3.93, 2.55 - (i % 2) * 0.1, -0.65 + i * 0.94); print.rotation.y = Math.PI / 2;
         box(0.76, 0.92, 0.035, 0, 0, 0, palette.white, print);
@@ -368,7 +409,7 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       const taskLight = new T.PointLight("#ffd9ad", 3, 3); taskLight.position.set(-1.5, 1.94, -2.3); scene.add(taskLight);
       const posterTex = canvasTexture(256, 320, ctx => { ctx.fillStyle = "#f1e8d9"; ctx.fillRect(0, 0, 256, 320); ctx.fillStyle = "#77566f"; ctx.font = "bold 25px sans-serif"; ctx.fillText("STILL", 28, 80); ctx.fillText("LEARNING.", 28, 118); ctx.fillText("ALWAYS", 28, 177); ctx.fillText("MAKING.", 28, 215); ctx.fillStyle = "#b9a0b5"; ctx.fillRect(28, 258, 45, 3); });
       box(0.76, 0.95, 0.055, -1.22, 2.91, -2.95, palette.wood);
-      const posterMat = new T.MeshBasicMaterial({ map: posterTex }); materials.add(posterMat);
+      const posterMat = new T.MeshBasicMaterial({ map: posterTex, color: compatibility ? "#eee4d7" : "#ffffff" }); materials.add(posterMat);
       const poster = mesh(new T.PlaneGeometry(0.68, 0.87), posterMat); poster.position.set(-1.22, 2.91, -2.916);
 
       scene.add(new T.HemisphereLight("#e7e3ff", "#9b7664", 2.2));
@@ -378,27 +419,33 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       key.shadow.normalBias = 0.025; key.shadow.bias = -0.00015; key.shadow.radius = 3; scene.add(key);
       const fill = new T.DirectionalLight("#b5adf1", 1.7); fill.position.set(-3, 4, 0); scene.add(fill);
       const windowLight = new T.PointLight("#c6a1c9", 7, 8); windowLight.position.set(2, 2.6, -2.4); scene.add(windowLight);
+      if (compatibility) {
+        // SVGRenderer has no tone mapping or hemisphere-light shader; keep its palette readable.
+        scene.traverse(object => { if (object instanceof T.Light) object.intensity *= 0.17; });
+        scene.add(new T.AmbientLight("#ebe3ef", 0.62));
+      }
 
       function render() {
         frame = 0;
-        if (disposed || contextLost || !visible || document.hidden) return;
+        if (disposed || failed || contextLost || !visible || document.hidden) return;
         const distance = camera.position.distanceTo(positionGoal) + target.distanceTo(targetGoal) + Math.abs(camera.zoom - zoomGoal);
-        if (reduceMotion.matches || distance < 0.008) {
+        if (compatibility || reduceMotion.matches || distance < 0.008) {
           camera.position.copy(positionGoal); target.copy(targetGoal); camera.zoom = zoomGoal;
         } else {
           camera.position.lerp(positionGoal, 0.12); target.lerp(targetGoal, 0.12); camera.zoom += (zoomGoal - camera.zoom) * 0.12;
           frame = window.requestAnimationFrame(render);
         }
         camera.lookAt(target); camera.updateProjectionMatrix();
-        renderer.render(scene, camera);
+        try { renderer.render(scene, camera); } catch { reportError(); }
       }
-      function invalidate() { if (!frame && !disposed && visible && !document.hidden && !contextLost) frame = window.requestAnimationFrame(render); }
+      function invalidate() { if (!frame && !disposed && !failed && visible && !document.hidden && !contextLost) frame = window.requestAnimationFrame(render); }
       function resize() {
-        if (!host || disposed) return;
+        if (!host || disposed || failed) return;
         const width = Math.max(host.clientWidth, 1); const height = Math.max(host.clientHeight, 1); const aspect = width / height;
         const frustum = Math.max(8.6, 11.3 / aspect);
         camera.left = -frustum * aspect / 2; camera.right = frustum * aspect / 2; camera.top = frustum / 2; camera.bottom = -frustum / 2;
-        camera.updateProjectionMatrix(); renderer.setSize(width, height, false); invalidate();
+        camera.updateProjectionMatrix();
+        try { renderer.setSize(width, height); invalidate(); } catch { reportError(); }
       }
       function setView(view: StudioView) {
         if (view === "desk") { positionGoal.set(7, 6.7, 11); targetGoal.set(-0.6, 1.5, -1.2); zoomGoal = 1.52; }
@@ -453,27 +500,28 @@ export default function StudioCanvas(props: StudioCanvasProps) {
       }
       function onPointerCancel() { pointerDown = null; renderer.domElement.style.cursor = "grab"; callbacks.current.onHover(null); }
       function onPointerLeave() { if (!pointerDown) callbacks.current.onHover(null); }
-      function onContextLost(event: Event) { event.preventDefault(); contextLost = true; window.cancelAnimationFrame(frame); frame = 0; callbacks.current.onError(); }
+      function onContextLost(event: Event) { event.preventDefault(); contextLost = true; reportError(); }
       function onVisibility() { if (document.hidden) { window.cancelAnimationFrame(frame); frame = 0; } else invalidate(); }
       const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(host);
       const intersectionObserver = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; if (visible) invalidate(); else { window.cancelAnimationFrame(frame); frame = 0; } });
       intersectionObserver.observe(host);
-      renderer.domElement.addEventListener("pointerdown", onPointerDown);
-      renderer.domElement.addEventListener("pointermove", onPointerMove);
-      renderer.domElement.addEventListener("pointerup", onPointerUp);
+      renderer.domElement.addEventListener("pointerdown", onPointerDown as EventListener);
+      renderer.domElement.addEventListener("pointermove", onPointerMove as EventListener);
+      renderer.domElement.addEventListener("pointerup", onPointerUp as EventListener);
       renderer.domElement.addEventListener("pointercancel", onPointerCancel);
       renderer.domElement.addEventListener("pointerleave", onPointerLeave);
       renderer.domElement.addEventListener("webglcontextlost", onContextLost);
       document.addEventListener("visibilitychange", onVisibility);
       reduceMotion.addEventListener("change", invalidate);
-      resize(); setView(callbacks.current.view); render(); callbacks.current.onReady();
-
+      let cleanedUp = false;
       cleanup = () => {
-        window.cancelAnimationFrame(frame); controller.current = null;
+        if (cleanedUp) return;
+        cleanedUp = true;
+        window.cancelAnimationFrame(frame); frame = 0; controller.current = null;
         resizeObserver.disconnect(); intersectionObserver.disconnect();
-        renderer.domElement.removeEventListener("pointerdown", onPointerDown);
-        renderer.domElement.removeEventListener("pointermove", onPointerMove);
-        renderer.domElement.removeEventListener("pointerup", onPointerUp);
+        renderer.domElement.removeEventListener("pointerdown", onPointerDown as EventListener);
+        renderer.domElement.removeEventListener("pointermove", onPointerMove as EventListener);
+        renderer.domElement.removeEventListener("pointerup", onPointerUp as EventListener);
         renderer.domElement.removeEventListener("pointercancel", onPointerCancel);
         renderer.domElement.removeEventListener("pointerleave", onPointerLeave);
         renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
@@ -481,8 +529,12 @@ export default function StudioCanvas(props: StudioCanvasProps) {
         reduceMotion.removeEventListener("change", invalidate);
         key.shadow.dispose(); disposeResources();
       };
+      resize();
+      if (failed) return;
+      setView(callbacks.current.view); render();
+      if (!failed) callbacks.current.onReady();
     }
-    createStudio().catch(() => { if (!disposed) callbacks.current.onError(); });
+    createStudio().catch(reportError);
     return () => { disposed = true; cleanup(); };
   }, []);
 

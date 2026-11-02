@@ -8,7 +8,7 @@ interface WorldContextValue {
   setLocale: (locale: WorldLocale) => void;
   t: (zh: string, en: string) => string;
 }
-const WorldContext = createContext<WorldContextValue>({ locale: "zh", setLocale: () => {}, t: (zh) => zh });
+const WorldContext = createContext<WorldContextValue>({ locale: "en", setLocale: () => {}, t: (_zh, en) => en });
 
 export function WorldProvider({ children }: { children: React.ReactNode }) {
   const [locale, updateLocale] = useState<WorldLocale>("zh");

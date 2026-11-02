@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Icon from "./Icon";
+import { useWorldLocale } from "./world/WorldProvider";
 
 interface Heading { id: string; title: string; level: number }
 
 export default function ArticleReader({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const { t } = useWorldLocale();
   const content = useRef<HTMLDivElement>(null);
   const [headings, setHeadings] = useState<Heading[]>([]);
 
@@ -75,8 +77,8 @@ export default function ArticleReader({ children, className = "" }: { children: 
     <div className="article-reader">
       {headings.length > 1 && (
         <details className="article-toc ui-surface">
-          <summary><span>On this page</span><Icon name="chevron-down" /></summary>
-          <nav aria-label="Article table of contents">
+          <summary><span>{t("本文目录", "On this page")}</span><Icon name="chevron-down" /></summary>
+          <nav aria-label={t("文章目录", "Article table of contents")}>
             <ol>{headings.map((heading) => <li key={heading.id} data-level={heading.level}>
               <a href={`#${encodeURIComponent(heading.id)}`}>{heading.title}</a>
             </li>)}</ol>
