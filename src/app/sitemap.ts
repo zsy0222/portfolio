@@ -1,3 +1,4 @@
+import { entries } from "@/data/world";
 import { getAllPosts } from "@/lib/blog";
 
 const SITE_URL = "https://chenmuqingtongyan.vercel.app";
@@ -20,5 +21,5 @@ export default function sitemap() {
     priority: 0.5,
   }));
 
-  return [...staticPages, ...blogPosts];
+  return [...staticPages, ...blogPosts, ...["studio", "lab", "learning", "memories", "thoughts", "about", ...entries.map(e => "entry/" + e.id)].map(path => ({url: `${SITE_URL}/world/${path}`, changeFrequency: "monthly" as const, priority: 0.7}))];
 }

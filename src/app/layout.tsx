@@ -1,26 +1,26 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import SiteShell from "@/components/SiteShell";
 import BackToTop from "@/components/BackToTop";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "Siyuan Zheng — Portfolio",
+  title: "Chenmu — Personal Digital World",
   description:
-    "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
+    "Software Engineering & Business Administration student at Nanjing University. A mind that builds, a world that remembers.",
   metadataBase: new URL("https://chenmuqingtongyan.vercel.app"),
   openGraph: {
-    title: "Siyuan Zheng — Portfolio",
+    title: "Chenmu — Personal Digital World",
     description:
-      "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
+      "Software Engineering & Business Administration student at Nanjing University. A mind that builds, a world that remembers.",
     type: "website",
     locale: "en_US",
     url: "https://chenmuqingtongyan.vercel.app",
-    siteName: "Siyuan Zheng",
+    siteName: "Chenmu",
   },
   twitter: {
     card: "summary",
-    title: "Siyuan Zheng — Portfolio",
+    title: "Chenmu — Personal Digital World",
     description:
       "Software Engineering & Business Administration student at Nanjing University.",
   },
@@ -54,12 +54,7 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to Content
         </a>
-        <div id="top" className="min-h-screen lg:flex">
-          <Sidebar />
-          <main id="main-content" tabIndex={-1} className="min-w-0 flex-1">
-            {children}
-          </main>
-        </div>
+        <SiteShell>{children}</SiteShell>
         <BackToTop />
         <Analytics />
       </body>

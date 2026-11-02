@@ -7,7 +7,10 @@ import Icon from "./Icon";
 
 const navItems = [
   { href: "/", label: "Home" },
-  { href: "/projects", label: "Work" },
+  { href: "/world/lab", label: "Creative Lab" },
+  { href: "/world/studio", label: "3D Studio" },
+  { href: "/world/memories", label: "Memories" },
+  { href: "/projects", label: "Projects" },
   { href: "/blog", label: "Blog" },
   { href: "/wiki", label: "Wiki" },
   { href: "/rss", label: "RSS" },
