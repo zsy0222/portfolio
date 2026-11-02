@@ -1,17 +1,26 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
 
 export default function Footer() {
+  const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  const copyWechat = async () => {
+    try {
+      await navigator.clipboard.writeText("chenmuqingtongyan"); setCopied(true); setFailed(false);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
+    } catch { setFailed(true); }
+  };
   return (
-    <footer data-motion="section" className="flex flex-col gap-3 border-t border-line px-6 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-10 xl:px-15">
-      <span className="text-[15px] text-muted sm:text-[18px]">
-        &copy; 2026 — All rights reserved
-      </span>
-      <a
-        href="#top"
-        className="motion-link w-fit rounded-sm text-[15px] text-muted transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-bg sm:text-[18px]"
-      >
-        Back to top <Icon name="arrow-up" />
-      </a>
+    <footer className="studio-footer">
+      <div className="footer-top"><div><span className="section-label">Contact</span><Link className="footer-title" href="/contact">Get in <em>touch.</em><Icon name="arrow-up-right" /></Link></div><div className="footer-availability"><span><i /> Available for work</span><p>Wenzhou, CN<br />SE &amp; Business Administration, NJU</p></div></div>
+      <div className="footer-bottom"><span>© 2026 SIYUAN ZHENG</span><nav aria-label="Social links"><a href="https://github.com/zsy0222" target="_blank" rel="noopener noreferrer">GitHub <Icon name="arrow-up-right" /></a><a href="mailto:3578379159@qq.com">Email <Icon name="arrow-up-right" /></a><button type="button" onClick={copyWechat}><span aria-live="polite">{copied ? "Copied!" : "WeChat"}</span><Icon name={copied ? "check" : "copy"} /></button><Link href="/rss">RSS <Icon name="arrow-up-right" /></Link></nav><a href="#top" className="back-top-link">Back to top <Icon name="arrow-up" /></a></div>
+      {failed && <p role="status" className="copy-fallback">Copy manually: chenmuqingtongyan</p>}
     </footer>
   );
 }

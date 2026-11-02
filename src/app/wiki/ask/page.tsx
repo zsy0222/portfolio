@@ -98,7 +98,7 @@ export default function WikiAskPage() {
 
   if (!authed) {
     return (
-      <>
+      <div className="utility-page">
         <section className="px-15 pt-25 pb-16">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
             Wiki / Ask
@@ -124,12 +124,12 @@ export default function WikiAskPage() {
         </section>
 
         <Footer />
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="utility-page">
       <section className="px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Wiki / Ask
@@ -243,6 +243,6 @@ export default function WikiAskPage() {
       )}
 
       <Footer />
-    </>
+    </div>
   );
 }

@@ -72,7 +72,7 @@ export default function ContactPage() {
   };
 
   return (
-    <>
+    <div className="utility-page">
       <section className="ui-enter px-6 pb-14 pt-16 sm:px-10 sm:pb-18 sm:pt-20 xl:px-15 xl:pt-25">
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           Contact
@@ -236,6 +236,6 @@ export default function ContactPage() {
       </section>
 
       <Footer />
-    </>
+    </div>
   );
 }

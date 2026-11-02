@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "@/components/studio-design.css";
 import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
 import BackToTop from "@/components/BackToTop";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "Siyuan Zheng — Portfolio",
+  title: "Chenmu — Siyuan Zheng",
   description:
     "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
   metadataBase: new URL("https://chenmuqingtongyan.vercel.app"),
   openGraph: {
-    title: "Siyuan Zheng — Portfolio",
+    title: "Chenmu — Siyuan Zheng",
     description:
       "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
     type: "website",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "Siyuan Zheng — Portfolio",
+    title: "Chenmu — Siyuan Zheng",
     description:
       "Software Engineering & Business Administration student at Nanjing University.",
   },
@@ -34,8 +35,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f0ecf2" },
-    { media: "(prefers-color-scheme: dark)", color: "#1a1525" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#201c27" },
   ],
 };
 
@@ -55,9 +56,9 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to Content
         </a>
-        <div id="top" className="min-h-screen lg:flex">
+        <div id="top" className="site-shell">
           <Sidebar />
-          <main id="main-content" tabIndex={-1} className="min-w-0 flex-1">
+          <main id="main-content" tabIndex={-1} className="site-main">
             {children}
           </main>
         </div>
