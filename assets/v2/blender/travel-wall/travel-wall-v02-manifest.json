@@ -1,0 +1,931 @@
+{
+  "date": "2026-10-04",
+  "revision": "v02",
+  "measurements": {
+    "panel_size": [
+      4.0,
+      0.1,
+      2.6
+    ],
+    "panel_bounds_min": [
+      -2.0,
+      -0.05,
+      0.1
+    ],
+    "panel_bounds_max": [
+      2.0,
+      0.05,
+      2.7
+    ],
+    "face_normal": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "console_bounds_min": [
+      -1.89,
+      -0.412,
+      0.106
+    ],
+    "console_bounds_max": [
+      1.89,
+      -0.05,
+      0.369
+    ],
+    "hero_image_size": [
+      0.63,
+      0.84
+    ],
+    "poster_image_widths": [
+      0.25,
+      0.29,
+      0.3,
+      0.31,
+      0.34,
+      0.36,
+      0.4,
+      0.46,
+      0.47,
+      0.63
+    ],
+    "ticket_image_widths": [
+      0.35,
+      0.42,
+      0.45,
+      0.46,
+      0.51,
+      0.54,
+      0.58,
+      0.6
+    ],
+    "layout_version": "v02",
+    "layout_type": "mixed-scale salon, three staggered visual groups",
+    "recommended_mount_scale": 0.64,
+    "mounted_panel_width_m": 2.56,
+    "layout_validation": {
+      "frame_envelope_bounds_min": [
+        -1.799,
+        0.4514285714285714
+      ],
+      "frame_envelope_bounds_max": [
+        1.7750000000000001,
+        2.3833333333333333
+      ],
+      "minimum_frame_clearance_m": 0.04651016746411485,
+      "closest_frame_pair": [
+        "anhui-maanshan",
+        "chongqing"
+      ],
+      "minimum_console_clearance_m": 0.0824285714285714,
+      "minimum_header_clearance_m": 0.10466666666666669,
+      "frame_envelopes_checked": 20,
+      "pairwise_clearance_checks": 190,
+      "source_aspects_verified": 20
+    },
+    "poster_count": 10,
+    "ticket_count": 10,
+    "unique_destination_count": 11,
+    "minimum_art_bottom": 0.4714285714285714,
+    "maximum_art_top": 2.3633333333333333,
+    "recommended_front_camera": [
+      0.0,
+      -5.8,
+      1.44
+    ],
+    "recommended_target": [
+      0.0,
+      -0.13,
+      1.44
+    ]
+  },
+  "frames": [
+    {
+      "interaction_id": "travel",
+      "destination_slug": "zhejiang-wenzhou",
+      "destination_id": "zhejiang-wenzhou",
+      "collection": "posters",
+      "artwork_id": "poster-01-wenzhou",
+      "poster_id": "poster-01-wenzhou",
+      "ticket_id": "zhejiang-wenzhou",
+      "city": "Wenzhou",
+      "landmark": "Tongpan Island",
+      "image": "/images/v2/travel-wall/posters/01-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\01-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-01-wenzhou&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-01-wenzhou&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=zhejiang-wenzhou",
+      "image_aspect": 0.75,
+      "image_width_m": 0.63,
+      "image_height_m": 0.84,
+      "uncropped": true,
+      "location": [
+        -1.46,
+        -0.098,
+        1.9
+      ],
+      "image_size": [
+        0.63,
+        0.84
+      ],
+      "frame_size": [
+        0.67,
+        0.88
+      ],
+      "front_y": -0.16,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "hero"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "inner-mongolia",
+      "destination_id": "inner-mongolia",
+      "collection": "posters",
+      "artwork_id": "poster-02-hulunbuir",
+      "poster_id": "poster-02-hulunbuir",
+      "ticket_id": "inner-mongolia",
+      "city": "Hulunbuir",
+      "landmark": "Hulunbuir Grassland",
+      "image": "/images/v2/travel-wall/posters/02-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\02-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-02-hulunbuir&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-02-hulunbuir&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=inner-mongolia",
+      "image_aspect": 0.75,
+      "image_width_m": 0.47,
+      "image_height_m": 0.6266666666666666,
+      "uncropped": true,
+      "location": [
+        -0.28,
+        -0.10500000000000001,
+        1.58
+      ],
+      "image_size": [
+        0.47,
+        0.6266666666666666
+      ],
+      "frame_size": [
+        0.502,
+        0.6586666666666666
+      ],
+      "front_y": -0.167,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "large"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "anhui-maanshan",
+      "destination_id": "anhui-maanshan",
+      "collection": "posters",
+      "artwork_id": "poster-03-maanshan",
+      "poster_id": "poster-03-maanshan",
+      "ticket_id": "anhui-maanshan",
+      "city": "Ma'anshan",
+      "landmark": "Caishiji",
+      "image": "/images/v2/travel-wall/posters/03-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\03-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-03-maanshan&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-03-maanshan&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=anhui-maanshan",
+      "image_aspect": 0.75,
+      "image_width_m": 0.3,
+      "image_height_m": 0.39999999999999997,
+      "uncropped": true,
+      "location": [
+        -0.848,
+        -0.112,
+        2.15
+      ],
+      "image_size": [
+        0.3,
+        0.39999999999999997
+      ],
+      "frame_size": [
+        0.33199999999999996,
+        0.43199999999999994
+      ],
+      "front_y": -0.174,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "small"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "qinghai-gansu",
+      "destination_id": "qinghai-gansu",
+      "collection": "posters",
+      "artwork_id": "poster-04-chaka-salt-lake",
+      "poster_id": "poster-04-chaka-salt-lake",
+      "ticket_id": "qinghai-gansu",
+      "city": "Qinghai-Gansu Loop",
+      "landmark": "Chaka Salt Lake",
+      "image": "/images/v2/travel-wall/posters/04-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\04-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-04-chaka-salt-lake&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-04-chaka-salt-lake&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=qinghai-gansu",
+      "image_aspect": 0.75,
+      "image_width_m": 0.46,
+      "image_height_m": 0.6133333333333334,
+      "uncropped": true,
+      "location": [
+        1.49,
+        -0.098,
+        1.995
+      ],
+      "image_size": [
+        0.46,
+        0.6133333333333334
+      ],
+      "frame_size": [
+        0.492,
+        0.6453333333333334
+      ],
+      "front_y": -0.16,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "large"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "xian-shaanxi",
+      "destination_id": "xian-shaanxi",
+      "collection": "posters",
+      "artwork_id": "poster-05-xian",
+      "poster_id": "poster-05-xian",
+      "ticket_id": "xian-shaanxi",
+      "city": "Xi'an",
+      "landmark": "Giant Wild Goose Pagoda",
+      "image": "/images/v2/travel-wall/posters/05-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\05-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-05-xian&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-05-xian&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=xian-shaanxi",
+      "image_aspect": 0.75,
+      "image_width_m": 0.4,
+      "image_height_m": 0.5333333333333333,
+      "uncropped": true,
+      "location": [
+        -0.25,
+        -0.10500000000000001,
+        0.855
+      ],
+      "image_size": [
+        0.4,
+        0.5333333333333333
+      ],
+      "frame_size": [
+        0.43200000000000005,
+        0.5653333333333334
+      ],
+      "front_y": -0.167,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "medium"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "nanjing",
+      "destination_id": "nanjing",
+      "collection": "posters",
+      "artwork_id": "poster-06-nanjing",
+      "poster_id": "poster-06-nanjing",
+      "ticket_id": "",
+      "city": "Nanjing",
+      "landmark": "Xuanwu Lake - Sunset Skyline",
+      "image": "/images/v2/travel-wall/posters/06-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\06-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-06-nanjing&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-06-nanjing&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=nanjing",
+      "image_aspect": 0.75,
+      "image_width_m": 0.31,
+      "image_height_m": 0.41333333333333333,
+      "uncropped": true,
+      "location": [
+        0.38,
+        -0.112,
+        1.38
+      ],
+      "image_size": [
+        0.31,
+        0.41333333333333333
+      ],
+      "frame_size": [
+        0.34199999999999997,
+        0.44533333333333336
+      ],
+      "front_y": -0.174,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "small"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "chongqing",
+      "destination_id": "chongqing",
+      "collection": "posters",
+      "artwork_id": "poster-07-chongqing",
+      "poster_id": "poster-07-chongqing",
+      "ticket_id": "chongqing",
+      "city": "Chongqing",
+      "landmark": "Riverfront Night View",
+      "image": "/images/v2/travel-wall/posters/07-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\07-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-07-chongqing&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-07-chongqing&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=chongqing",
+      "image_aspect": 0.75,
+      "image_width_m": 0.34,
+      "image_height_m": 0.45333333333333337,
+      "uncropped": true,
+      "location": [
+        -1.59,
+        -0.098,
+        1.11
+      ],
+      "image_size": [
+        0.34,
+        0.45333333333333337
+      ],
+      "frame_size": [
+        0.372,
+        0.4853333333333334
+      ],
+      "front_y": -0.16,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "medium"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "wuxi-jiangsu",
+      "destination_id": "wuxi-jiangsu",
+      "collection": "posters",
+      "artwork_id": "poster-08-wuxi",
+      "poster_id": "poster-08-wuxi",
+      "ticket_id": "wuxi-jiangsu",
+      "city": "Wuxi",
+      "landmark": "Changnan Street",
+      "image": "/images/v2/travel-wall/posters/08-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\08-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-08-wuxi&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-08-wuxi&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=wuxi-jiangsu",
+      "image_aspect": 0.75,
+      "image_width_m": 0.29,
+      "image_height_m": 0.38666666666666666,
+      "uncropped": true,
+      "location": [
+        0.9,
+        -0.10500000000000001,
+        2.17
+      ],
+      "image_size": [
+        0.29,
+        0.38666666666666666
+      ],
+      "frame_size": [
+        0.32199999999999995,
+        0.41866666666666663
+      ],
+      "front_y": -0.167,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "small"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "harbin-heilongjiang",
+      "destination_id": "harbin-heilongjiang",
+      "collection": "posters",
+      "artwork_id": "poster-09-harbin",
+      "poster_id": "poster-09-harbin",
+      "ticket_id": "harbin-heilongjiang",
+      "city": "Harbin",
+      "landmark": "Ice and Snow World",
+      "image": "/images/v2/travel-wall/posters/09-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\09-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-09-harbin&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-09-harbin&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=harbin-heilongjiang",
+      "image_aspect": 0.75,
+      "image_width_m": 0.25,
+      "image_height_m": 0.3333333333333333,
+      "uncropped": true,
+      "location": [
+        0.39,
+        -0.112,
+        2.13
+      ],
+      "image_size": [
+        0.25,
+        0.3333333333333333
+      ],
+      "frame_size": [
+        0.28200000000000003,
+        0.3653333333333333
+      ],
+      "front_y": -0.174,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "small"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "taiwan-new-taipei",
+      "destination_id": "taiwan-new-taipei",
+      "collection": "posters",
+      "artwork_id": "poster-10-yehliu",
+      "poster_id": "poster-10-yehliu",
+      "ticket_id": "taiwan-new-taipei",
+      "city": "New Taipei",
+      "landmark": "Yehliu Geopark",
+      "image": "/images/v2/travel-wall/posters/10-travel-poster.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\10-travel-poster.webp",
+      "destination": "/v2/travel-wall?poster=poster-10-yehliu&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-10-yehliu&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=taiwan-new-taipei",
+      "image_aspect": 0.75,
+      "image_width_m": 0.36,
+      "image_height_m": 0.48,
+      "uncropped": true,
+      "location": [
+        0.87,
+        -0.098,
+        1.08
+      ],
+      "image_size": [
+        0.36,
+        0.48
+      ],
+      "frame_size": [
+        0.392,
+        0.512
+      ],
+      "front_y": -0.16,
+      "source_pixels": [
+        1086,
+        1448
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "medium"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "zhejiang-wenzhou",
+      "destination_id": "zhejiang-wenzhou",
+      "collection": "tickets",
+      "artwork_id": "zhejiang-wenzhou",
+      "poster_id": "poster-01-wenzhou",
+      "ticket_id": "zhejiang-wenzhou",
+      "city": "Wenzhou",
+      "landmark": "Tongpan Island",
+      "image": "/images/v2/travel-wall/concept-covers/09-zhejiang-wenzhou.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\09-zhejiang-wenzhou.webp",
+      "destination": "/v2/travel-wall?poster=poster-01-wenzhou&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-01-wenzhou&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=zhejiang-wenzhou",
+      "image_aspect": 1.75,
+      "image_width_m": 0.6,
+      "image_height_m": 0.34285714285714286,
+      "uncropped": true,
+      "location": [
+        -1.031,
+        -0.084,
+        1.045
+      ],
+      "image_size": [
+        0.6,
+        0.34285714285714286
+      ],
+      "frame_size": [
+        0.632,
+        0.3748571428571429
+      ],
+      "front_y": -0.14600000000000002,
+      "source_pixels": [
+        1659,
+        948
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "large ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "inner-mongolia",
+      "destination_id": "inner-mongolia",
+      "collection": "tickets",
+      "artwork_id": "inner-mongolia",
+      "poster_id": "poster-02-hulunbuir",
+      "ticket_id": "inner-mongolia",
+      "city": "Hulunbuir",
+      "landmark": "Hulunbuir Grassland",
+      "image": "/images/v2/travel-wall/concept-covers/03-inner-mongolia.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\03-inner-mongolia.webp",
+      "destination": "/v2/travel-wall?poster=poster-02-hulunbuir&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-02-hulunbuir&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=inner-mongolia",
+      "image_aspect": 1.7768331562167907,
+      "image_width_m": 0.58,
+      "image_height_m": 0.3264234449760765,
+      "uncropped": true,
+      "location": [
+        -0.155,
+        -0.09000000000000001,
+        2.175
+      ],
+      "image_size": [
+        0.58,
+        0.3264234449760765
+      ],
+      "frame_size": [
+        0.612,
+        0.3584234449760765
+      ],
+      "front_y": -0.15200000000000002,
+      "source_pixels": [
+        1672,
+        941
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "large ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "anhui-maanshan",
+      "destination_id": "anhui-maanshan",
+      "collection": "tickets",
+      "artwork_id": "anhui-maanshan",
+      "poster_id": "poster-03-maanshan",
+      "ticket_id": "anhui-maanshan",
+      "city": "Ma'anshan",
+      "landmark": "Caishiji",
+      "image": "/images/v2/travel-wall/concept-covers/07-anhui-maanshan.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\07-anhui-maanshan.webp",
+      "destination": "/v2/travel-wall?poster=poster-03-maanshan&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-03-maanshan&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=anhui-maanshan",
+      "image_aspect": 1.75,
+      "image_width_m": 0.35,
+      "image_height_m": 0.19999999999999998,
+      "uncropped": true,
+      "location": [
+        -0.841,
+        -0.096,
+        1.405
+      ],
+      "image_size": [
+        0.35,
+        0.19999999999999998
+      ],
+      "frame_size": [
+        0.382,
+        0.23199999999999998
+      ],
+      "front_y": -0.158,
+      "source_pixels": [
+        1659,
+        948
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "small ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "qinghai-gansu",
+      "destination_id": "qinghai-gansu",
+      "collection": "tickets",
+      "artwork_id": "qinghai-gansu",
+      "poster_id": "poster-04-chaka-salt-lake",
+      "ticket_id": "qinghai-gansu",
+      "city": "Qinghai-Gansu Loop",
+      "landmark": "Chaka Salt Lake",
+      "image": "/images/v2/travel-wall/concept-covers/02-qinghai-gansu.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\02-qinghai-gansu.webp",
+      "destination": "/v2/travel-wall?poster=poster-04-chaka-salt-lake&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-04-chaka-salt-lake&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=qinghai-gansu",
+      "image_aspect": 1.7768331562167907,
+      "image_width_m": 0.51,
+      "image_height_m": 0.2870275119617225,
+      "uncropped": true,
+      "location": [
+        1.47,
+        -0.084,
+        1.3
+      ],
+      "image_size": [
+        0.51,
+        0.2870275119617225
+      ],
+      "frame_size": [
+        0.542,
+        0.3190275119617225
+      ],
+      "front_y": -0.14600000000000002,
+      "source_pixels": [
+        1672,
+        941
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "medium ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "xian-shaanxi",
+      "destination_id": "xian-shaanxi",
+      "collection": "tickets",
+      "artwork_id": "xian-shaanxi",
+      "poster_id": "poster-05-xian",
+      "ticket_id": "xian-shaanxi",
+      "city": "Xi'an",
+      "landmark": "Giant Wild Goose Pagoda",
+      "image": "/images/v2/travel-wall/concept-covers/01-xian-shaanxi.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\01-xian-shaanxi.webp",
+      "destination": "/v2/travel-wall?poster=poster-05-xian&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-05-xian&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=xian-shaanxi",
+      "image_aspect": 1.7768331562167907,
+      "image_width_m": 0.46,
+      "image_height_m": 0.25888755980861244,
+      "uncropped": true,
+      "location": [
+        0.33,
+        -0.09000000000000001,
+        0.79
+      ],
+      "image_size": [
+        0.46,
+        0.25888755980861244
+      ],
+      "frame_size": [
+        0.492,
+        0.2908875598086125
+      ],
+      "front_y": -0.15200000000000002,
+      "source_pixels": [
+        1672,
+        941
+      ],
+      "layout_group": "central cluster",
+      "layout_role": "medium ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "chongqing",
+      "destination_id": "chongqing",
+      "collection": "tickets",
+      "artwork_id": "chongqing",
+      "poster_id": "poster-07-chongqing",
+      "ticket_id": "chongqing",
+      "city": "Chongqing",
+      "landmark": "Riverfront Night View",
+      "image": "/images/v2/travel-wall/concept-covers/04-chongqing.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\04-chongqing.webp",
+      "destination": "/v2/travel-wall?poster=poster-07-chongqing&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-07-chongqing&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=chongqing",
+      "image_aspect": 1.7768331562167907,
+      "image_width_m": 0.35,
+      "image_height_m": 0.1969796650717703,
+      "uncropped": true,
+      "location": [
+        -0.841,
+        -0.096,
+        1.69
+      ],
+      "image_size": [
+        0.35,
+        0.1969796650717703
+      ],
+      "frame_size": [
+        0.382,
+        0.2289796650717703
+      ],
+      "front_y": -0.158,
+      "source_pixels": [
+        1672,
+        941
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "small ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "wuxi-jiangsu",
+      "destination_id": "wuxi-jiangsu",
+      "collection": "tickets",
+      "artwork_id": "wuxi-jiangsu",
+      "poster_id": "poster-08-wuxi",
+      "ticket_id": "wuxi-jiangsu",
+      "city": "Wuxi",
+      "landmark": "Changnan Street",
+      "image": "/images/v2/travel-wall/concept-covers/05-wuxi-jiangsu.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\05-wuxi-jiangsu.webp",
+      "destination": "/v2/travel-wall?poster=poster-08-wuxi&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-08-wuxi&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=wuxi-jiangsu",
+      "image_aspect": 1.75,
+      "image_width_m": 0.42,
+      "image_height_m": 0.24,
+      "uncropped": true,
+      "location": [
+        0.92,
+        -0.084,
+        1.7
+      ],
+      "image_size": [
+        0.42,
+        0.24
+      ],
+      "frame_size": [
+        0.45199999999999996,
+        0.272
+      ],
+      "front_y": -0.14600000000000002,
+      "source_pixels": [
+        1659,
+        948
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "small ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "harbin-heilongjiang",
+      "destination_id": "harbin-heilongjiang",
+      "collection": "tickets",
+      "artwork_id": "harbin-heilongjiang",
+      "poster_id": "poster-09-harbin",
+      "ticket_id": "harbin-heilongjiang",
+      "city": "Harbin",
+      "landmark": "Ice and Snow World",
+      "image": "/images/v2/travel-wall/concept-covers/08-harbin-heilongjiang.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\08-harbin-heilongjiang.webp",
+      "destination": "/v2/travel-wall?poster=poster-09-harbin&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-09-harbin&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=harbin-heilongjiang",
+      "image_aspect": 1.75,
+      "image_width_m": 0.45,
+      "image_height_m": 0.2571428571428572,
+      "uncropped": true,
+      "location": [
+        0.9,
+        -0.09000000000000001,
+        0.6
+      ],
+      "image_size": [
+        0.45,
+        0.2571428571428572
+      ],
+      "frame_size": [
+        0.482,
+        0.28914285714285715
+      ],
+      "front_y": -0.15200000000000002,
+      "source_pixels": [
+        1659,
+        948
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "medium ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "taiwan-new-taipei",
+      "destination_id": "taiwan-new-taipei",
+      "collection": "tickets",
+      "artwork_id": "taiwan-new-taipei",
+      "poster_id": "poster-10-yehliu",
+      "ticket_id": "taiwan-new-taipei",
+      "city": "New Taipei",
+      "landmark": "Yehliu Geopark",
+      "image": "/images/v2/travel-wall/concept-covers/06-taiwan-new-taipei.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\06-taiwan-new-taipei.webp",
+      "destination": "/v2/travel-wall?poster=poster-10-yehliu&from=graybox",
+      "album_url": "/v2/travel-wall?poster=poster-10-yehliu&from=graybox",
+      "route_requires_ticket_support": false,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=taiwan-new-taipei",
+      "image_aspect": 1.75,
+      "image_width_m": 0.54,
+      "image_height_m": 0.3085714285714286,
+      "uncropped": true,
+      "location": [
+        1.485,
+        -0.096,
+        0.83
+      ],
+      "image_size": [
+        0.54,
+        0.3085714285714286
+      ],
+      "frame_size": [
+        0.5720000000000001,
+        0.34057142857142864
+      ],
+      "front_y": -0.158,
+      "source_pixels": [
+        1659,
+        948
+      ],
+      "layout_group": "eastern cluster",
+      "layout_role": "large ticket"
+    },
+    {
+      "interaction_id": "travel",
+      "destination_slug": "malaysia-kuala-lumpur",
+      "destination_id": "malaysia-kuala-lumpur",
+      "collection": "tickets",
+      "artwork_id": "malaysia-kuala-lumpur",
+      "poster_id": "",
+      "ticket_id": "malaysia-kuala-lumpur",
+      "city": "Kuala Lumpur",
+      "landmark": "Petronas Twin Towers",
+      "image": "/images/v2/travel-wall/concept-covers/10-malaysia-kuala-lumpur.webp",
+      "source_path": "D:\\\u6691\u5047\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\concept-covers\\10-malaysia-kuala-lumpur.webp",
+      "destination": "/v2/travel-wall",
+      "album_url": "/v2/travel-wall",
+      "route_requires_ticket_support": true,
+      "future_ticket_route": "/v2/travel-wall?collection=tickets&place=malaysia-kuala-lumpur",
+      "image_aspect": 1.7768331562167907,
+      "image_width_m": 0.54,
+      "image_height_m": 0.3039114832535885,
+      "uncropped": true,
+      "location": [
+        -1.445,
+        -0.084,
+        0.63
+      ],
+      "image_size": [
+        0.54,
+        0.3039114832535885
+      ],
+      "frame_size": [
+        0.5720000000000001,
+        0.33591148325358855
+      ],
+      "front_y": -0.14600000000000002,
+      "source_pixels": [
+        1672,
+        941
+      ],
+      "layout_group": "coastal cluster",
+      "layout_role": "large ticket"
+    }
+  ],
+  "route_notes": [
+    "Kuala Lumpur is a ticket-only destination; current web page needs ticket deep-link support.",
+    "Nanjing has no supplied matching landscape ticket.",
+    "No original artwork text was cropped, replaced, or relabelled.",
+    "Layout v02 mixes all twenty independent frames; uniform 0.64 mounting preserves image aspects."
+  ],
+  "graybox_mount_scale": 0.64,
+  "website_full_asset_integrated": false
+}

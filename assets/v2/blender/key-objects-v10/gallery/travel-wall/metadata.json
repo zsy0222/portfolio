@@ -1,0 +1,702 @@
+{
+  "source": "src/lib/graybox-set.ts / ten current supplied photo frames",
+  "sourceRevision": "v09 current staggered layout",
+  "exportRevision": "v10",
+  "units": "metres",
+  "front": "+Z",
+  "up": "+Y",
+  "origin": "assembly bottom at Y=0, centre in XZ",
+  "sourceToStandaloneRotationY": -1.5707963267948966,
+  "authoredToStandaloneOffset": [
+    0,
+    -1.0224999998137354,
+    -0.007499999888241293
+  ],
+  "sourceRoomPlacement": {
+    "target": "travel",
+    "parentName": "Photo wall / Travel",
+    "parentTranslationM": [
+      -1,
+      0,
+      0.3
+    ],
+    "parentRotationXYZ": [
+      0,
+      0,
+      0
+    ],
+    "assemblyOriginInParentM": [
+      -2.94,
+      0,
+      -0.4
+    ],
+    "assemblyOriginInRoomM": [
+      -3.94,
+      0,
+      -0.10000000000000003
+    ],
+    "backingCentreInParentM": [
+      -2.975,
+      1.995,
+      -0.4
+    ],
+    "backingCentreInRoomM": [
+      -3.975,
+      1.995,
+      -0.1
+    ],
+    "edgeRailCentresInParentM": [
+      [
+        -2.9,
+        2.955,
+        -0.4
+      ],
+      [
+        -2.9,
+        1.035,
+        -0.4
+      ]
+    ],
+    "edgeRailCentresInRoomM": [
+      [
+        -3.9,
+        2.955,
+        -0.1
+      ],
+      [
+        -3.9,
+        1.035,
+        -0.1
+      ]
+    ]
+  },
+  "sourceToStandaloneTransform": {
+    "translationBeforeRotationM": [
+      2.94,
+      0,
+      0.4
+    ],
+    "rotationYRadians": -1.5707963267948966,
+    "translationAfterRotationM": [
+      0,
+      -1.0224999998137354,
+      -0.007499999888241293
+    ],
+    "inputCoordinateSpace": "memories parent-local",
+    "axisMapping": {
+      "+X": "+Z",
+      "+Y": "+Y",
+      "+Z": "-X"
+    },
+    "tiltMapping": "source frame rotation X becomes standalone rotation Z with the same signed angle"
+  },
+  "dimensions": {
+    "min": [
+      -1.2799999713897705,
+      0,
+      -0.0599999999627471
+    ],
+    "max": [
+      1.2799999713897705,
+      1.9450000003725292,
+      0.059999999962747096
+    ],
+    "sizeM": [
+      2.559999942779541,
+      1.9450000003725292,
+      0.1199999999254942
+    ]
+  },
+  "stats": {
+    "meshCount": 33,
+    "physicalObjects": 33,
+    "triangles": 296,
+    "materialCount": 15,
+    "textureCount": 10
+  },
+  "posterCount": 10,
+  "suppliedArtworkCount": 10,
+  "posterAspectRatio": "3:4",
+  "posters": [
+    {
+      "id": "poster-01-wenzhou",
+      "city": "Wenzhou",
+      "region": "Zhejiang",
+      "landmark": "Tongpan Island",
+      "destinationId": "zhejiang-wenzhou",
+      "image": "/images/v2/travel-wall/posters/01-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\01-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-01-wenzhou&from=graybox",
+      "anchorName": "Travel frame / poster-01-wenzhou / Wenzhou",
+      "imageMeshName": "Travel photo / poster-01-wenzhou",
+      "widthM": 0.43499999999999994,
+      "heightM": 0.58,
+      "tiltRadians": -0.025,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.42,
+        0.58
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.42,
+        0.8799999999999999
+      ],
+      "authoredFrameRotationXYZ": [
+        -0.025,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        -0.025
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        -0.98,
+        2.42,
+        0
+      ],
+      "standaloneFrameCentre": [
+        -0.98,
+        1.3975000001862645,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-02-hulunbuir",
+      "city": "Hulunbuir",
+      "region": "Inner Mongolia",
+      "landmark": "Hulunbuir Grassland",
+      "destinationId": "inner-mongolia",
+      "image": "/images/v2/travel-wall/posters/02-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\02-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-02-hulunbuir&from=graybox",
+      "anchorName": "Travel frame / poster-02-hulunbuir / Hulunbuir",
+      "imageMeshName": "Travel photo / poster-02-hulunbuir",
+      "widthM": 0.27,
+      "heightM": 0.36,
+      "tiltRadians": 0.021,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.67,
+        0.06
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.67,
+        0.36
+      ],
+      "authoredFrameRotationXYZ": [
+        0.021,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        0.021
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        -0.46,
+        2.67,
+        0
+      ],
+      "standaloneFrameCentre": [
+        -0.46,
+        1.6475000001862645,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-03-maanshan",
+      "city": "Ma'anshan",
+      "region": "Anhui",
+      "landmark": "Caishiji",
+      "destinationId": "anhui-maanshan",
+      "image": "/images/v2/travel-wall/posters/03-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\03-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-03-maanshan&from=graybox",
+      "anchorName": "Travel frame / poster-03-maanshan / Ma'anshan",
+      "imageMeshName": "Travel photo / poster-03-maanshan",
+      "widthM": 0.4575,
+      "heightM": 0.61,
+      "tiltRadians": -0.012,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.39,
+        -0.46
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.39,
+        -0.16000000000000003
+      ],
+      "authoredFrameRotationXYZ": [
+        -0.012,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        -0.012
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        0.06,
+        2.39,
+        0
+      ],
+      "standaloneFrameCentre": [
+        0.06,
+        1.3675000001862647,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-04-chaka-salt-lake",
+      "city": "Qinghai–Gansu Loop",
+      "region": "Qinghai & Gansu",
+      "landmark": "Chaka Salt Lake",
+      "destinationId": "qinghai-gansu",
+      "image": "/images/v2/travel-wall/posters/04-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\04-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-04-chaka-salt-lake&from=graybox",
+      "anchorName": "Travel frame / poster-04-chaka-salt-lake / Qinghai–Gansu Loop",
+      "imageMeshName": "Travel photo / poster-04-chaka-salt-lake",
+      "widthM": 0.26249999999999996,
+      "heightM": 0.35,
+      "tiltRadians": -0.018,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.7,
+        -1.05
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.7,
+        -0.75
+      ],
+      "authoredFrameRotationXYZ": [
+        -0.018,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        -0.018
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        0.65,
+        2.7,
+        0
+      ],
+      "standaloneFrameCentre": [
+        0.65,
+        1.6775000001862648,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-05-xian",
+      "city": "Xi'an",
+      "region": "Shaanxi",
+      "landmark": "Giant Wild Goose Pagoda",
+      "destinationId": "xian-shaanxi",
+      "image": "/images/v2/travel-wall/posters/05-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\05-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-05-xian&from=graybox",
+      "anchorName": "Travel frame / poster-05-xian / Xi'an",
+      "imageMeshName": "Travel photo / poster-05-xian",
+      "widthM": 0.39,
+      "heightM": 0.52,
+      "tiltRadians": 0.023,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.035,
+        -1.38
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.035,
+        -1.0799999999999998
+      ],
+      "authoredFrameRotationXYZ": [
+        0.023,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        0.023
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        0.98,
+        2.035,
+        0
+      ],
+      "standaloneFrameCentre": [
+        0.98,
+        1.0125000001862647,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-06-nanjing",
+      "city": "Nanjing",
+      "region": "Jiangsu",
+      "landmark": "Xuanwu Lake · Sunset Skyline",
+      "destinationId": null,
+      "image": "/images/v2/travel-wall/posters/06-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\06-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-06-nanjing&from=graybox",
+      "anchorName": "Travel frame / poster-06-nanjing / Nanjing",
+      "imageMeshName": "Travel photo / poster-06-nanjing",
+      "widthM": 0.27,
+      "heightM": 0.36,
+      "tiltRadians": 0.014,
+      "authoredParentFrameCentre": [
+        -2.94,
+        2.035,
+        0.06
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        2.035,
+        0.36
+      ],
+      "authoredFrameRotationXYZ": [
+        0.014,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        0.014
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        -0.46,
+        2.035,
+        0
+      ],
+      "standaloneFrameCentre": [
+        -0.46,
+        1.0125000001862647,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-07-chongqing",
+      "city": "Chongqing",
+      "region": "Chongqing",
+      "landmark": "Riverfront Night View",
+      "destinationId": "chongqing",
+      "image": "/images/v2/travel-wall/posters/07-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\07-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-07-chongqing&from=graybox",
+      "anchorName": "Travel frame / poster-07-chongqing / Chongqing",
+      "imageMeshName": "Travel photo / poster-07-chongqing",
+      "widthM": 0.405,
+      "heightM": 0.54,
+      "tiltRadians": -0.021,
+      "authoredParentFrameCentre": [
+        -2.94,
+        1.47,
+        0.5599999999999999
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        1.47,
+        0.8599999999999999
+      ],
+      "authoredFrameRotationXYZ": [
+        -0.021,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        -0.021
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        -0.96,
+        1.47,
+        0
+      ],
+      "standaloneFrameCentre": [
+        -0.96,
+        0.44750000018626457,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-08-wuxi",
+      "city": "Wuxi",
+      "region": "Jiangsu",
+      "landmark": "Changnan Street",
+      "destinationId": "wuxi-jiangsu",
+      "image": "/images/v2/travel-wall/posters/08-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\08-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-08-wuxi&from=graybox",
+      "anchorName": "Travel frame / poster-08-wuxi / Wuxi",
+      "imageMeshName": "Travel photo / poster-08-wuxi",
+      "widthM": 0.255,
+      "heightM": 0.34,
+      "tiltRadians": 0.025,
+      "authoredParentFrameCentre": [
+        -2.94,
+        1.4,
+        0.02999999999999997
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        1.4,
+        0.32999999999999996
+      ],
+      "authoredFrameRotationXYZ": [
+        0.025,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        0.025
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        -0.43,
+        1.4,
+        0
+      ],
+      "standaloneFrameCentre": [
+        -0.43,
+        0.3775000001862645,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-09-harbin",
+      "city": "Harbin",
+      "region": "Heilongjiang",
+      "landmark": "Ice and Snow World",
+      "destinationId": "harbin-heilongjiang",
+      "image": "/images/v2/travel-wall/posters/09-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\09-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-09-harbin&from=graybox",
+      "anchorName": "Travel frame / poster-09-harbin / Harbin",
+      "imageMeshName": "Travel photo / poster-09-harbin",
+      "widthM": 0.39,
+      "heightM": 0.52,
+      "tiltRadians": 0.018,
+      "authoredParentFrameCentre": [
+        -2.94,
+        1.51,
+        -0.5700000000000001
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        1.51,
+        -0.2700000000000001
+      ],
+      "authoredFrameRotationXYZ": [
+        0.018,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        0.018
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        0.17,
+        1.51,
+        0
+      ],
+      "standaloneFrameCentre": [
+        0.17,
+        0.4875000001862646,
+        -0.007499999888241293
+      ]
+    },
+    {
+      "id": "poster-10-yehliu",
+      "city": "New Taipei",
+      "region": "Taiwan",
+      "landmark": "Yehliu Geopark",
+      "destinationId": "taiwan-new-taipei",
+      "image": "/images/v2/travel-wall/posters/10-travel-poster.webp",
+      "sourcePath": "D:\\暑假\\Know_yourself\\my-portfolio\\public\\images\\v2\\travel-wall\\posters\\10-travel-poster.webp",
+      "href": "/v2/travel-wall?poster=poster-10-yehliu&from=graybox",
+      "anchorName": "Travel frame / poster-10-yehliu / New Taipei",
+      "imageMeshName": "Travel photo / poster-10-yehliu",
+      "widthM": 0.26249999999999996,
+      "heightM": 0.35,
+      "tiltRadians": -0.012,
+      "authoredParentFrameCentre": [
+        -2.94,
+        1.345,
+        -1.2000000000000002
+      ],
+      "authoredRoomFrameCentre": [
+        -3.94,
+        1.345,
+        -0.9000000000000001
+      ],
+      "authoredFrameRotationXYZ": [
+        -0.012,
+        0,
+        0
+      ],
+      "authoredPhotoRotationXYZ": [
+        0,
+        1.5707963267948966,
+        0
+      ],
+      "standaloneFrameRotationXYZ": [
+        0,
+        0,
+        -0.012
+      ],
+      "standalonePhotoRotationXYZ": [
+        0,
+        0,
+        0
+      ],
+      "localFrameCentreBeforeFloorAlignment": [
+        0.8,
+        1.345,
+        0
+      ],
+      "standaloneFrameCentre": [
+        0.8,
+        0.32250000018626457,
+        -0.007499999888241293
+      ]
+    }
+  ],
+  "interaction": {
+    "target": "travel",
+    "trigger": [
+      "pointer activation",
+      "keyboard activation"
+    ],
+    "action": "highlight the selected frame",
+    "result": "open the selected supplied poster's travel entry",
+    "returnHref": "/v2/graybox",
+    "motion": "selection feedback only"
+  },
+  "id": "travel-wall",
+  "label": "十幅旅行照片墙",
+  "boundsXYZ": {
+    "min": [
+      -1.2799999713897705,
+      0,
+      -0.0599999999627471
+    ],
+    "max": [
+      1.2799999713897705,
+      1.9450000003725292,
+      0.059999999962747096
+    ],
+    "size": [
+      2.559999942779541,
+      1.9450000003725292,
+      0.1199999999254942
+    ]
+  }
+}

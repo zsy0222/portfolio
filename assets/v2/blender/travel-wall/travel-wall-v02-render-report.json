@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-04",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "samples": 96,
+  "engine": "Cycles CPU",
+  "images": [
+    "travel-wall-v02-front.png",
+    "travel-wall-v02-angle.png"
+  ],
+  "photos_packed": 20,
+  "frames": 20,
+  "layout": "Three mixed artwork groups with alternating sizes and staggered centres"
+}

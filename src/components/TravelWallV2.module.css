@@ -1,0 +1,151 @@
+.page {
+  --paper: #ede5d6;
+  --gold: #c7a780;
+  --dim: #98959e;
+  --line: rgb(219 204 179 / 18%);
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+  overflow: clip;
+  padding: 0 clamp(1.2rem, 5.8vw, 7rem) 2rem;
+  background: radial-gradient(ellipse at 95% 0, #2b223b66, transparent 42rem), radial-gradient(ellipse at 2% 36%, #1b24454d, transparent 35rem), #111115;
+  color: var(--paper);
+}
+.grain { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .1; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.84' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E"); }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 5.2rem; border-bottom: 1px solid var(--line); font-size: .61rem; letter-spacing: .16em; }
+.backLink { display: inline-flex; align-items: center; gap: .9rem; min-height: 44px; color: #c8c1b6; text-decoration: none; }
+.backLink > span { font-size: 1.25rem; transition: transform .3s ease; }
+.backLink:hover > span { transform: translateX(-4px); }
+.version { color: var(--dim); }
+.version > span { margin: 0 1rem; color: #6e6479; }
+.intro, .wall, .footer { max-width: 1480px; margin-inline: auto; }
+.intro { padding-top: clamp(3.6rem, 7vw, 7.2rem); }
+.eyebrow { display: flex; align-items: center; gap: .75rem; color: var(--gold); font-size: .59rem; letter-spacing: .25em; }
+.eyebrow > span, .journalEyebrow > span { display: block; width: .35rem; height: .35rem; border-radius: 50%; background: var(--gold); box-shadow: 0 0 14px #c7a7804d; }
+.headingRow { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding-bottom: 3.5rem; }
+.intro h1 { margin: 1.35rem 0 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(4.5rem, 10vw, 10.8rem); font-weight: 400; letter-spacing: -.07em; line-height: .94; }
+.intro h1 em { color: var(--gold); font-weight: 400; }
+.introAside { flex: 0 0 31%; padding: 0 0 .25rem; }
+.compass { display: block; width: fit-content; color: var(--gold); font-size: 3.5rem; font-weight: 300; line-height: 1; }
+.introAside p { margin: 1.1rem 0 1.5rem; color: #bcb5ae; font-family: Georgia, serif; font-size: clamp(1.05rem, 1.6vw, 1.45rem); line-height: 1.6; }
+.exploreLink { display: inline-flex; align-items: center; gap: 1.5rem; min-height: 44px; color: var(--paper); text-decoration: none; font-size: .56rem; letter-spacing: .16em; }
+.exploreLink > span { color: var(--gold); font-size: 1.2rem; }
+.collectionBar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2.8rem; border-bottom: 1px solid var(--line); }
+.collectionSwitch { display: flex; gap: 1.7rem; }
+.collectionSwitch button { position: relative; min-height: 3.8rem; padding: 0; border: 0; background: transparent; color: #8e8994; font-size: .59rem; letter-spacing: .16em; cursor: pointer; transition: color .25s; }
+.collectionSwitch button[aria-pressed="true"] { color: var(--paper); }
+.collectionSwitch button::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 1px; background: var(--gold); content: ""; transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+.collectionSwitch button[aria-pressed="true"]::after { transform: scaleX(1); }
+.collectionSwitch sup { margin-left: .4rem; color: var(--gold); font-size: .5rem; }
+.wallHint { color: #89848c; font-size: .53rem; letter-spacing: .15em; }
+.wall { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 3.2rem clamp(1rem, 2.6vw, 3rem); padding-bottom: 3rem; scroll-margin-top: 1.5rem; }
+.card { display: block; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; animation: arrival .65s cubic-bezier(.2,.7,.2,1) var(--arrival, 0ms) both; }
+.wall:not(.ticketWall) .card:nth-child(3n + 2) { margin-top: 3.5rem; }
+.imageFrame { position: relative; display: block; aspect-ratio: 3 / 4; border: 6px solid #262329; outline: 1px solid #51434a; outline-offset: -1px; background: #1d2029; box-shadow: 0 16px 35px #0005, 0 0 0 1px #b3967922; transition: transform .65s cubic-bezier(.2,.7,.2,1), box-shadow .65s; }
+.imageFrame::before { position: absolute; inset: -6px; z-index: 2; border-top: 1px solid #dac4a96b; border-bottom: 1px solid #000b; pointer-events: none; content: ""; }
+.cardImage { object-fit: contain; }
+.frameShine { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(135deg, #fff2, transparent 40%, transparent 60%, #a09bea15); opacity: .45; transition: opacity .5s; }
+.openCue { position: absolute; bottom: 1rem; left: 50%; display: flex; align-items: center; justify-content: space-between; gap: 2rem; white-space: nowrap; padding: .9rem 1rem; background: #121116eb; border: 1px solid #d3c1a14d; color: var(--paper); font-size: .5rem; letter-spacing: .17em; opacity: 0; transform: translate(-50%, 7px); backdrop-filter: blur(10px); transition: opacity .25s, transform .4s cubic-bezier(.2,.7,.2,1); }
+.openCue > span { font-size: .9rem; color: var(--gold); }
+.card:hover .imageFrame, .card:focus-visible .imageFrame { transform: translateY(-8px) rotate(-.45deg); box-shadow: 0 28px 55px #0008, 0 0 32px #9080c314; }
+.card:hover .frameShine, .card:focus-visible .frameShine { opacity: 1; }
+.card:hover .openCue, .card:focus-visible .openCue { opacity: 1; transform: translate(-50%, 0); }
+.cardCaption { display: grid; grid-template-columns: 1.7rem 1fr 1rem; align-items: start; gap: .75rem; margin-top: 1.35rem; }
+.cardIndex { padding-top: .1rem; color: #887a73; font-family: Georgia, serif; font-size: .8rem; font-style: italic; }
+.cardPlace { display: flex; flex-direction: column; gap: .38rem; }
+.cardRegion { color: var(--gold); font-size: .52rem; letter-spacing: .16em; text-transform: uppercase; }
+.cardCity { font-family: Georgia, serif; font-size: clamp(1.3rem, 2vw, 1.9rem); line-height: 1.1; letter-spacing: -.02em; }
+.cardLandmark { color: #8e8994; font-size: .7rem; line-height: 1.5; }
+.cardArrow { color: #b6a597; font-size: 1.15rem; transition: transform .3s, color .3s; }
+.card:hover .cardArrow { color: var(--paper); transform: translate(2px, -2px); }
+.ticketWall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ticketWall .imageFrame { aspect-ratio: 1.77; border-width: 1px; outline: none; }
+.ticketWall .imageFrame::before { inset: -1px; }
+.footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-top: 3.5rem; padding: 3.5rem 0 1.5rem; border-top: 1px solid var(--line); }
+.footer p { margin: 0; color: #c8beb4; font-family: Georgia, serif; font-size: clamp(2rem, 4vw, 4rem); line-height: 1.05; letter-spacing: -.04em; }
+.footer p em { color: var(--gold); }
+.footer > div { display: grid; gap: .7rem; }
+.footer > div > span { color: #827b89; font-size: .51rem; letter-spacing: .15em; }
+.footer a { display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 44px; color: var(--paper); font-size: .6rem; text-decoration: none; letter-spacing: .14em; }
+.footer a > span { color: var(--gold); font-size: 1.1rem; }
+.dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; padding: clamp(.6rem, 2.6vw, 2.5rem); border: 0; background: transparent; color: var(--paper); }
+.dialog[open] { display: grid; place-items: center; }
+.dialog::backdrop { background: #080810e3; backdrop-filter: blur(16px); }
+.journal { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(19rem, .8fr); grid-template-rows: auto 1fr; width: min(1180px, 100%); max-height: 94dvh; overflow: auto; overscroll-behavior: contain; border: 1px solid #8570664d; background: #18171c; box-shadow: 0 30px 120px #0009; animation: journal-in .5s cubic-bezier(.2,.75,.2,1) both; }
+.journalToolbar { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; padding: .2rem 1.2rem; border-bottom: 1px solid var(--line); color: #aca298; font-size: .55rem; letter-spacing: .12em; }
+.toolbarDivider { color: #6e6377; margin: 0 .65rem; }
+.closeButton { display: flex; align-items: center; gap: 1rem; min-height: 44px; padding: 0 .1rem 0 .5rem; border: 0; background: none; color: var(--paper); cursor: pointer; font-size: .55rem; letter-spacing: .13em; }
+.closeButton > span { color: var(--gold); font-size: 1.35rem; }
+.journalImage { position: relative; min-height: min(75dvh, 720px); background: radial-gradient(ellipse at 50% 30%, #302a3466, transparent 80%), #100f13; animation: fade-in .35s ease both; }
+.journalCover { object-fit: contain; padding: 1.5rem; }
+.journalTicket .journalCover { padding: .65rem; }
+.journalInfo { align-self: center; min-width: 0; padding: 2.2rem clamp(1.5rem, 3vw, 3.5rem); }
+.journalEyebrow { display: flex; align-items: center; gap: .7rem; color: var(--gold); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; }
+.journalInfo h2 { margin: 1.2rem 0 .7rem; font-family: Georgia, serif; font-size: clamp(2.3rem, 4.5vw, 4.5rem); font-weight: 400; line-height: 1; letter-spacing: -.05em; }
+.journalLandmark { margin: 0; color: #a49ca2; font-size: .8rem; line-height: 1.6; }
+.artworkSwitch { display: flex; width: fit-content; gap: 1.25rem; margin-top: 1.25rem; border-bottom: 1px solid var(--line); }
+.artworkSwitch button { min-height: 44px; padding: 0; border: 0; border-bottom: 1px solid transparent; background: none; color: #8d8594; font-size: .5rem; letter-spacing: .11em; cursor: pointer; }
+.artworkSwitch button[aria-pressed="true"] { border-bottom-color: var(--gold); color: var(--paper); }
+.artworkSwitch button > span { margin-left: .4rem; color: var(--gold); }
+.journalMessage { margin: 2rem 0 .9rem; font-family: Georgia, serif; font-size: 1.65rem; line-height: 1.12; letter-spacing: -.025em; }
+.journalMessage em { color: var(--gold); }
+.emptyMessage { max-width: 20rem; margin: 0 0 1.4rem; color: #a49ca2; font-size: .77rem; line-height: 1.8; }
+.contentSlots { border-top: 1px solid var(--line); }
+.contentSlots > div { display: grid; grid-template-columns: 1.5rem 1fr auto; align-items: center; gap: .5rem; padding: .95rem 0; border-bottom: 1px solid var(--line); }
+.contentSlots > div > span { color: #88796f; font-family: Georgia, serif; font-size: .75rem; font-style: italic; }
+.contentSlots strong { color: #c8c0b8; font-size: .52rem; font-weight: 400; letter-spacing: .13em; }
+.contentSlots small { color: #8e8795; font-family: Georgia, serif; font-size: .75rem; font-style: italic; }
+.journalNavigation { display: flex; align-items: center; justify-content: space-between; gap: .65rem; margin-top: 1.4rem; }
+.journalNavigation button { display: flex; align-items: center; gap: .7rem; min-height: 44px; padding: 0; border: 0; background: none; color: var(--paper); cursor: pointer; font-size: .51rem; letter-spacing: .1em; }
+.journalNavigation button > span { color: var(--gold); font-size: 1rem; }
+.journalNavigation > span { color: #8d8594; font-size: .53rem; letter-spacing: .1em; }
+.page a:focus-visible, .page button:focus-visible { outline: 2px solid var(--gold); outline-offset: 6px; }
+@keyframes arrival { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes journal-in { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 1000px) {
+  .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wall:not(.ticketWall) .card:nth-child(3n + 2) { margin-top: 0; }
+  .wall:not(.ticketWall) .card:nth-child(even) { margin-top: 3rem; }
+  .introAside { flex-basis: 37%; }
+  .journalInfo { padding-inline: 1.5rem; }
+}
+@media (max-width: 800px) {
+  .journal { grid-template-columns: 1fr; max-width: 610px; }
+  .journalToolbar { position: sticky; top: 0; z-index: 3; background: #18171cf5; }
+  .journalImage { min-height: 62dvh; }
+  .journalTicket { min-height: 18rem; }
+  .journalInfo { padding: 2rem; }
+  .journalInfo h2 { font-size: 3rem; }
+}
+@media (max-width: 680px) {
+  .topbar { min-height: 4rem; font-size: .51rem; letter-spacing: .09em; }
+  .version > span { margin: 0 .4rem; }
+  .headingRow { align-items: flex-start; flex-direction: column; gap: 2rem; padding-bottom: 2rem; }
+  .intro h1 { font-size: clamp(4.9rem, 19vw, 7.7rem); }
+  .introAside { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; width: 100%; }
+  .introAside p { grid-column: 1; grid-row: 1; margin: 0; font-size: 1.05rem; }
+  .compass { grid-column: 2; grid-row: 1; font-size: 2.8rem; }
+  .exploreLink { grid-column: 1 / -1; width: fit-content; font-size: .49rem; }
+  .collectionBar { margin-bottom: 2rem; }
+  .collectionSwitch { gap: 1.35rem; }
+  .collectionSwitch button { font-size: .53rem; }
+  .wallHint { display: none; }
+  .wall, .ticketWall { grid-template-columns: 1fr; gap: 2.5rem; }
+  .wall:not(.ticketWall) .card:nth-child(even) { margin-top: 0; }
+  .wall:not(.ticketWall) .card { width: min(100%, 440px); margin-inline: auto; }
+  .openCue { bottom: .8rem; padding: .7rem .8rem; opacity: 1; transform: translate(-50%, 0); }
+  .cardCaption { margin-top: 1.15rem; }
+  .cardCity { font-size: 1.7rem; }
+  .footer { align-items: flex-start; flex-direction: column; margin-top: 1rem; padding-top: 2.5rem; }
+  .footer > div { width: 100%; }
+  .journal { max-height: 97dvh; }
+  .journalInfo { padding: 1.8rem 1.4rem; }
+  .journalToolbar { padding-inline: .85rem; font-size: .48rem; }
+  .journalCover { padding: .8rem; }
+}
+@media (hover: none) { .openCue { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .card:hover .imageFrame, .card:focus-visible .imageFrame { transform: none; }
+}
