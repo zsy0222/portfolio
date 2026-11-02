@@ -1,6 +1,4 @@
 import { getAllPosts } from "@/lib/blog";
-import { creativeWorks } from "@/data/world";
-import { memories } from "@/data/memories";
 
 const SITE_URL = "https://chenmuqingtongyan.vercel.app";
 
@@ -22,13 +20,5 @@ export default function sitemap() {
     priority: 0.5,
   }));
 
-  const worldPages = ["world", "lab", "learning", "thoughts", "memories", "wiki"].map((slug) => ({
-    url: `${SITE_URL}/${slug}`, changeFrequency: "monthly" as const, priority: 0.7,
-  }));
-  const details = [
-    ...creativeWorks.map((work) => `lab/${work.slug}`),
-    ...creativeWorks.filter((work) => work.sourceProjectId).map((work) => `projects/${work.slug}`),
-    ...memories.map((memory) => `memories/${memory.slug}`),
-  ].map((slug) => ({ url: `${SITE_URL}/${slug}`, changeFrequency: "monthly" as const, priority: 0.6 }));
-  return [...staticPages, ...blogPosts, ...worldPages, ...details];
+  return [...staticPages, ...blogPosts];
 }

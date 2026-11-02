@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Icon from "./Icon";
-import { useWorldLocale } from "./world/WorldProvider";
 
 export default function BackToTop() {
-  const { t } = useWorldLocale();
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
 
@@ -28,7 +26,7 @@ export default function BackToTop() {
 
   return (
     <button type="button" className="back-to-top ui-icon-button" data-visible={visible}
-      tabIndex={visible ? 0 : -1} aria-hidden={!visible} aria-label={t("回到顶部", "Back to top")} title={t("回到顶部", "Back to top")}
+      tabIndex={visible ? 0 : -1} aria-hidden={!visible} aria-label="Back to top" title="Back to top"
       onClick={() => {
         document.getElementById("main-content")?.focus({ preventScroll: true });
         window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });

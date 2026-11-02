@@ -2,10 +2,8 @@
 
 import Giscus from "@giscus/react";
 import { useEffect, useState } from "react";
-import { useWorldLocale } from "./world/WorldProvider";
 
 export default function GiscusComments() {
-  const { locale } = useWorldLocale();
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return false;
     return document.documentElement.classList.contains("dark");
@@ -34,7 +32,7 @@ export default function GiscusComments() {
       emitMetadata="0"
       inputPosition="bottom"
       theme={isDark ? "https://chenmuqingtongyan.vercel.app/giscus-dark.css" : "light"}
-      lang={locale === "zh" ? "zh-CN" : "en"}
+      lang="zh-CN"
       loading="lazy"
     />
   );

@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import FormField from "@/components/FormField";
+import PasswordField from "@/components/PasswordField";
 import Icon from "@/components/Icon";
-import { useWorldLocale } from "@/components/world/WorldProvider";
 import ArticleReader from "@/components/ArticleReader";
 import ZoomableImage from "@/components/ZoomableImage";
 
@@ -29,7 +28,6 @@ interface WikiReadme {
   title: string;
   content: string;
 }
-
 
 const FALLBACK_SECTIONS: WikiSection[] = [
   { id: 1, slug: "frontend", name: "Frontend", pageCount: 3 },
@@ -201,7 +199,6 @@ function renderMarkdown(md: string): React.ReactNode[] {
 
 // ── Component ──────────────────────────────────────────────────────────
 export default function WikiPage() {
-  const { t } = useWorldLocale();
   const [authed, setAuthed] = useState(() => {
     if (typeof window === "undefined") return false;
     return sessionStorage.getItem("wiki-auth") === "true";
@@ -293,23 +290,20 @@ export default function WikiPage() {
       {/* ── Header ── */}
       <section className="px-15 pt-25 pb-16">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
-          {t("知识库", "Wiki")}
+          Wiki
         </div>
         <h1 className="text-[56px] font-light text-ink leading-[1.2] mb-5" style={{ textWrap: "balance" }}>
-          {t("知识", "Knowledge ")}<span className="text-accent font-semibold">{t("档案", "base")}</span>{t("", ".")}
+          Knowledge <span className="text-accent font-semibold">base</span>.
         </h1>
         <p className="text-[24px] font-medium text-lead leading-[1.6] max-w-[520px]">
-          {t("个人笔记、代码片段、参考资料与决策记录。", "Personal notes, snippets, references, and decisions.")}{" "}
+          Personal notes, snippets, references, and decisions.{" "}
           <Link href="/wiki/ask" className="text-accent hover:underline">
-            {t("搜索知识库", "Ask the knowledge base")} <Icon name="arrow-right" />
+            Ask the knowledge base <Icon name="arrow-right" />
           </Link>
-        </p>
-        <p className="text-[16px] text-muted mt-4">
-          {t("笔记、资料标题与正文保留作者的原始语言。", "Note titles and source materials remain in the author’s original language.")}
         </p>
         {!authed && (
           <p className="text-[18px] text-muted mt-4">
-            {t("需要密码才能解锁内容。", "Password required to unlock content.")}
+            Password required to unlock content.
           </p>
         )}
       </section>
@@ -318,17 +312,12 @@ export default function WikiPage() {
       {!authed && (
         <section className="px-15 pb-6">
           <form onSubmit={handleUnlock} className="ui-unlock-form">
-            <FormField id="unlock-password" label={t("访问密码", "Password")} error={error ? t("密码不正确，请重试。", "Wrong password, try again.") : undefined}>
-              <input id="unlock-password" name="password" type="password" value={input}
-                onChange={(event) => { setInput(event.target.value); setError(false); }}
-                placeholder={t("输入密码以解锁", "Password to unlock")} autoComplete="off"
-                aria-invalid={error} aria-describedby={error ? "unlock-password-error" : undefined} />
-            </FormField>
+            <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
               type="submit"
               className="text-[16px] font-medium text-muted hover:text-accent transition-colors"
             >
-              {t("解锁", "Unlock")} <Icon name="arrow-right" />
+              Unlock <Icon name="arrow-right" />
             </button>
           </form>
         </section>
@@ -342,12 +331,12 @@ export default function WikiPage() {
             className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
           >
             <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
-              {t("阅读说明", "README")}
+              README
             </span>
             <h2 className="text-[36px] font-light text-ink group-hover:text-accent transition-colors">
               {readme.title}
             </h2>
-            <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`} title={readmeOpen ? t("收起", "Collapse") : t("展开", "Expand")}>
+            <span className={`text-[28px] text-ink/40 hover:text-accent ml-auto transition-transform duration-300 ${readmeOpen ? "rotate-90" : ""}`} title={readmeOpen ? "Collapse" : "Expand"}>
               <Icon name="chevron-right" />
             </span>
           </button>
@@ -363,7 +352,7 @@ export default function WikiPage() {
       <section className="px-15 py-14 border-t border-line">
         <div className="flex flex-col gap-12">
           {sections.length === 0 ? (
-            <div className="text-[20px] text-muted">{t("正在加载…", "Loading…")}</div>
+            <div className="text-[20px] text-muted">Loading...</div>
           ) : (
             (() => {
                 const filtered = sections.filter((s) => s.slug !== "nju-guides" && !s.slug.startsWith("macro-") && !s.slug.startsWith("micro-") && !s.slug.startsWith("pe-") && !s.slug.startsWith("eng-"));
@@ -392,10 +381,10 @@ export default function WikiPage() {
                           className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
                         >
                           <div className="flex items-center gap-3">
-                            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">{t("学科指导", "Study Guide")}</span>
+                            <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
                             <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedSg ? "rotate-90" : ""}`} />
                           </div>
-                          <div className="text-[24px] font-light text-ink mt-1">{t("微积分学科指导", "Calculus study guide")}</div>
+                          <div className="text-[24px] font-light text-ink mt-1">微积分学科指导</div>
                         </button>
                         ) : null
                       ) : (
@@ -424,7 +413,7 @@ export default function WikiPage() {
                             </div>
                           ))
                         ) : (
-                          <span className="text-[18px] text-muted/50 italic">{t("暂无笔记", "No pages yet")}</span>
+                          <span className="text-[18px] text-muted/50 italic">No pages yet</span>
                         )}
                       </div>
                       )}
@@ -436,8 +425,8 @@ export default function WikiPage() {
                   <>
                     {macroSections.length > 0 && (
                       <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{t("宏观经济学", "Macroeconomics")}</div>
-                        <div className="text-[18px] text-muted mb-8">{t("课程资料与阅读笔记", "Course materials and reading notes")}</div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Macroeconomics</div>
+                        <div className="text-[18px] text-muted mb-8">宏观经济学</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {/* Macro Study Guide (collapsible inline) */}
                           {(() => {
@@ -450,10 +439,10 @@ export default function WikiPage() {
                                     className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
                                   >
                                     <div className="flex items-center gap-3">
-                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">{t("学科指导", "Study Guide")}</span>
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
                             <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMg ? "rotate-90" : ""}`} />
                                     </div>
-                                    <div className="text-[24px] font-light text-ink mt-1">{t("宏观经济学学科指导", "Macroeconomics study guide")}</div>
+                                    <div className="text-[24px] font-light text-ink mt-1">宏观经济学学科指导</div>
                                   </button>
                                   {expandedMg && macroGuide && (
                                     <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
@@ -472,8 +461,8 @@ export default function WikiPage() {
                     {/* Microeconomics group */}
                     {microSections.length > 0 && (
                       <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{t("微观经济学", "Microeconomics")}</div>
-                        <div className="text-[18px] text-muted mb-8">{t("课程资料与阅读笔记", "Course materials and reading notes")}</div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Microeconomics</div>
+                        <div className="text-[18px] text-muted mb-8">微观经济学</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const mgSection = microSections.find((s) => s.slug === "micro-readme");
@@ -485,10 +474,10 @@ export default function WikiPage() {
                                     className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
                                   >
                                     <div className="flex items-center gap-3">
-                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">{t("学科指导", "Study Guide")}</span>
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
                             <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedMig ? "rotate-90" : ""}`} />
                                     </div>
-                                    <div className="text-[24px] font-light text-ink mt-1">{t("微观经济学学科指导", "Microeconomics study guide")}</div>
+                                    <div className="text-[24px] font-light text-ink mt-1">微观经济学学科指导</div>
                                   </button>
                                   {expandedMig && microGuide && (
                                     <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
@@ -507,8 +496,8 @@ export default function WikiPage() {
                     {/* Political Economics group */}
                     {peSections.length > 0 && (
                       <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{t("政治经济学", "Political Economics")}</div>
-                        <div className="text-[18px] text-muted mb-8">{t("课程资料与阅读笔记", "Course materials and reading notes")}</div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Political Economics</div>
+                        <div className="text-[18px] text-muted mb-8">政治经济学</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const pg = peSections.find((s) => s.slug === "pe-readme");
@@ -520,10 +509,10 @@ export default function WikiPage() {
                                     className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-4 group"
                                   >
                                     <div className="flex items-center gap-3">
-                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">{t("学科指导", "Study Guide")}</span>
+                                      <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">Study Guide</span>
                             <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedPe ? "rotate-90" : ""}`} />
                                     </div>
-                                    <div className="text-[24px] font-light text-ink mt-1">{t("政治经济学学科指导", "Political economics study guide")}</div>
+                                    <div className="text-[24px] font-light text-ink mt-1">政治经济学学科指导</div>
                                   </button>
                                   {expandedPe && peGuide && (
                                     <div className="mb-8 pb-8 border-b border-line max-w-[760px]">
@@ -542,8 +531,8 @@ export default function WikiPage() {
                     {/* English group */}
                     {engSections.length > 0 && (
                       <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{t("英语", "English")}</div>
-                        <div className="text-[18px] text-muted mb-8">{t("课程资料与阅读笔记", "Course materials and reading notes")}</div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">English</div>
+                        <div className="text-[18px] text-muted mb-8">英语</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const eg = engSections.find((s) => s.slug === "eng-readme");
@@ -555,10 +544,10 @@ export default function WikiPage() {
                                     className="text-left w-full cursor-pointer bg-transparent border-none p-0 mb-2 group"
                                   >
                                     <div className="flex items-center gap-3">
-                                      <span className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted">{t("学科指导", "Study Guide")}</span>
+                                      <span className="text-[16px] font-medium tracking-[0.1em] uppercase text-muted">Study Guide</span>
                             <Icon name="chevron-right" className={`text-ink/40 group-hover:text-accent ml-auto transition-transform duration-300 ${expandedEng ? "rotate-90" : ""}`} />
                                     </div>
-                                    <div className="text-[24px] font-light text-ink mt-1">{t("英语学科指导", "English study guide")}</div>
+                                    <div className="text-[24px] font-light text-ink mt-1">英语学科指导</div>
                                   </button>
                                   {expandedEng && engGuide && (
                                     <div className="mb-6 pb-6 border-b border-line max-w-[760px]">
@@ -577,21 +566,21 @@ export default function WikiPage() {
                     {otherSections.map(renderSection)}
                     {calcSections.length > 0 && (
                       <div>
-                        <div className="text-[24px] font-semibold text-ink mb-2">{t("微积分", "Calculus")}</div>
-                        <div className="text-[18px] text-muted mb-8">{t("微积分 · 学科资料", "Calculus · course materials")}</div>
+                        <div className="text-[24px] font-semibold text-ink mb-2">Calculus</div>
+                        <div className="text-[18px] text-muted mb-8">微积分 · 学科资料</div>
                         <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {calcTop.map(renderSection)}
                           {calc1 && (
                             <div>
-                              <div className="text-[20px] font-semibold text-ink mb-3">{t("微积分 I", "Calculus I")}</div>
-                              <div className="text-[16px] text-muted mb-5">{t("微积分一层次", "Calculus I · course materials")}</div>
+                              <div className="text-[20px] font-semibold text-ink mb-3">Calculus I</div>
+                              <div className="text-[16px] text-muted mb-5">微积分一层次</div>
                               {renderSection(calc1)}
                             </div>
                           )}
                           {calc2 && (
                             <div>
-                              <div className="text-[20px] font-semibold text-ink mb-3">{t("微积分 II", "Calculus II")}</div>
-                              <div className="text-[16px] text-muted mb-5">{t("微积分二层次", "Calculus II · course materials")}</div>
+                              <div className="text-[20px] font-semibold text-ink mb-3">Calculus II</div>
+                              <div className="text-[16px] text-muted mb-5">微积分二层次</div>
                               {renderSection(calc2)}
                             </div>
                           )}
