@@ -1,0 +1,104 @@
+/* Shared center line for the knowledge index, reading pages and RSS guide. */
+.knowledge-page {
+  --knowledge-width: 1020px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-lead);
+}
+.knowledge-page > section {
+  width: min(var(--knowledge-width), calc(100% - var(--page-gutter) * 2));
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+.knowledge-page .knowledge-intro {
+  padding-block: clamp(52px, 6vw, 88px) clamp(34px, 4vw, 58px);
+  text-align: center;
+}
+.knowledge-page .knowledge-loading { padding-block: 88px; text-align: center; }
+.knowledge-intro > div:first-child {
+  font-size: 11px;
+  letter-spacing: .18em;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.knowledge-intro h1 {
+  max-width: 100%;
+  margin-inline: auto;
+  font-size: clamp(38px, 5.1vw, 70px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -.045em;
+  overflow-wrap: anywhere;
+}
+.knowledge-intro h1 .text-accent {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 400;
+}
+.knowledge-intro > p {
+  max-width: 720px;
+  margin-inline: auto;
+  font-size: clamp(17px, 1.7vw, 22px);
+  line-height: 1.8;
+}
+.knowledge-page .knowledge-section {
+  padding-block: clamp(32px, 4.6vw, 62px);
+  border-top: 1px solid var(--color-line);
+}
+.knowledge-page .knowledge-gate {
+  padding-bottom: clamp(36px, 4vw, 56px);
+}
+.knowledge-gate .ui-unlock-form { justify-content: center; }
+.knowledge-page .knowledge-query { padding-bottom: 44px; }
+.knowledge-query > form { max-width: 780px; margin-inline: auto; }
+.knowledge-query > p { max-width: 780px; margin-inline: auto; }
+.knowledge-query > form > div { max-width: none; }
+.knowledge-page :is(input, textarea) { font-size: 16px; }
+.knowledge-page .ui-surface { box-shadow: none; }
+.knowledge-page :is(p, li, dd, a) { overflow-wrap: anywhere; }
+.knowledge-page .studio-footer { margin-top: clamp(18px, 3vw, 48px); }
+
+/* Long documents remain centered within the broader index column. */
+.wiki-document-page { --knowledge-width: 860px; }
+.wiki-document-body .article-reader, .wiki-readme-body {
+  width: 100%;
+  max-width: 780px;
+  margin-inline: auto;
+}
+.wiki-document-body [data-article-content] { min-width: 0; }
+.wiki-readme-toggle h2 { min-width: 0; font-size: clamp(25px, 3.2vw, 36px); overflow-wrap: anywhere; }
+.wiki-readme-toggle > span:first-child { flex: 0 0 auto; font-size: 12px; }
+.wiki-readme-toggle > span:last-child { flex: 0 0 auto; }
+.wiki-results-heading { flex-wrap: wrap; gap: 18px; }
+.wiki-result-title > :first-child { min-width: 0; overflow-wrap: anywhere; }
+.wiki-result-meta { flex-wrap: wrap; }
+
+/* RSS sections all use one width, avoiding three different left-anchored measures. */
+.rss-page { --knowledge-width: 980px; }
+.rss-page .knowledge-section > div:first-child { font-size: 12px; letter-spacing: .14em; }
+.rss-feed-surface, .rss-readers, .rss-steps { width: 100%; min-width: 0; }
+.rss-feed-surface code { overflow-wrap: anywhere; white-space: normal; }
+.rss-steps > li { min-width: 0; }
+.rss-steps p { overflow-wrap: break-word; }
+.rss-feed-surface > div > a {
+  color: var(--color-bg);
+  background: var(--color-ink);
+}
+.rss-feed-surface > div > a:hover { color: var(--color-ink); background: var(--studio-purple); opacity: 1; }
+
+@media (max-width: 700px) {
+  .knowledge-intro > p { font-size: 17px; }
+  .wiki-subject-group { margin-left: 4px; padding-left: 15px; }
+  .wiki-readme-toggle { flex-wrap: wrap; row-gap: 12px; }
+  .wiki-readme-toggle > span:first-child { flex-basis: 100%; }
+  .wiki-readme-toggle h2 { flex: 1; }
+  .knowledge-query > form { gap: 12px; }
+  .knowledge-query > form > div { flex-basis: 100%; }
+  .knowledge-query > form > button { margin-top: 0; }
+}
+@media (max-width: 420px) {
+  .knowledge-gate .ui-unlock-form > .ui-field { width: 100%; }
+  .knowledge-gate .ui-unlock-form > button { margin-top: 0; }
+  .knowledge-intro h1 { font-size: 37px; }
+}

@@ -1,24 +1,22 @@
 "use client";
 
 import Giscus from "@giscus/react";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribeToTheme(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
+const getTheme = () => document.documentElement.classList.contains("dark");
+const getServerTheme = () => false;
 
 export default function GiscusComments() {
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return document.documentElement.classList.contains("dark");
-  });
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    });
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-    return () => observer.disconnect();
-  }, []);
+  const isDark = useSyncExternalStore(subscribeToTheme, getTheme, getServerTheme);
 
   return (
     <Giscus
@@ -31,7 +29,7 @@ export default function GiscusComments() {
       reactionsEnabled="1"
       emitMetadata="0"
       inputPosition="bottom"
-      theme={isDark ? "https://chenmuqingtongyan.vercel.app/giscus-dark.css" : "light"}
+      theme={`https://chenmuqingtongyan.vercel.app/giscus-${isDark ? "dark" : "light"}.css`}
       lang="zh-CN"
       loading="lazy"
     />

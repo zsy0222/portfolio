@@ -4,6 +4,8 @@ import "@/components/studio-design.css";
 import "@/components/material-details.css";
 import "@/components/spatial-motion.css";
 import "@/components/reference-design.css";
+import "@/components/theme-system.css";
+import "@/components/typography.css";
 import { ProjectWindowsProvider } from "@/components/ProjectWindows";
 import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
@@ -40,8 +42,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#3e354a" },
+    { media: "(prefers-color-scheme: light)", color: "#f8f5f1" },
+    { media: "(prefers-color-scheme: dark)", color: "#141323" },
   ],
 };
 
@@ -51,8 +53,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var d=localStorage.getItem('theme')==='dark';document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://giscus.app" />

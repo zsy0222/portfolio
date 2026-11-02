@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import "@/components/utility-pages.css";
 import PasswordField from "@/components/PasswordField";
 import Icon from "@/components/Icon";
 import ArticleReader from "@/components/ArticleReader";
@@ -286,9 +287,9 @@ export default function WikiPage() {
   };
 
   return (
-    <div className="utility-page">
+    <div className="knowledge-page wiki-index-page">
       {/* ── Header ── */}
-      <section className="px-15 pt-25 pb-16">
+      <section className="knowledge-intro">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Wiki
         </div>
@@ -310,7 +311,7 @@ export default function WikiPage() {
 
       {/* ── Password gate ── */}
       {!authed && (
-        <section className="px-15 pb-6">
+        <section className="knowledge-gate">
           <form onSubmit={handleUnlock} className="ui-unlock-form">
             <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
@@ -325,10 +326,10 @@ export default function WikiPage() {
 
       {/* ── README: Featured article (collapsible) ── */}
       {readme && (
-        <section className="px-15 py-14 border-t border-line">
+        <section className="knowledge-section">
           <button
             onClick={() => setReadmeOpen((prev) => !prev)}
-            className="flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
+            className="wiki-readme-toggle flex items-center gap-3 text-left w-full cursor-pointer bg-transparent border-none p-0"
           >
             <span className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted">
               README
@@ -341,7 +342,7 @@ export default function WikiPage() {
             </span>
           </button>
           {readmeOpen && (
-            <div className="max-w-[760px] mt-10">
+            <div className="wiki-readme-body mt-10">
               <ArticleReader>{renderMarkdown(readme.content)}</ArticleReader>
             </div>
           )}
@@ -349,7 +350,7 @@ export default function WikiPage() {
       )}
 
       {/* ── Sections & pages ── */}
-      <section className="px-15 py-14 border-t border-line">
+      <section className="knowledge-section">
         <div className="flex flex-col gap-12">
           {sections.length === 0 ? (
             <div className="text-[20px] text-muted">Loading...</div>
@@ -427,7 +428,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Macroeconomics</div>
                         <div className="text-[18px] text-muted mb-8">宏观经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                        <div className="wiki-subject-group ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {/* Macro Study Guide (collapsible inline) */}
                           {(() => {
                             const mgSection = macroSections.find((s) => s.slug === "macro-readme");
@@ -463,7 +464,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Microeconomics</div>
                         <div className="text-[18px] text-muted mb-8">微观经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                        <div className="wiki-subject-group ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const mgSection = microSections.find((s) => s.slug === "micro-readme");
                             if (mgSection && authed) {
@@ -498,7 +499,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Political Economics</div>
                         <div className="text-[18px] text-muted mb-8">政治经济学</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                        <div className="wiki-subject-group ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const pg = peSections.find((s) => s.slug === "pe-readme");
                             if (pg) {
@@ -533,7 +534,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">English</div>
                         <div className="text-[18px] text-muted mb-8">英语</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                        <div className="wiki-subject-group ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {(() => {
                             const eg = engSections.find((s) => s.slug === "eng-readme");
                             if (eg) {
@@ -568,7 +569,7 @@ export default function WikiPage() {
                       <div>
                         <div className="text-[24px] font-semibold text-ink mb-2">Calculus</div>
                         <div className="text-[18px] text-muted mb-8">微积分 · 学科资料</div>
-                        <div className="ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
+                        <div className="wiki-subject-group ml-4 pl-6 border-l-2 border-line flex flex-col gap-4">
                           {calcTop.map(renderSection)}
                           {calc1 && (
                             <div>
