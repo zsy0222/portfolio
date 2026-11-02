@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <section className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15 xl:py-18">
+    <section data-motion="section" className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15 xl:py-18">
       <div className="mb-7 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:mb-8 sm:text-[18px]">
         About
       </div>

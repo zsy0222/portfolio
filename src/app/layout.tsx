@@ -1,30 +1,27 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import WorldNavigation from "@/components/world/WorldNavigation";
-import WorldFooter from "@/components/world/WorldFooter";
-import { WorldProvider } from "@/components/world/WorldProvider";
-import "@/components/world/world.css";
+import Sidebar from "@/components/Sidebar";
+import MotionEffects from "@/components/MotionEffects";
 import BackToTop from "@/components/BackToTop";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "CHENMU — Personal Digital World",
+  title: "Siyuan Zheng — Portfolio",
   description:
-    "Chenmu 的个人数字世界：软件工程、AI 研究、3D 创作、旅行记忆与思想档案。A mind that builds, a world that remembers.",
+    "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
   metadataBase: new URL("https://chenmuqingtongyan.vercel.app"),
   openGraph: {
-    title: "CHENMU — Personal Digital World",
+    title: "Siyuan Zheng — Portfolio",
     description:
-      "Software Engineering × Business Innovation. A mind that builds, a world that remembers.",
+      "Software Engineering & Business Administration student at Nanjing University. Exploring quantitative analysis, AI product management, and algorithm design.",
     type: "website",
-    locale: "zh_CN",
-    alternateLocale: "en_US",
+    locale: "en_US",
     url: "https://chenmuqingtongyan.vercel.app",
-    siteName: "CHENMU",
+    siteName: "Siyuan Zheng",
   },
   twitter: {
     card: "summary",
-    title: "CHENMU — Personal Digital World",
+    title: "Siyuan Zheng — Portfolio",
     description:
       "Software Engineering & Business Administration student at Nanjing University.",
   },
@@ -48,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="en" className="h-full antialiased">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -58,15 +55,13 @@ export default function RootLayout({
         <a href="#main-content" className="skip-link">
           Skip to Content
         </a>
-        <WorldProvider>
-        <div id="top" className="min-h-screen">
-          <WorldNavigation />
-          <main id="main-content" tabIndex={-1} className="world-main min-w-0">
+        <div id="top" className="min-h-screen lg:flex">
+          <Sidebar />
+          <main id="main-content" tabIndex={-1} className="min-w-0 flex-1">
             {children}
           </main>
-          <WorldFooter />
         </div>
-        </WorldProvider>
+        <MotionEffects />
         <BackToTop />
         <Analytics />
       </body>

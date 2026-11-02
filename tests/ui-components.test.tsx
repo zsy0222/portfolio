@@ -7,6 +7,19 @@ import BackToTop from "../src/components/BackToTop";
 import FormField from "../src/components/FormField";
 import ZoomableImage from "../src/components/ZoomableImage";
 import { getAllPosts } from "../src/lib/blog";
+import TypingText from "../src/components/TypingText";
+
+test("the complete hero heading is available without hydration or a motion preference query", () => {
+  const html = renderToStaticMarkup(<TypingText segments={[
+    { text: "Building at the intersection of\n" },
+    { text: "AI", accent: true },
+    { text: ", quantitative & product." },
+  ]} />);
+  assert.match(html, /Building at the intersection of<br\/>/);
+  assert.match(html, />AI<\/span>/);
+  assert.match(html, /, quantitative &amp; product\./);
+  assert.doesNotMatch(html, /aria-hidden|animate-pulse|aria-live/);
+});
 
 test("icons share dimensions and stroke without adding accessible noise", () => {
   const names: IconName[] = ["sun", "moon", "arrow-right", "arrow-left", "arrow-up", "arrow-down", "arrow-up-right", "copy", "close", "check", "zoom"];

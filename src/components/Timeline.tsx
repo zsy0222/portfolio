@@ -5,7 +5,7 @@ export default function Timeline() {
   return (
     <ol className="flex flex-col">
       {experiences.map((exp, index) => (
-        <li key={`${exp.date}-${exp.title}`} className="flex gap-4 sm:gap-8">
+        <li key={`${exp.date}-${exp.title}`} data-motion="timeline" className="motion-timeline-row flex gap-4 sm:gap-8">
           <div className="flex flex-col items-center">
             <div
               className="mt-2.5 size-[10px] shrink-0 rounded-full bg-accent"

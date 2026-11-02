@@ -214,7 +214,7 @@ export default function WikiAskPage() {
                   <div className="flex items-baseline justify-between gap-4 mb-1">
                     {r.id.startsWith("blog/") ? (
                       <Link
-                        href={`/blog/${r.id.split("/").at(-1)}`}
+                        href={`/blog/${r.id.split("/").slice(2).join("/")}`}
                         className="text-[22px] font-medium text-lead hover:text-accent transition-colors"
                       >
                         {r.title}

@@ -16,7 +16,7 @@ export default function ProjectCard({
   return (
     <article
       className={[
-        "ui-surface group h-full overflow-hidden border border-line bg-card/55 p-6 motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1 sm:p-8",
+        "motion-project-card ui-surface group h-full overflow-hidden border border-line bg-card/55 p-6 sm:p-8",
         featured ? "lg:p-10" : "",
       ].join(" ")}
     >
@@ -120,7 +120,7 @@ export default function ProjectCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`View ${project.title} repository on GitHub`}
-                className="inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-card"
+                className="motion-link inline-flex items-center gap-2 rounded-sm text-[17px] font-semibold text-ink underline decoration-line underline-offset-4 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-card"
               >
                 View Repository on GitHub
                 <Icon name="arrow-up-right" />

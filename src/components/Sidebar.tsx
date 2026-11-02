@@ -75,7 +75,7 @@ export default function Sidebar() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const navigation = (mobile = false) => (
-    <nav aria-label={mobile ? "Mobile navigation" : "Primary navigation"} className="flex flex-col gap-1">
+    <nav aria-label={mobile ? "Mobile navigation" : "Primary navigation"} className="motion-navigation flex flex-col gap-1">
       {navItems.map((item) => (
         <Link
           key={item.href}

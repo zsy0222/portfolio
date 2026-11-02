@@ -243,3 +243,143 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Motion-only refinement. Layout, copy, data, routes and artwork stay unchanged. */
+:root {
+  --motion-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-soft: cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+/* Scroll reveals are opt-in WAAPI enhancements; never hide unhydrated content. */
+.ui-card-enter { animation: none; }
+.ui-enter { animation: page-settle 600ms var(--motion-out) both; }
+.motion-hero.ui-enter { animation: none; }
+.motion-heading-segment {
+  animation: heading-develop 620ms var(--motion-soft) backwards;
+  animation-delay: var(--motion-delay, 0ms);
+}
+.motion-hero-description { animation: copy-settle 680ms var(--motion-out) 120ms backwards; }
+.motion-hero-actions { animation: copy-settle 640ms var(--motion-out) 200ms backwards; }
+.motion-portrait { animation: portrait-settle 800ms var(--motion-out) 80ms backwards; }
+
+@keyframes page-settle {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes heading-develop {
+  from { opacity: 0.15; }
+  to { opacity: 1; }
+}
+@keyframes copy-settle {
+  from { opacity: 0; translate: 0 14px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@keyframes portrait-settle {
+  from { opacity: 0; scale: 0.94; rotate: -3deg; }
+  to { opacity: 1; scale: 1; rotate: 0deg; }
+}
+
+/* Nav strokes follow attention without shifting the existing type column. */
+.motion-navigation a { position: relative; transition: color 220ms ease; }
+.motion-navigation a::after {
+  content: "";
+  position: absolute; bottom: 4px; left: 0; width: 24px; height: 1px;
+  background: currentColor; pointer-events: none;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 320ms var(--motion-out), opacity 220ms ease;
+  opacity: 0;
+}
+.motion-navigation a:is([aria-current="page"], :focus-visible)::after {
+  transform: scaleX(1); opacity: 0.65;
+}
+.motion-category-nav a {
+  transition: color 220ms ease, border-color 320ms ease;
+}
+.motion-link {
+  text-decoration-thickness: 1px;
+  transition: color 200ms ease, border-color 200ms ease, text-decoration-color 250ms ease;
+}
+.motion-link .ui-icon { transition: transform 300ms var(--motion-out); }
+.motion-link:focus-visible .ui-icon { transform: translate(2px, -2px); }
+
+/* The project surface has depth; editorial lists instead slide their title. */
+.motion-project-card {
+  position: relative; isolation: isolate;
+  transform: perspective(1100px) rotateX(0deg) rotateY(0deg);
+  transition: transform 400ms var(--motion-out), border-color 300ms ease, box-shadow 400ms ease;
+}
+.motion-project-card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+  background: radial-gradient(500px circle at var(--pointer-x, 50%) var(--pointer-y, 30%),
+    color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 72%);
+  opacity: 0; transition: opacity 350ms ease;
+}
+.motion-project-card:focus-within {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-line));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--color-ink) 7%, transparent);
+}
+.motion-article-link {
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+.motion-article-link h2 { transition: translate 340ms var(--motion-out), color 220ms ease; }
+.motion-article-link:focus-visible h2 { translate: 4px 0; }
+.motion-portrait > img { transition: transform 650ms var(--motion-out); }
+.motion-timeline-row > div:first-child > div:first-child {
+  transition: scale 320ms var(--motion-out), box-shadow 320ms ease;
+}
+
+/* Small controls respond quickly; reading and overlays move more slowly. */
+.ui-icon-button {
+  transition: transform 220ms var(--motion-out), background-color 280ms ease,
+    color 220ms ease, border-color 220ms ease, box-shadow 280ms ease;
+}
+.ui-icon-button:active { transform: scale(0.94); }
+.ui-icon-button .ui-icon { transition: transform 350ms var(--motion-out); }
+.ui-field :is(input, textarea, select) { transition: border-color 220ms ease, box-shadow 220ms ease, background-color 280ms ease; }
+.article-image-trigger > img { transition: transform 700ms var(--motion-out); }
+.article-image-hint { transition: opacity 220ms ease, translate 300ms var(--motion-out); translate: 0 3px; }
+.article-image-trigger:focus-visible .article-image-hint { translate: 0 0; }
+.image-preview-figure { animation: image-unfold 360ms var(--motion-out) both; }
+.image-preview::backdrop { animation: backdrop-develop 240ms ease both; }
+@keyframes image-unfold {
+  from { opacity: 0; scale: 0.975; translate: 0 10px; }
+  to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes backdrop-develop { from { opacity: 0; } to { opacity: 1; } }
+.mobile-nav-panel { transition: transform 420ms var(--motion-out), background-color 300ms ease, color 250ms ease, border-color 250ms ease; }
+.back-to-top { transition: opacity 250ms ease, transform 350ms var(--motion-out), visibility 250ms, border-color 220ms ease; }
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .motion-navigation a:hover::after { transform: scaleX(1); opacity: 0.65; }
+  .motion-link:hover .ui-icon { transform: translate(3px, -2px); }
+  footer .motion-link:hover .ui-icon { transform: translateY(-3px); }
+  .motion-project-card:hover {
+    transform: perspective(1100px) translateY(-3px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+    border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-line));
+    box-shadow: 0 16px 36px color-mix(in srgb, var(--color-ink) 7%, transparent);
+  }
+  .motion-project-card:hover::before { opacity: 1; }
+  .motion-article-link:hover h2 { translate: 5px 0; }
+  .motion-portrait:hover > img { transform: scale(1.05); }
+  .motion-timeline-row:hover > div:first-child > div:first-child {
+    scale: 1.18; box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 9%, transparent);
+  }
+  .article-image-trigger:hover > img { transform: scale(1.015); }
+  .article-image-trigger:hover .article-image-hint { translate: 0 0; }
+  .ui-icon-button:hover .ui-icon { transform: rotate(-8deg); }
+  .back-to-top:hover .ui-icon { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body, .mobile-site-header {
+    transition: background-color 300ms ease, color 250ms ease, border-color 250ms ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-enter, .ui-card-enter, .motion-heading-segment, .motion-hero-description,
+  .motion-hero-actions, .motion-portrait, .image-preview-figure, .image-preview::backdrop {
+    animation: none !important;
+  }
+  .motion-link .ui-icon, .ui-icon-button:active, .motion-article-link h2,
+  .motion-project-card, .article-image-hint { transform: none !important; translate: none !important; }
+}
