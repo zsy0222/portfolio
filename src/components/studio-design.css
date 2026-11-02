@@ -19,9 +19,9 @@
 }
 .dark {
   --color-ink: #eee9f2; --color-accent: #bfa3df; --color-body: #c0b7cb;
-  --color-lead: #c4b9ca; --color-muted: #aa9fb5; --color-bg: #201c27;
-  --color-line: #3a3342; --color-card: #292331; --background: #201c27; --foreground: #eee9f2;
-  --studio-lilac: #352c43; --studio-purple: #564565; --studio-wine: #d4a2b4;
+  --color-lead: #c4b9ca; --color-muted: #aa9fb5; --color-bg: #3e354a;
+  --color-line: #675974; --color-card: #4a3f56; --background: #3e354a; --foreground: #eee9f2;
+  --studio-lilac: #574768; --studio-purple: #847094; --studio-wine: #d4a2b4;
 }
 body { font-weight: 400; }
 .site-shell { max-width: 1600px; margin-inline: auto; }

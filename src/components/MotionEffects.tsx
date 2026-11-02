@@ -31,24 +31,71 @@ export default function MotionEffects() {
       activeSurface = null;
     };
 
+    const animate = (element: HTMLElement, frames: Keyframe[], options: KeyframeAnimationOptions = {}) => {
+      if (reduced.matches || document.hidden || typeof element.animate !== "function") return;
+      try {
+        const animation = element.animate(frames, {
+          duration: 680, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards", ...options,
+        });
+        animations.add(animation);
+        animation.onfinish = animation.oncancel = () => animations.delete(animation);
+      } catch {
+        // Some browsers cannot animate pseudo-elements; the static rule remains.
+      }
+    };
+
     const reveal = (element: HTMLElement) => {
-      if (reduced.matches || typeof element.animate !== "function") return;
-      const isPlate = element.classList.contains("ui-card-enter") || element.classList.contains("work-project");
-      const isLine = element.matches(".home-journal-row, .journal-entry") || element.dataset.motion === "timeline";
+      if (reduced.matches) return;
+      const bounds = element.getBoundingClientRect();
+      // Committed routes already fade once. Do not animate their visible children again.
+      if (root.dataset.routeTransition === "entering" && bounds.top < window.innerHeight) return;
       const delay = Math.min(140, Math.max(0, parseFloat(element.style.animationDelay) || 0));
-      const keyframes: Keyframe[] = isPlate ? [
-        { opacity: 0, translate: "0 32px", scale: ".98", rotate: ".6deg" },
-        { opacity: 1, translate: "0 0", scale: "1", rotate: "0deg" },
+
+      if (element.matches(".home-journal-row, .journal-entry")) {
+        const title = element.querySelector<HTMLElement>("h2, h3");
+        if (title) animate(title, [{ opacity: .35, translate: "8px 0" }, { opacity: 1, translate: "0 0" }]);
+        animate(element, [{ scale: "0 1" }, { scale: "1 1" }], { pseudoElement: "::after", duration: 850 });
+        return;
+      }
+      if (element.dataset.motion === "timeline") {
+        const dot = element.querySelector<HTMLElement>(".archive-timeline-date > span");
+        const copy = element.querySelector<HTMLElement>(".archive-timeline-copy");
+        if (dot) animate(dot, [{ scale: ".25", opacity: .2 }, { scale: "1", opacity: 1 }], { duration: 480 });
+        if (copy) animate(copy, [{ opacity: .4 }, { opacity: 1 }], { duration: 700 });
+        animate(element, [{ scale: "1 0" }, { scale: "1 1" }], { pseudoElement: "::before", duration: 900 });
+        return;
+      }
+      if (element.matches(".home-about")) {
+        element.querySelectorAll<HTMLElement>(".home-about-copy em").forEach((word, index) => {
+          animate(word, [{ backgroundSize: "0% 100%" }, { backgroundSize: "100% 100%" }], { duration: 950, delay: index * 170 });
+        });
+        const mark = element.querySelector<HTMLElement>(".about-asterisk");
+        if (mark) animate(mark, [{ rotate: "-70deg", opacity: .35 }, { rotate: "0deg", opacity: 1 }], { duration: 1000 });
+        return;
+      }
+      if (element.dataset.motion === "contact") {
+        animate(element, [{ scale: "0 1" }, { scale: "1 1" }], { pseudoElement: "::after", duration: 720 });
+        const icon = element.querySelector<HTMLElement>(".ui-icon");
+        if (icon) animate(icon, [{ opacity: 0, translate: "-7px 0" }, { opacity: 1, translate: "0 0" }], { duration: 500, delay: 140 });
+        return;
+      }
+      if (element.matches(".about-archive-section")) {
+        const heading = element.querySelector<HTMLElement>(".about-section-heading");
+        if (heading) animate(heading, [{ opacity: .35, translate: "-12px 0" }, { opacity: 1, translate: "0 0" }]);
+        // Only the small skill labels assemble; long-form archive text stays still.
+        element.querySelectorAll<HTMLElement>(".about-skills > span").forEach((tag, index) => {
+          animate(tag, [{ opacity: .2, translate: "0 7px" }, { opacity: 1, translate: "0 0" }], { duration: 440, delay: Math.min(index * 35, 250) });
+        });
+        return;
+      }
+      const isPlate = element.classList.contains("ui-card-enter") || element.classList.contains("work-project");
+      animate(element, isPlate ? [
+        { opacity: .15, translate: "0 24px", scale: ".985" },
+        { opacity: 1, translate: "0 0", scale: "1" },
       ] : [
-        { opacity: 0, translate: isLine ? "-18px 0" : "0 20px" },
+        { opacity: .3, translate: "0 12px" },
         { opacity: 1, translate: "0 0" },
-      ];
-      const animation = element.animate(keyframes, {
-        duration: isPlate ? 900 : 680, delay,
-        easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards",
-      });
-      animations.add(animation);
-      animation.onfinish = animation.oncancel = () => animations.delete(animation);
+      ], { duration: isPlate ? 800 : 600, delay });
     };
 
     if ("IntersectionObserver" in window) {

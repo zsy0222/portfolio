@@ -31,6 +31,51 @@ const fillLight = new THREE.Vector3(.8, .45, -.6).normalize();
 const softbox = new THREE.Vector3(-.18, .7, .69).normalize();
 const secondaryBox = new THREE.Vector3(.7, .2, .7).normalize();
 
+/** A shared pearlescent chamber, redrawn only when the viewing angle changes. */
+export function paintSpatialBackdrop(context: CanvasRenderingContext2D, width: number, height: number, yaw = .45, pitch = .27) {
+  const drift = Math.sin(yaw) * width * .055;
+  const lift = (pitch - .27) * height * .09;
+  context.save();
+  const field = context.createLinearGradient(0, 0, width * .3, height);
+  field.addColorStop(0, "#8e849f"); field.addColorStop(.45, "#77718c"); field.addColorStop(1, "#514f68");
+  context.fillStyle = field; context.fillRect(0, 0, width, height);
+  for (const [x, y, radius, tint] of [
+    [.14, .17, .72, "rgba(247,194,222,.58)"],
+    [.87, .33, .65, "rgba(173,218,241,.45)"],
+    [.43, .5, .53, "rgba(217,195,244,.2)"],
+  ] as const) {
+    const glow = context.createRadialGradient(width * x + drift, height * y + lift, 0, width * x + drift, height * y + lift, width * radius);
+    glow.addColorStop(0, tint); glow.addColorStop(1, "rgba(198,177,223,0)");
+    context.fillStyle = glow; context.fillRect(0, 0, width, height);
+  }
+  // Broad, folded light sheets give depth without a field of decorative particles.
+  const ribbon = context.createLinearGradient(0, height * .6, width, height * .1);
+  ribbon.addColorStop(0, "rgba(210,232,249,0)"); ribbon.addColorStop(.35, "rgba(194,230,246,.18)");
+  ribbon.addColorStop(.7, "rgba(255,218,231,.28)"); ribbon.addColorStop(1, "rgba(235,202,244,0)");
+  context.fillStyle = ribbon;
+  context.beginPath(); context.moveTo(-width * .14, height * .65 + lift);
+  context.bezierCurveTo(width * .3 + drift, height * .52, width * .35, -height * .08, width * 1.08, height * .12);
+  context.bezierCurveTo(width * .39, height * .02, width * .42 + drift, height * .63, -width * .14, height * .78 + lift);
+  context.closePath(); context.fill();
+  const crest = context.createLinearGradient(0, height * .6, width, 0);
+  crest.addColorStop(0, "rgba(231,244,255,0)"); crest.addColorStop(.55, "rgba(245,226,251,.48)"); crest.addColorStop(1, "rgba(231,244,255,0)");
+  context.strokeStyle = crest; context.lineWidth = 1.1;
+  context.beginPath(); context.moveTo(-width * .14, height * .65 + lift);
+  context.bezierCurveTo(width * .3 + drift, height * .52, width * .35, -height * .08, width * 1.08, height * .12); context.stroke();
+  // Camera-relative elliptical etchings suggest the curved walls of the installation.
+  context.save(); context.translate(width * .5 + drift, height * .43 + lift); context.rotate(-.5 + Math.sin(yaw) * .09);
+  for (let index = 0; index < 3; index++) {
+    context.beginPath(); context.ellipse(0, 0, width * (.59 + index * .11), height * (.26 + index * .055), 0, .1, Math.PI * 1.92);
+    context.strokeStyle = index === 0 ? "rgba(231,225,251,.25)" : "rgba(221,219,247,.12)";
+    context.lineWidth = index === 0 ? 1.1 : .6; context.stroke();
+  }
+  context.restore();
+  const floor = context.createLinearGradient(0, height * .7, 0, height);
+  floor.addColorStop(0, "rgba(74,72,96,0)"); floor.addColorStop(1, "rgba(62,62,84,.46)");
+  context.fillStyle = floor; context.fillRect(0, height * .7, width, height * .3);
+  context.restore();
+}
+
 /**
  * A CPU projection of the real mesh geometry for browsers without WebGL.
  * It approximates material response; it does not claim physically based refraction.
@@ -56,6 +101,7 @@ export function createCanvasSceneRenderer(
   host.appendChild(canvas);
   let width = 1, height = 1, ratio = 1, disposed = false;
   let rasterWidth = 1, rasterHeight = 1, rasterScale = 1;
+  let backdropYaw = Infinity, backdropPitch = Infinity;
   let pixels = paint.createImageData(1, 1);
   let depthBuffer = new Float32Array(1);
   const caches = new Map<THREE.Mesh, MeshCache>();
@@ -98,20 +144,13 @@ export function createCanvasSceneRenderer(
     return cache;
   }
 
-  function makeBackdrop() {
+  function makeBackdrop(force = false) {
+    const yaw = Math.atan2(camera.position.x, camera.position.z);
+    const pitch = Math.atan2(camera.position.y - 1.52, Math.hypot(camera.position.x, camera.position.z));
+    if (!force && Math.abs(yaw - backdropYaw) + Math.abs(pitch - backdropPitch) < .025) return;
+    backdropYaw = yaw; backdropPitch = pitch;
     background!.setTransform(ratio, 0, 0, ratio, 0, 0);
-    const vertical = background!.createLinearGradient(0, 0, 0, height);
-    vertical.addColorStop(0, "#15131e"); vertical.addColorStop(.65, "#252031"); vertical.addColorStop(1, "#100f18");
-    background!.fillStyle = vertical; background!.fillRect(0, 0, width, height);
-    const glow = background!.createRadialGradient(width * .42, height * .28, 0, width * .46, height * .32, width * .68);
-    glow.addColorStop(0, "rgba(150,118,184,.19)"); glow.addColorStop(.52, "rgba(85,67,109,.07)"); glow.addColorStop(1, "rgba(30,25,41,0)");
-    background!.fillStyle = glow; background!.fillRect(0, 0, width, height);
-    // Broad light from above, without particle effects or fake image assets.
-    const beam = background!.createLinearGradient(0, 0, width * .55, height * .7);
-    beam.addColorStop(0, "rgba(233,220,255,.08)"); beam.addColorStop(1, "rgba(233,220,255,0)");
-    background!.fillStyle = beam;
-    background!.beginPath(); background!.moveTo(width * .15, 0); background!.lineTo(width * .34, 0);
-    background!.lineTo(width * .92, height); background!.lineTo(width * .1, height); background!.closePath(); background!.fill();
+    paintSpatialBackdrop(background!, width, height, yaw, pitch);
   }
 
   const setSize = (nextWidth: number, nextHeight: number, dpr: number) => {
@@ -124,7 +163,7 @@ export function createCanvasSceneRenderer(
     rasterWidth = Math.max(1, Math.round(width * rasterScale)); rasterHeight = Math.max(1, Math.round(height * rasterScale));
     layer.width = rasterWidth; layer.height = rasterHeight;
     pixels = paint!.createImageData(rasterWidth, rasterHeight); depthBuffer = new Float32Array(rasterWidth * rasterHeight);
-    makeBackdrop();
+    makeBackdrop(true);
   };
 
   function project(cache: MeshCache) {
@@ -162,7 +201,7 @@ export function createCanvasSceneRenderer(
       const viewDot = Math.abs(nx * vx + ny * vy + nz * vz);
       const reflectionDot = 2 * (nx * vx + ny * vy + nz * vz);
       const rx = reflectionDot * nx - vx, ry = reflectionDot * ny - vy, rz = reflectionDot * nz - vz;
-      const diffuse = .19 + Math.max(0, nx * light.x + ny * light.y + nz * light.z) * .73 + Math.max(0, nx * fillLight.x + ny * fillLight.y + nz * fillLight.z) * .23;
+      const diffuse = .27 + Math.max(0, nx * light.x + ny * light.y + nz * light.z) * .73 + Math.max(0, nx * fillLight.x + ny * fillLight.y + nz * fillLight.z) * .23;
       const primary = Math.max(0, rx * softbox.x + ry * softbox.y + rz * softbox.z);
       const secondary = Math.max(0, rx * secondaryBox.x + ry * secondaryBox.y + rz * secondaryBox.z);
       lights[i * 4] = diffuse;
@@ -265,6 +304,7 @@ export function createCanvasSceneRenderer(
     for (const triangle of queue) paintTriangle(triangle);
     paint!.putImageData(pixels, 0, 0);
     ctx!.setTransform(ratio, 0, 0, ratio, 0, 0);
+    makeBackdrop();
     ctx!.drawImage(backdrop, 0, 0, width, height);
     groundPoint.set(0, .04, 0).applyMatrix4(root.matrixWorld).project(camera);
     edgePoint.set(1.8, .04, 0).applyMatrix4(root.matrixWorld).project(camera);
@@ -276,11 +316,11 @@ export function createCanvasSceneRenderer(
     ctx!.globalAlpha = .16; ctx!.translate(0, groundY * 1.38); ctx!.scale(1, -.38);
     ctx!.drawImage(layer, 0, 0, width, height); ctx!.restore();
     const fade = ctx!.createLinearGradient(0, groundY, 0, Math.min(height, groundY + height * .3));
-    fade.addColorStop(0, "rgba(16,15,24,0)"); fade.addColorStop(1, "rgba(16,15,24,.92)");
+    fade.addColorStop(0, "rgba(68,67,89,0)"); fade.addColorStop(1, "rgba(68,67,89,.82)");
     ctx!.fillStyle = fade; ctx!.fillRect(0, groundY, width, height - groundY);
     ctx!.save(); ctx!.translate(groundX, groundY + 5); ctx!.scale(1, .24);
     const shadow = ctx!.createRadialGradient(0, 0, footprint * .08, 0, 0, footprint * 1.03);
-    shadow.addColorStop(0, "rgba(0,0,0,.5)"); shadow.addColorStop(1, "rgba(0,0,0,0)");
+    shadow.addColorStop(0, "rgba(33,27,51,.38)"); shadow.addColorStop(1, "rgba(0,0,0,0)");
     ctx!.fillStyle = shadow; ctx!.fillRect(-footprint * 1.1, -footprint * 1.1, footprint * 2.2, footprint * 2.2); ctx!.restore();
     ctx!.drawImage(layer, 0, 0, width, height);
   };

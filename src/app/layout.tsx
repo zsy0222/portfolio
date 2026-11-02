@@ -7,6 +7,7 @@ import "@/components/reference-design.css";
 import { ProjectWindowsProvider } from "@/components/ProjectWindows";
 import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
+import PageTransition from "@/components/PageTransition";
 import BackToTop from "@/components/BackToTop";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#201c27" },
+    { media: "(prefers-color-scheme: dark)", color: "#3e354a" },
   ],
 };
 
@@ -67,6 +68,7 @@ export default function RootLayout({
             {children}
           </main>
         </div>
+        <PageTransition />
         <MotionEffects />
         <BackToTop />
         </ProjectWindowsProvider>
