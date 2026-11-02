@@ -30,6 +30,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   let targetYaw = .45, yaw = .45, targetPitch = .27, pitch = .27, targetZoom = 1;
   let velocity = 0, playing = false;
+  let dark = document.documentElement.classList.contains("dark");
   let settleUntil = performance.now() + (reduceMotion.matches ? 0 : 3500);
   const dispose = () => {
     if (destroyed) return;
@@ -50,7 +51,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       renderer.toneMappingExposure = 1.1; renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       renderer.domElement.setAttribute("aria-hidden", "true"); host.appendChild(renderer.domElement);
     } catch { renderer = undefined; mode = "canvas"; }
-    const scene = new THREE.Scene(); scene.background = new THREE.Color("#827994");
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(dark ? "#22263f" : "#827994");
     const camera = new THREE.OrthographicCamera(-2.9, 2.9, 3.2, -3.2, .1, 60);
     const cameraTarget = new THREE.Vector3(0, 1.52, 0);
     const sculpture = new THREE.Group(); scene.add(sculpture);
@@ -76,7 +77,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       if (!renderer || !backdropContext || !backdropTexture) return;
       if (!force && Math.abs(yaw - backdropYaw) + Math.abs(pitch - backdropPitch) < .025) return;
       backdropYaw = yaw; backdropPitch = pitch;
-      paintSpatialBackdrop(backdropContext, backdropCanvas.width, backdropCanvas.height, yaw, pitch);
+      paintSpatialBackdrop(backdropContext, backdropCanvas.width, backdropCanvas.height, yaw, pitch, dark);
       backdropTexture.needsUpdate = true;
     };
     cleanups.push(() => { backdropCanvas.width = backdropCanvas.height = 1; });
@@ -149,7 +150,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
     const orb = mesh(new THREE.SphereGeometry(.23, mode === "canvas" ? 12 : 28, mode === "canvas" ? 8 : 20), wine); orb.position.set(-1.03, .74, .32);
     const orbBase = mesh(new THREE.CylinderGeometry(.26, .31, .22, mode === "canvas" ? 16 : 36), ceramic); orbBase.position.set(-1.03, .4, .32);
     const floor = mesh(new THREE.PlaneGeometry(120, 120), floorMaterial, scene); floor.rotation.x = -Math.PI / 2; floor.position.y = .035; floor.castShadow = false;
-    scene.add(new THREE.HemisphereLight("#eadcf7", "#7c718d", 1.1));
+    const ambient = new THREE.HemisphereLight("#eadcf7", "#7c718d", 1.1); scene.add(ambient);
     const key = new THREE.DirectionalLight("#fff1e7", 4.3); key.position.set(-3, 7, 5); key.castShadow = true;
     key.shadow.mapSize.set(finePointer.matches ? 1024 : 768, finePointer.matches ? 1024 : 768);
     key.shadow.camera.left = -4; key.shadow.camera.right = 4; key.shadow.camera.top = 5; key.shadow.camera.bottom = -4;
@@ -235,7 +236,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       removeGLListener();
       if (renderer) { renderer.renderLists.dispose(); renderer.dispose(); renderer.domElement.remove(); renderer = undefined; }
       targets.forEach(target => target.dispose()); targets.clear(); scene.environment = null;
-      canvasRenderer = createCanvasSceneRenderer(host, scene, camera, sculpture); mode = "canvas";
+      canvasRenderer = createCanvasSceneRenderer(host, scene, camera, sculpture, dark); mode = "canvas";
       canvasRenderer.domElement.setAttribute("aria-hidden", "true"); resize(); callbacks.onReady(mode);
     };
     function draw(now: number) {
@@ -284,6 +285,29 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       else targetPitch = THREE.MathUtils.clamp(targetPitch + (event.key === "ArrowUp" ? .06 : -.06), .05, .88);
       schedule();
     };
+    // Theme changes repaint this scene without replacing the camera or controls.
+    const applyTheme = () => {
+      dark = document.documentElement.classList.contains("dark");
+      host.dataset.theme = dark ? "dark" : "light";
+      ceramic.color.set(dark ? "#696a8a" : "#998daa");
+      paleCeramic.color.set(dark ? "#494d6c" : "#77708b");
+      floorMaterial.color.set(dark ? "#171c32" : "#726c87");
+      floorMaterial.opacity = dark ? .6 : .52;
+      ambient.color.set(dark ? "#aebdf3" : "#eadcf7");
+      ambient.groundColor.set(dark ? "#25233f" : "#7c718d");
+      ambient.intensity = dark ? .8 : 1.1;
+      key.color.set(dark ? "#e4eaff" : "#fff1e7"); key.intensity = dark ? 3.8 : 4.3;
+      fill.color.set(dark ? "#849bff" : "#919fe9"); fill.intensity = dark ? 3.2 : 2.8;
+      rim.color.set(dark ? "#ddbdf8" : "#ffffff");
+      scene.environmentIntensity = dark ? .95 : 1.25;
+      canvasRenderer?.setTheme(dark);
+      updateBackdrop(true); schedule();
+    };
+    const themeObserver = new MutationObserver(() => {
+      if (document.documentElement.classList.contains("dark") !== dark) applyTheme();
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    cleanups.push(() => { themeObserver.disconnect(); delete host.dataset.theme; });
     const visibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; velocity = 0; } else { lastPaint = performance.now(); schedule(); } };
     const preference = () => { if (reduceMotion.matches) { settleUntil = 0; setPlaying(false); velocity = 0; } schedule(); };
     host.addEventListener("pointerdown", onDown); host.addEventListener("pointermove", onMove, { passive: true }); host.addEventListener("pointerup", release); host.addEventListener("pointercancel", release); host.addEventListener("lostpointercapture", release); host.addEventListener("keydown", onKey);
@@ -301,6 +325,7 @@ export function createSpatialScene(host: HTMLDivElement, callbacks: SceneCallbac
       glCanvas.addEventListener("webglcontextlost", contextLost); removeGLListener = () => glCanvas.removeEventListener("webglcontextlost", contextLost);
     } else activateCanvasFallback();
     setMaterial("titanium");
+    applyTheme();
     try { resize(); updateCamera(); render(); }
     catch { activateCanvasFallback(); resize(); updateCamera(); render(); }
     callbacks.onReady(mode);

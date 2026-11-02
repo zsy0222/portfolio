@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import Footer from "@/components/Footer";
+import "@/components/utility-pages.css";
 import ArticleReader from "@/components/ArticleReader";
 import ZoomableImage from "@/components/ZoomableImage";
 import Icon from "@/components/Icon";
@@ -107,16 +108,18 @@ export default function WikiDetailPage() {
 
   if (loading) {
     return (
-      <div className="px-15 pt-25 pb-16">
-        <div className="text-[20px] text-muted">Loading...</div>
+      <div className="knowledge-page wiki-document-page">
+        <section className="knowledge-loading">
+          <div className="text-[20px] text-muted">Loading...</div>
+        </section>
       </div>
     );
   }
 
   if (!page || (page as unknown as Record<string, unknown>).error) {
     return (
-      <div className="utility-page">
-        <section className="px-15 pt-25 pb-16">
+      <div className="knowledge-page wiki-document-page">
+        <section className="knowledge-intro">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">Wiki</div>
           <h1 className="text-[44px] font-light text-ink leading-[1.25] mb-5">Page not found.</h1>
           <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
@@ -127,8 +130,8 @@ export default function WikiDetailPage() {
   }
 
   return (
-    <div className="utility-page">
-      <section className="px-15 pt-25 pb-16">
+    <div className="knowledge-page wiki-document-page">
+      <section className="knowledge-intro">
         <div className="text-[16px] font-medium tracking-[0.14em] uppercase text-muted mb-2">
           {page.section_name || "Wiki"}
         </div>
@@ -138,8 +141,8 @@ export default function WikiDetailPage() {
         <Link href="/wiki" className="text-[20px] text-accent hover:underline"><Icon name="arrow-left" /> Back to Wiki</Link>
       </section>
 
-      <section className="px-15 py-14 border-t border-line">
-        <ArticleReader key={slug} className="max-w-[760px]">
+      <section className="knowledge-section wiki-document-body">
+        <ArticleReader key={slug}>
           {page.content ? renderMarkdown(page.content) : (
             <p className="text-[20px] text-muted">No content yet.</p>
           )}

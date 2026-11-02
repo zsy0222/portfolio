@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { search, type SearchResult, type SearchFilter } from "@/lib/search";
 import Footer from "@/components/Footer";
+import "@/components/utility-pages.css";
 import PasswordField from "@/components/PasswordField";
 import Icon from "@/components/Icon";
 import FormField from "@/components/FormField";
@@ -98,8 +99,8 @@ export default function WikiAskPage() {
 
   if (!authed) {
     return (
-      <div className="utility-page">
-        <section className="px-15 pt-25 pb-16">
+      <div className="knowledge-page wiki-ask-page">
+        <section className="knowledge-intro">
           <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
             Wiki / Ask
           </div>
@@ -111,7 +112,7 @@ export default function WikiAskPage() {
           </p>
         </section>
 
-        <section className="px-15 pb-6">
+        <section className="knowledge-gate">
           <form onSubmit={handleUnlock} className="ui-unlock-form">
             <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
@@ -129,8 +130,8 @@ export default function WikiAskPage() {
   }
 
   return (
-    <div className="utility-page">
-      <section className="px-15 pt-25 pb-16">
+    <div className="knowledge-page wiki-ask-page">
+      <section className="knowledge-intro">
         <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted mb-6">
           Wiki / Ask
         </div>
@@ -143,7 +144,7 @@ export default function WikiAskPage() {
         </p>
       </section>
 
-      <section className="px-15 pb-10">
+      <section className="knowledge-query">
         <form onSubmit={handleSearch} className="flex flex-wrap items-start gap-4">
           <div className="min-w-0 flex-1 max-w-[600px]">
           <FormField id="wiki-query" label="Search the knowledge base" error={searchError}>
@@ -177,8 +178,8 @@ export default function WikiAskPage() {
       </section>
 
       {searched && !loading && (
-        <section className="px-15 py-14 border-t border-line">
-          <div className="flex items-center justify-between mb-8">
+        <section className="knowledge-section">
+          <div className="wiki-results-heading flex items-center justify-between mb-8">
             <div className="text-[20px] font-medium tracking-[0.16em] uppercase text-muted">
               {results.length} Result{results.length !== 1 ? "s" : ""}
             </div>
@@ -209,7 +210,7 @@ export default function WikiAskPage() {
                   key={r.id}
                   className={`py-6 ${idx < results.length - 1 ? "border-b border-line" : ""}`}
                 >
-                  <div className="flex items-baseline justify-between gap-4 mb-1">
+                  <div className="wiki-result-title flex items-baseline justify-between gap-4 mb-1">
                     {r.id.startsWith("blog/") ? (
                       <Link
                         href={`/blog/${r.id.split("/").slice(2).join("/")}`}
@@ -229,7 +230,7 @@ export default function WikiAskPage() {
                   <p className="text-[16px] text-body leading-[1.5] mb-1 max-w-[700px]">
                     {r.snippet}
                   </p>
-                  <div className="flex items-center gap-3">
+                  <div className="wiki-result-meta flex items-center gap-3">
                     <span className="text-[14px] text-muted uppercase tracking-[0.1em]">
                       {r.type}
                     </span>

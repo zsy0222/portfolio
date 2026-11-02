@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Footer from "@/components/Footer";
+import "@/components/utility-pages.css";
 import Icon from "@/components/Icon";
 
 const FEED_URL = "https://chenmuqingtongyan.vercel.app/feed.xml";
@@ -48,8 +49,8 @@ export default function RssPage() {
         : "Copy Feed URL";
 
   return (
-    <div className="utility-page">
-      <section className="ui-enter px-6 pb-14 pt-16 sm:px-10 sm:pb-18 sm:pt-20 xl:px-15 xl:pt-25">
+    <div className="knowledge-page rss-page">
+      <section className="knowledge-intro ui-enter">
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           RSS
         </div>
@@ -62,11 +63,11 @@ export default function RssPage() {
         </p>
       </section>
 
-      <section className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15">
+      <section className="knowledge-section">
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           Feed URL
         </div>
-        <div className="ui-surface max-w-[820px] border border-line bg-card/55 p-5 sm:p-7">
+        <div className="rss-feed-surface ui-surface border border-line bg-card/55 p-5 sm:p-7">
           <code className="block overflow-x-auto break-all text-[14px] leading-[1.6] text-lead sm:text-[17px]">
             {FEED_URL}
           </code>
@@ -98,11 +99,11 @@ export default function RssPage() {
         </div>
       </section>
 
-      <section className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15">
+      <section className="knowledge-section">
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           Recommended Readers
         </div>
-        <div className="max-w-[820px] divide-y divide-line">
+        <div className="rss-readers divide-y divide-line">
           {readers.map((reader) => (
             <a
               key={reader.name}
@@ -122,11 +123,11 @@ export default function RssPage() {
         </div>
       </section>
 
-      <section className="border-t border-line px-6 py-12 sm:px-10 sm:py-14 xl:px-15">
+      <section className="knowledge-section">
         <div className="mb-6 text-[15px] font-semibold uppercase tracking-[0.16em] text-muted sm:text-[18px]">
           How to Subscribe
         </div>
-        <ol className="grid max-w-[900px] gap-4 sm:grid-cols-3">
+        <ol className="rss-steps grid gap-4 sm:grid-cols-3">
           {[
             "Copy the feed URL above.",
             "Add a new subscription in your RSS reader.",

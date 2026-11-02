@@ -4,6 +4,7 @@ export interface CanvasSceneRenderer {
   domElement: HTMLCanvasElement;
   setSize: (width: number, height: number, dpr: number) => void;
   render: () => void;
+  setTheme: (dark: boolean) => void;
   dispose: () => void;
 }
 
@@ -32,17 +33,17 @@ const softbox = new THREE.Vector3(-.18, .7, .69).normalize();
 const secondaryBox = new THREE.Vector3(.7, .2, .7).normalize();
 
 /** A shared pearlescent chamber, redrawn only when the viewing angle changes. */
-export function paintSpatialBackdrop(context: CanvasRenderingContext2D, width: number, height: number, yaw = .45, pitch = .27) {
+export function paintSpatialBackdrop(context: CanvasRenderingContext2D, width: number, height: number, yaw = .45, pitch = .27, dark = false) {
   const drift = Math.sin(yaw) * width * .055;
   const lift = (pitch - .27) * height * .09;
   context.save();
   const field = context.createLinearGradient(0, 0, width * .3, height);
-  field.addColorStop(0, "#8e849f"); field.addColorStop(.45, "#77718c"); field.addColorStop(1, "#514f68");
+  field.addColorStop(0, dark ? "#30304f" : "#8e849f"); field.addColorStop(.45, dark ? "#22263f" : "#77718c"); field.addColorStop(1, dark ? "#111320" : "#514f68");
   context.fillStyle = field; context.fillRect(0, 0, width, height);
   for (const [x, y, radius, tint] of [
-    [.14, .17, .72, "rgba(247,194,222,.58)"],
-    [.87, .33, .65, "rgba(173,218,241,.45)"],
-    [.43, .5, .53, "rgba(217,195,244,.2)"],
+    [.14, .17, .72, dark ? "rgba(163,117,220,.28)" : "rgba(247,194,222,.58)"],
+    [.87, .33, .65, dark ? "rgba(99,146,235,.3)" : "rgba(173,218,241,.45)"],
+    [.43, .5, .53, dark ? "rgba(164,156,230,.12)" : "rgba(217,195,244,.2)"],
   ] as const) {
     const glow = context.createRadialGradient(width * x + drift, height * y + lift, 0, width * x + drift, height * y + lift, width * radius);
     glow.addColorStop(0, tint); glow.addColorStop(1, "rgba(198,177,223,0)");
@@ -50,15 +51,15 @@ export function paintSpatialBackdrop(context: CanvasRenderingContext2D, width: n
   }
   // Broad, folded light sheets give depth without a field of decorative particles.
   const ribbon = context.createLinearGradient(0, height * .6, width, height * .1);
-  ribbon.addColorStop(0, "rgba(210,232,249,0)"); ribbon.addColorStop(.35, "rgba(194,230,246,.18)");
-  ribbon.addColorStop(.7, "rgba(255,218,231,.28)"); ribbon.addColorStop(1, "rgba(235,202,244,0)");
+  ribbon.addColorStop(0, "rgba(210,232,249,0)"); ribbon.addColorStop(.35, dark ? "rgba(124,177,255,.15)" : "rgba(194,230,246,.18)");
+  ribbon.addColorStop(.7, dark ? "rgba(210,171,249,.2)" : "rgba(255,218,231,.28)"); ribbon.addColorStop(1, "rgba(235,202,244,0)");
   context.fillStyle = ribbon;
   context.beginPath(); context.moveTo(-width * .14, height * .65 + lift);
   context.bezierCurveTo(width * .3 + drift, height * .52, width * .35, -height * .08, width * 1.08, height * .12);
   context.bezierCurveTo(width * .39, height * .02, width * .42 + drift, height * .63, -width * .14, height * .78 + lift);
   context.closePath(); context.fill();
   const crest = context.createLinearGradient(0, height * .6, width, 0);
-  crest.addColorStop(0, "rgba(231,244,255,0)"); crest.addColorStop(.55, "rgba(245,226,251,.48)"); crest.addColorStop(1, "rgba(231,244,255,0)");
+  crest.addColorStop(0, "rgba(231,244,255,0)"); crest.addColorStop(.55, dark ? "rgba(178,188,255,.52)" : "rgba(245,226,251,.48)"); crest.addColorStop(1, "rgba(231,244,255,0)");
   context.strokeStyle = crest; context.lineWidth = 1.1;
   context.beginPath(); context.moveTo(-width * .14, height * .65 + lift);
   context.bezierCurveTo(width * .3 + drift, height * .52, width * .35, -height * .08, width * 1.08, height * .12); context.stroke();
@@ -66,12 +67,12 @@ export function paintSpatialBackdrop(context: CanvasRenderingContext2D, width: n
   context.save(); context.translate(width * .5 + drift, height * .43 + lift); context.rotate(-.5 + Math.sin(yaw) * .09);
   for (let index = 0; index < 3; index++) {
     context.beginPath(); context.ellipse(0, 0, width * (.59 + index * .11), height * (.26 + index * .055), 0, .1, Math.PI * 1.92);
-    context.strokeStyle = index === 0 ? "rgba(231,225,251,.25)" : "rgba(221,219,247,.12)";
+    context.strokeStyle = index === 0 ? (dark ? "rgba(173,183,249,.28)" : "rgba(231,225,251,.25)") : (dark ? "rgba(147,164,230,.13)" : "rgba(221,219,247,.12)");
     context.lineWidth = index === 0 ? 1.1 : .6; context.stroke();
   }
   context.restore();
   const floor = context.createLinearGradient(0, height * .7, 0, height);
-  floor.addColorStop(0, "rgba(74,72,96,0)"); floor.addColorStop(1, "rgba(62,62,84,.46)");
+  floor.addColorStop(0, dark ? "rgba(17,19,32,0)" : "rgba(74,72,96,0)"); floor.addColorStop(1, dark ? "rgba(12,14,26,.7)" : "rgba(62,62,84,.46)");
   context.fillStyle = floor; context.fillRect(0, height * .7, width, height * .3);
   context.restore();
 }
@@ -86,6 +87,7 @@ export function createCanvasSceneRenderer(
   scene: THREE.Scene,
   camera: THREE.PerspectiveCamera | THREE.OrthographicCamera,
   root: THREE.Object3D,
+  initialDark = false,
 ): CanvasSceneRenderer {
   const canvas = document.createElement("canvas");
   const layer = document.createElement("canvas");
@@ -102,6 +104,7 @@ export function createCanvasSceneRenderer(
   let width = 1, height = 1, ratio = 1, disposed = false;
   let rasterWidth = 1, rasterHeight = 1, rasterScale = 1;
   let backdropYaw = Infinity, backdropPitch = Infinity;
+  let dark = initialDark;
   let pixels = paint.createImageData(1, 1);
   let depthBuffer = new Float32Array(1);
   const caches = new Map<THREE.Mesh, MeshCache>();
@@ -150,7 +153,7 @@ export function createCanvasSceneRenderer(
     if (!force && Math.abs(yaw - backdropYaw) + Math.abs(pitch - backdropPitch) < .025) return;
     backdropYaw = yaw; backdropPitch = pitch;
     background!.setTransform(ratio, 0, 0, ratio, 0, 0);
-    paintSpatialBackdrop(background!, width, height, yaw, pitch);
+    paintSpatialBackdrop(background!, width, height, yaw, pitch, dark);
   }
 
   const setSize = (nextWidth: number, nextHeight: number, dpr: number) => {
@@ -201,7 +204,7 @@ export function createCanvasSceneRenderer(
       const viewDot = Math.abs(nx * vx + ny * vy + nz * vz);
       const reflectionDot = 2 * (nx * vx + ny * vy + nz * vz);
       const rx = reflectionDot * nx - vx, ry = reflectionDot * ny - vy, rz = reflectionDot * nz - vz;
-      const diffuse = .27 + Math.max(0, nx * light.x + ny * light.y + nz * light.z) * .73 + Math.max(0, nx * fillLight.x + ny * fillLight.y + nz * fillLight.z) * .23;
+      const diffuse = (dark ? .2 : .27) + Math.max(0, nx * light.x + ny * light.y + nz * light.z) * .73 + Math.max(0, nx * fillLight.x + ny * fillLight.y + nz * fillLight.z) * (dark ? .3 : .23);
       const primary = Math.max(0, rx * softbox.x + ry * softbox.y + rz * softbox.z);
       const secondary = Math.max(0, rx * secondaryBox.x + ry * secondaryBox.y + rz * secondaryBox.z);
       lights[i * 4] = diffuse;
@@ -316,13 +319,17 @@ export function createCanvasSceneRenderer(
     ctx!.globalAlpha = .16; ctx!.translate(0, groundY * 1.38); ctx!.scale(1, -.38);
     ctx!.drawImage(layer, 0, 0, width, height); ctx!.restore();
     const fade = ctx!.createLinearGradient(0, groundY, 0, Math.min(height, groundY + height * .3));
-    fade.addColorStop(0, "rgba(68,67,89,0)"); fade.addColorStop(1, "rgba(68,67,89,.82)");
+    fade.addColorStop(0, dark ? "rgba(15,17,30,0)" : "rgba(68,67,89,0)"); fade.addColorStop(1, dark ? "rgba(15,17,30,.9)" : "rgba(68,67,89,.82)");
     ctx!.fillStyle = fade; ctx!.fillRect(0, groundY, width, height - groundY);
     ctx!.save(); ctx!.translate(groundX, groundY + 5); ctx!.scale(1, .24);
     const shadow = ctx!.createRadialGradient(0, 0, footprint * .08, 0, 0, footprint * 1.03);
     shadow.addColorStop(0, "rgba(33,27,51,.38)"); shadow.addColorStop(1, "rgba(0,0,0,0)");
     ctx!.fillStyle = shadow; ctx!.fillRect(-footprint * 1.1, -footprint * 1.1, footprint * 2.2, footprint * 2.2); ctx!.restore();
     ctx!.drawImage(layer, 0, 0, width, height);
+  };
+  const setTheme = (nextDark: boolean) => {
+    if (disposed || nextDark === dark) return;
+    dark = nextDark; backdropYaw = backdropPitch = Infinity;
   };
   const dispose = () => {
     if (disposed) return;
@@ -331,5 +338,5 @@ export function createCanvasSceneRenderer(
     pixels = paint!.createImageData(1, 1); depthBuffer = new Float32Array(1);
   };
   setSize(Math.max(1, host.clientWidth), Math.max(1, host.clientHeight), Math.min(window.devicePixelRatio || 1, 1.5));
-  return { domElement: canvas, setSize, render, dispose };
+  return { domElement: canvas, setSize, setTheme, render, dispose };
 }
