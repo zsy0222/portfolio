@@ -16,11 +16,11 @@ The upgrade preserves the existing Next.js 16 / React 19 application, original M
 
 `/search` and `/api/search` use a server-side, public-only index across projects, article bodies/translated bodies and memories. No language model needs to download for this search. Existing Wiki semantic search is preserved separately; its embedding generator now filters drafts and emits canonical blog URLs.
 
-Global language selection persists when local storage is available. New sections and all six currently published articles have complete Chinese/English editions. Existing database-backed Wiki documents, course PDFs and legacy utility pages retain their authored language and original behavior.
+Global language selection persists when local storage is available. New sections and all six currently published articles have complete Chinese/English editions. Wiki controls, contact, RSS, guestbook, status and reading tools also follow this selection. Database-backed Wiki documents and course PDFs retain their authored language, with an explicit source-language notice.
 
 ## 3D and media boundaries
 
-The studio is a procedural interpretation, not a photograph or a supplied Blender reconstruction. It uses the specified character clothing and physical objects for navigation. It lazy-loads Three.js, caps pixel ratio, renders on demand, pauses while out of view, honors reduced motion and releases renderer resources on unmount. A WebGL failure retains the HTML navigation and offers retry.
+The studio is a procedural interpretation, not a photograph or a supplied Blender reconstruction. It uses the specified character clothing and physical objects for navigation. It lazy-loads Three.js, caps pixel ratio, renders on demand, pauses while out of view, honors reduced motion and releases renderer resources on unmount. When WebGL cannot initialize, an SVG compatibility renderer reuses the geometry, camera and object picking with labelled simplified materials. If both renderers fail, HTML navigation and retry remain available.
 
 There are no supplied GLB/Blender models or video files in this repository. Other 3D works and films therefore show explicit media placeholders, without invented downloads, playback or finished-render claims. Existing travel photography and artwork are labelled separately.
 

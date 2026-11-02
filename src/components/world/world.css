@@ -43,6 +43,8 @@ body { background: var(--world-paper); }
 .world-hero-scene .studio-stage { background:transparent; border:0; border-radius:0; }
 .world-hero-scene .studio-stage-heading { display:none; }
 .world-hero-scene .studio-stage::before { display:none; }
+.world-hero-scene .studio-loading, .world-hero-scene .studio-loading > small, .world-hero-scene .studio-fallback strong, .world-hero-scene .studio-fallback button { color:var(--world-ink); }
+.world-hero-scene .studio-loading-mark, .world-hero-scene .studio-stage-bottom > span { color:var(--world-purple); }
 .world-hero-scene .studio-compact .studio-stage { aspect-ratio:1.28; min-height:390px; }
 .world-hero-scene .studio-concept-note { font-size:9px; }
 .world-hero-scene .studio-canvas { inset:0; }

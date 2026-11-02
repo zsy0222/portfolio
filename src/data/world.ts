@@ -154,7 +154,7 @@ const newWorks: CreativeWork[] = [
   },
   {
     slug: "hulunbuir-vlog", category: "film", title: { zh: "呼伦贝尔 · 把夏天留下", en: "Hulunbuir · Keep a Little Summer" },
-    summary: { zh: "高考后的夏天，四位高中同学走进草原。把真实影像与温暖的视觉叙事慢慢整理在一起。", en: "Four high-school friends, a summer after the entrance exams and the grasslands. Real footage is being shaped into a warm visual story." },
+    summary: { zh: "高考后的夏天，和高中同学一起走进草原。旅行影像与温暖的视觉叙事，等待进一步整理。", en: "A summer after the entrance exams, high-school friends and the grasslands. A travel-film entry awaiting footage and a finished edit." },
     status: { zh: "影像整理与制作中", en: "Editing & production" }, year: "2025 → 2026", tags: ["travel-vlog", "editing", "visual-storytelling"],
     image: "/images/huolunbeier-memory.webp", imageKind: "photo",
     sections: [
