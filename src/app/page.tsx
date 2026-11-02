@@ -1,13 +1,5 @@
-import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Footer from "@/components/Footer";
+import WorldHome from "@/components/world/WorldHome";
 
 export default function Home() {
-  return (
-    <>
-      <Hero />
-      <About />
-      <Footer />
-    </>
-  );
+  return <WorldHome />;
 }

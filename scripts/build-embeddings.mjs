@@ -1,7 +1,6 @@
-import { pipeline } from "@huggingface/transformers";
+import matter from "gray-matter";
 import { readdir, readFile, writeFile } from "fs/promises";
-import { existsSync } from "fs";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -25,34 +24,35 @@ const wikiItems = [
   { id: "misc/cloudbase-free-rule", title: "CloudBase Free Rule", text: "Tencent CloudBase free tier rules, cloud hosting, static site hosting" },
 ];
 
-async function readMdxFiles() {
+/** Read only published MDX; importing this function never loads an embedding model. */
+export async function readMdxFiles(directory = contentDir) {
   const files = [];
-  const categories = ["research", "cross-disciplinary", "projects", "career-future", "casual"];
-
-  for (const cat of categories) {
-    const catDir = join(contentDir, cat);
-    if (!existsSync(catDir)) continue;
-
-    const entries = await readdir(catDir, { withFileTypes: true });
+  async function scan(dir) {
+    const entries = await readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
-      if (entry.name.endsWith(".mdx")) {
-        const filePath = join(catDir, entry.name);
+      const filePath = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await scan(filePath);
+      } else if (entry.name.endsWith(".mdx")) {
         const raw = await readFile(filePath, "utf-8");
-        const titleMatch = raw.match(/^#\s+(.+)$/m);
-        const title = titleMatch ? titleMatch[1] : entry.name.replace(".mdx", "");
-        const text = raw.replace(/^---[\s\S]*?---/, "").replace(/^#\s+.+$/m, "").trim();
+        const { data, content } = matter(raw);
+        if (data.draft) continue;
+        const slug = entry.name.slice(0, -4);
+        const text = content.replace(/^#\s+.+$/m, "").trim();
         files.push({
-          id: `blog/${cat}/${entry.name.replace(".mdx", "")}`,
-          title,
+          id: `blog/${slug}`,
+          title: data.title || slug,
           text: text.slice(0, 2000),
         });
       }
     }
   }
+  await scan(directory);
   return files;
 }
 
 async function main() {
+  const { pipeline } = await import("@huggingface/transformers");
   console.log("Loading embedding model: all-MiniLM-L6-v2 (ONNX)...");
   const extractor = await pipeline(
     "feature-extraction",
@@ -83,4 +83,9 @@ async function main() {
   console.log(`Saved ${results.length} embeddings to ${outPath}`);
 }
 
-main().catch(console.error);
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}
