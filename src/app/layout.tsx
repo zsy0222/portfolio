@@ -41,10 +41,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8f5f1" },
-    { media: "(prefers-color-scheme: dark)", color: "#141323" },
-  ],
+  themeColor: "#141323",
 };
 
 export default function RootLayout({
@@ -53,9 +50,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="en" className="dark h-full antialiased" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var d=localStorage.getItem('theme')==='dark';document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var d=true;try{d=localStorage.getItem('theme')!=='light';}catch(e){}document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light';var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',d?'#141323':'#f8f5f1');})();` }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://giscus.app" />

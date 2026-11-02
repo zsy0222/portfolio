@@ -14,20 +14,25 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
   const dialog = useRef<HTMLDialogElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const previousOverflow = useRef("");
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      let saved = false;
-      try { saved = localStorage.getItem("theme") === "dark"; } catch {}
+      let saved = true;
+      try { saved = localStorage.getItem("theme") !== "light"; } catch {}
       setDark(saved);
       document.documentElement.classList.toggle("dark", saved);
       document.documentElement.style.colorScheme = saved ? "dark" : "light";
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", saved ? "#141323" : "#f8f5f1");
     });
     return () => cancelAnimationFrame(frame);
   }, []);
+  useEffect(() => {
+    const activeDark = document.documentElement.classList.contains("dark");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", activeDark ? "#141323" : "#f8f5f1");
+  }, [pathname]);
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1000px)");
     const closeOnDesktop = () => { if (query.matches) dialog.current?.close(); };
@@ -35,10 +40,11 @@ export default function Sidebar() {
     return () => query.removeEventListener("change", closeOnDesktop);
   }, []);
   const toggleTheme = () => {
-    const next = !dark;
+    const next = !document.documentElement.classList.contains("dark");
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     document.documentElement.style.colorScheme = next ? "dark" : "light";
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next ? "#141323" : "#f8f5f1");
     try { localStorage.setItem("theme", next ? "dark" : "light"); } catch {}
   };
   const closeMenu = () => { dialog.current?.close(); };
