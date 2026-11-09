@@ -12,21 +12,34 @@ interface Stats {
   projects: number;
 }
 
-async function verifyPassword(password: string): Promise<boolean> {
+interface VisitorStats {
+  browsers: number;
+  returning: number;
+  visits: number;
+}
+
+async function fetchVisitorStats() {
+  const response = await fetch("/api/status/visitors", { cache: "no-store" });
+  if (response.status === 401) return null;
+  if (!response.ok) throw new Error("Visitor statistics unavailable");
+  return await response.json() as VisitorStats;
+}
+
+async function verifyPassword(password: string, scope: "status" | "visitor-report"): Promise<"report" | "wiki" | null> {
   try {
     const res = await fetch("/api/auth/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, scope }),
     });
     if (res.ok) {
       const data = await res.json();
-      return data.ok;
+      if (data.ok) return data.reportAccess === true ? "report" : "wiki";
     }
   } catch {
     // Verification failures must remain locked; only the server can grant access.
   }
-  return false;
+  return null;
 }
 
 const siteRoutes = [
@@ -57,10 +70,12 @@ const techStack = [
 ];
 
 export default function StatusPage() {
-  const [authed, setAuthed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("wiki-auth") === "true";
-  });
+  const [authed, setAuthed] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
+  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(null);
+  const [visitorState, setVisitorState] = useState<"loading" | "locked" | "ready" | "unavailable">("loading");
+  const [reportCode, setReportCode] = useState("");
+  const [reportError, setReportError] = useState(false);
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -68,24 +83,59 @@ export default function StatusPage() {
   useEffect(() => {
     fetch("/api/status/stats")
       .then((r) => r.json())
-      .then(setStats);
+      .then(setStats)
+      .catch(() => {});
+    let active = true;
+    fetchVisitorStats().then((data) => {
+      if (!active) return;
+      setVisitorStats(data);
+      setVisitorState(data ? "ready" : "locked");
+      if (data) setAuthed(true);
+      else {
+        try { setAuthed(sessionStorage.getItem("wiki-auth") === "true"); } catch {}
+      }
+    }).catch(() => {
+      if (active) setVisitorState("unavailable");
+    }).finally(() => {
+      if (active) setCheckingAccess(false);
+    });
+    return () => { active = false; };
   }, []);
+
+  async function refreshVisitorStats() {
+    setVisitorState("loading");
+    try {
+      const data = await fetchVisitorStats();
+      setVisitorStats(data);
+      setVisitorState(data ? "ready" : "locked");
+    } catch {
+      setVisitorState("unavailable");
+    }
+  }
 
   const handleUnlock = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(false);
-    try {
-      const ok = await verifyPassword(input);
-      if (ok) {
-        setAuthed(true);
-        sessionStorage.setItem("wiki-auth", "true");
-        setInput("");
-      } else {
-        setError(true);
-      }
-    } catch {
-      setError(true);
+    const access = await verifyPassword(input, "status");
+    setError(!access);
+    if (!access) return;
+    setAuthed(true);
+    setInput("");
+    if (access === "wiki") {
+      try { sessionStorage.setItem("wiki-auth", "true"); } catch {}
     }
+    await refreshVisitorStats();
+  };
+
+  const handleReportUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReportError(false);
+    const access = await verifyPassword(reportCode, "visitor-report");
+    if (access !== "report") {
+      setReportError(true);
+      return;
+    }
+    setReportCode("");
+    await refreshVisitorStats();
   };
 
   if (!authed) {
@@ -99,11 +149,11 @@ export default function StatusPage() {
             Site <span className="text-accent font-semibold">status</span>.
           </h1>
           <p className="text-[18px] text-muted mt-4">
-            Password required to unlock content.
+            {checkingAccess ? "Checking access…" : "Password required to unlock content."}
           </p>
         </section>
         <section className="px-6 sm:px-10 xl:px-15 pb-6">
-          <form onSubmit={handleUnlock} className="ui-unlock-form">
+          {!checkingAccess && <form onSubmit={handleUnlock} className="ui-unlock-form">
             <PasswordField value={input} onChange={(value) => { setInput(value); setError(false); }} error={error} />
             <button
               type="submit"
@@ -111,7 +161,7 @@ export default function StatusPage() {
             >
               Unlock <Icon name="arrow-right" />
             </button>
-          </form>
+          </form>}
         </section>
         <Footer />
       </div>
@@ -162,6 +212,33 @@ export default function StatusPage() {
             RSS Feed <Icon name="arrow-right" />
           </a>
         </div>
+      </section>
+
+      <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line" lang="zh-CN" aria-labelledby="visitor-stats-title">
+        <h2 id="visitor-stats-title" className="text-[20px] font-medium text-ink mb-3">访客与回访 · 最近 30 天</h2>
+        <p className="text-muted mb-6">仅含同意统计的浏览器。间隔 30 分钟或跨天后再次打开计为新一次访问。回访基于最近 90 天记录，按北京时间统计。</p>
+        {visitorStats ? (
+          <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {[
+              { label: "独立浏览器", count: visitorStats.browsers },
+              { label: "仅首次到访", count: visitorStats.browsers - visitorStats.returning },
+              { label: "有过回访", count: visitorStats.returning },
+              { label: "访问次数", count: visitorStats.visits },
+            ].map(({ label, count }) => (
+              <div className="ui-surface border border-line p-6 bg-card" key={label}>
+                <dt className="text-muted">{label}</dt>
+                <dd className="text-[36px] font-light text-accent">{count.toLocaleString("zh-CN")}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : visitorState === "locked" ? (
+          <form onSubmit={handleReportUnlock} className="ui-unlock-form">
+            <PasswordField id="visitor-report-code" label="访客报表访问码" placeholder="输入访问码" errorMessage="访问码不正确，请重试。" value={reportCode} onChange={(value) => { setReportCode(value); setReportError(false); }} error={reportError} />
+            <button type="submit" className="text-[16px] font-medium text-muted hover:text-accent transition-colors">
+              解锁访客统计 <Icon name="arrow-right" />
+            </button>
+          </form>
+        ) : <p role="status" className="text-muted">{visitorState === "unavailable" ? "暂时无法读取访客统计。" : "正在读取访客统计…"}</p>}
       </section>
 
       <section className="px-6 sm:px-10 xl:px-15 py-14 border-t border-line">
