@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 
 // ─── Wiki Sections (categories) ───────────────────────────────────────────
 export const wikiSections = sqliteTable("wiki_sections", {
@@ -58,3 +58,11 @@ export const siteSettings = sqliteTable("site_settings", {
   value: text("value").notNull().default(""),
   updatedAt: text("updated_at").notNull().default(""),
 });
+
+// ─── Daily visitor activity ───────────────────────────────────────────────
+export const visitorActivity = sqliteTable("visitor_activity", {
+  day: text("day").notNull(),
+  browserKey: text("browser_key").notNull(),
+  lastSeen: integer("last_seen").notNull(),
+  visits: integer("visits").notNull(),
+}, (table) => [primaryKey({ columns: [table.day, table.browserKey] })]);

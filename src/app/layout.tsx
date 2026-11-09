@@ -11,6 +11,7 @@ import Sidebar from "@/components/Sidebar";
 import MotionEffects from "@/components/MotionEffects";
 import PageTransition from "@/components/PageTransition";
 import BackToTop from "@/components/BackToTop";
+import VisitAnalytics from "@/components/VisitAnalytics";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -73,6 +74,7 @@ export default function RootLayout({
         <BackToTop />
         </ProjectWindowsProvider>
         <Analytics />
+        <VisitAnalytics enabled={process.env.VERCEL_ENV !== "preview"} />
       </body>
     </html>
   );
